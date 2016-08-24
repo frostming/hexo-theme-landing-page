@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frostming.github.io/"/>
-  <updated>2016-08-24T12:15:14.000Z</updated>
+  <updated>2016-08-24T12:17:36.000Z</updated>
   <id>http://frostming.github.io/</id>
   
   <author>
@@ -16,23 +16,18 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
+    <title>如何编写向前兼容的 Python 代码</title>
     <link href="http://frostming.github.io/2016/08/23/python-2-to-3/"/>
     <id>http://frostming.github.io/2016/08/23/python-2-to-3/</id>
-    <published>2016-08-22T16:00:00.000Z</published>
-    <updated>2016-08-24T12:15:14.000Z</updated>
+    <published>2016-08-23T07:13:23.000Z</published>
+    <updated>2016-08-24T12:17:36.000Z</updated>
     
-    <content type="html">&lt;hr&gt;
-&lt;p&gt;title: 如何编写向前兼容的 Python 代码&lt;br&gt;
-date: 2016-08-23 15:13:23&lt;br&gt;
-tags: [python, python3]&lt;br&gt;
-categories: 编程&lt;/p&gt;
-&lt;hr&gt;
-&lt;blockquote&gt;
+    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？&lt;/p&gt;
 &lt;p&gt;对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;h1&gt;以 2.6 为基准&lt;/h1&gt;
 &lt;p&gt;如果你要编写一个新项目，就从 Python 2.6 或 2.7 开始，它们有许多升级到 Python 3 的便利。如果你不打算支持旧版本的 Python 你已经可以使用许多 Python 3 中的新特性了，只要在代码中打开就行了。&lt;/p&gt;
 &lt;p&gt;你应该使用的一些 &lt;code&gt;__future__&lt;/code&gt; 中的特性：&lt;/p&gt;
@@ -131,17 +126,20 @@ categories: 编程&lt;/p&gt;
     
     <summary type="html">
     
-      &lt;hr&gt;
-&lt;p&gt;title: 如何编写向前兼容的 Python 代码&lt;br&gt;
-date: 2016-08-23 15:13:23&lt;br&gt;
-tags: [python, python3]&lt;br&gt;
-categories: 编程&lt;/p&gt;
-&lt;hr&gt;
-&lt;blockquote&gt;
-&lt;p&gt;本文翻
+      &lt;blockquote&gt;
+&lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？&lt;/p&gt;
+&lt;p&gt;对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。&lt;/p&gt;
     
     </summary>
     
+      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="python" scheme="http://frostming.github.io/tags/python/"/>
+    
+      <category term="python3" scheme="http://frostming.github.io/tags/python3/"/>
     
   </entry>
   
