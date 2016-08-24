@@ -289,6 +289,211 @@
             
               
                 
+                <a class="post-title-link" href="/2016/08/23/python-2-to-3/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-23T00:00:00+08:00" content="2016-08-23">
+              2016-08-23
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/23/python-2-to-3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/23/python-2-to-3/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<p>title: 如何编写向前兼容的 Python 代码<br>
+date: 2016-08-23 15:13:23<br>
+tags: [python, python3]<br>
+categories: 编程</p>
+<hr>
+<blockquote>
+<p>本文翻译自 <a href="http://lucumr.pocoo.org/about/" target="_blank" rel="external">Armin Ronacher</a> 的文章 <a href="http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/" target="_blank" rel="external">Writing Forwards Compatible Python Code</a></p>
+</blockquote>
+<p>对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？</p>
+<p>对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。</p>
+<h1>以 2.6 为基准</h1>
+<p>如果你要编写一个新项目，就从 Python 2.6 或 2.7 开始，它们有许多升级到 Python 3 的便利。如果你不打算支持旧版本的 Python 你已经可以使用许多 Python 3 中的新特性了，只要在代码中打开就行了。</p>
+<p>你应该使用的一些 <code>__future__</code> 中的特性：</p>
+<ul>
+<li><code>division</code> 我必须承认我非常讨厌 Python 2 中的 future division。当我审核代码时我需要不停地跳到文件开头来检查用的是哪种除法机制。然而这是 Python 3 中的默认除法机制，所以你需要使用它。</li>
+<li><code>absolute_import</code> 最重要的特性。当你在 foo 包内部时，<code>from xml import bar</code> 不再导入一个 <code>foo.xml</code> 的模块，你需要改为 <code>from .xml import bar</code>。更加清晰明了，帮助很大。</li>
+</ul>
+<p>至于函数形式的 <code>print</code> 导入，为了代码清晰，我不建议使用它。因为所有的编辑器会将<code>print</code> 作为关键字高亮，这此让人产生困惑。如果一件事情在不同的文件里表现不一致我们最好尽可能避免它。好在用 2to3 工具可以很方便地转换，所以我们完全没必要从 future 中导入它。</p>
+<p>最好不要从 future 中导入 <code>unicode_literals</code>，尽管它看上去很吸引人。原因很简单，许多 API 在不同地方支持的字符串类型是不同的，<code>unicode_literals</code> 会产生反作用。诚然，这个导入在某些情况下很有用，但它更多地受制于底层的接口（库），且由于它是 Python 2.6 的特性，有许多库支持这个导入。不需要导入 <code>unicode_literals</code> 你就能使用 <code>b'foo'</code> 这样的写法，两种方法都是可用的并且对 2to3 工具很有帮助。</p>
+<h1>文件输入输出与 Unicode</h1>
+<p>文件的输入输出在 Python 3 中改变很大。你终于不用在为新项目开发 API 时费尽心力处理文件 unicode 编码的问题了。</p>
+<p>当你处理文本数据时，使用 <a href="http://docs.python.org/library/codecs.html" target="_blank" rel="external">codecs.open</a> 来打开文件。默认使用 utf-8 编码除非显式地定义或者只对 unicode 字符串操作。若你决定使用二进制输入输出，打开文件时记得用 <code>'rb'</code> 而不是 <code>'r'</code> 标志。这对于适当的 Windows 支持来说是必要的。</p>
+<p>当你处理字节型数据时，使用 <code>b'foo'</code> 将字符串标为字节型，这样 2to3 就不会将它转换为 unicode。注意以下 Python 2.6：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span></span><br><span class="line"><span class="string">'foo'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span>[<span class="number">0</span>]</span><br><span class="line"><span class="string">'f'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span> + <span class="string">u'bar'</span></span><br><span class="line"><span class="string">u'foobar'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(<span class="string">b'foo'</span>)</span><br><span class="line">[<span class="string">'f'</span>, <span class="string">'o'</span>, <span class="string">'o'</span>]</span><br></pre></td></tr></table></figure>
+<p>与 Python 3 对待字节型字符串的区别：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b'foo'[0]</span><br><span class="line">102</span><br><span class="line">&gt;&gt;&gt; b'foo' + 'bar'</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">TypeError: can't concat bytes to str</span><br><span class="line">&gt;&gt;&gt; list(b'foo')</span><br><span class="line">[102, 111, 111]</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">TypeError: can't concat bytes to str</span><br></pre></td></tr></table></figure>
+<p>为了达成与 Python 2.6 同样的效果，你可以这样做：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span>[<span class="number">0</span>:<span class="number">0</span> + <span class="number">1</span>]</span><br><span class="line"><span class="string">b'f'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span> + <span class="string">'bar'</span>.encode(<span class="string">'latin1'</span>)</span><br><span class="line"><span class="string">b'foobar'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>to_charlist = <span class="keyword">lambda</span> x: [x[c:c + <span class="number">1</span>] <span class="keyword">for</span> c <span class="keyword">in</span> range(len(x))]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>to_charlist(<span class="string">b'foo'</span>)</span><br><span class="line">[<span class="string">b'f'</span>, <span class="string">b'o'</span>, <span class="string">b'o'</span>]</span><br></pre></td></tr></table></figure>
+<p>此代码在 2.6 和 3.x 上均能正常工作。</p>
+<h1>安全好过道歉</h1>
+<p>在很多事情上 2to3 并不能达到预期效果。一部分是 2to3 可能有 BUG 的地方，另外的则是因为 2to3 不能很好的预测你的代码的目的。</p>
+<h2 id="str-相关的递归错误">str 相关的递归错误</h2>
+<p>在 Python 2 中很多人像下面这样写代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> unicode(self).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__unicode__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">u'Hello World'</span></span><br></pre></td></tr></table></figure>
+<p>2to3 预设你的 API 不兼容 unicode ，会将它转换成下面这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> str(self).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__unicode__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Hello World'</span></span><br></pre></td></tr></table></figure>
+<p>这就有错误了。首先 <code>__unicode__</code> 不能在 Python 3 中使用，其次当你对 <code>Foo</code> 的一个实例调用 <code>str()</code> 方法时，<code>__str__</code> 将调用自身而由于无限递归触发一个 RuntimeError。这个错误可以通过自定义 2to3 修改器解决，也可以写一个简单的辅助类来检查是否是 Python 3：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnicodeMixin</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> sys.version_info &gt; (<span class="number">3</span>, <span class="number">0</span>):</span><br><span class="line">        __str__ = <span class="keyword">lambda</span> x: x.__unicode__()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        __str__ = <span class="keyword">lambda</span> x: unicode(x).encode(<span class="string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(UnicodeMixin)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__unicode__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">u'Hello World'</span></span><br></pre></td></tr></table></figure>
+<p>用这种方法你的对象在 Python 3 中仍然有一个 <code>__unicode__</code> 属性，但却不会有任何损害。当你想去掉 Python 2 支持时你只需遍历 <code>UnicodeMixin</code> 的所有派生类，将 <code>__unicode__</code> 重命名为 <code>__str__</code>，然后再删掉辅助类。</p>
+<h2 id="字符串比较">字符串比较</h2>
+<p>这个问题会稍微棘手一点，在 Python 2 中下面这段代码是正确的：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'foo'</span> == <span class="string">u'foo'</span></span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>在 Python 3 中却并非如此：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span> == <span class="string">'foo'</span></span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<p>更糟糕的是 Python 2 不会抛出一个比较的警告（即使打开了 Python-3-warnings），Python 3 也不会。那么你如何找到问题所在呢？我写了一个名为 <a href="http://pypi.python.org/pypi/unicode-nazi" target="_blank" rel="external">unicode-nazi</a> 的小型辅助模块。只要导入该模块，当你试图同时操作 unicode 和 bytes 型字符串时会自动抛出警告：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> unicodenazi</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">u'foo'</span> == <span class="string">'foo'</span></span><br><span class="line">__main__:<span class="number">1</span>: UnicodeWarning: Implicit conversion of str to unicode</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<h1>字符串是什么？</h1>
+<p>下面这张表列举了一些字节型字符串，和它们在 Python 3 中将变成什么：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>Python 3 中的类型（unicode == str）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标识</td>
+<td>unicode</td>
+</tr>
+<tr>
+<td>文档字符串</td>
+<td>unicode</td>
+</tr>
+<tr>
+<td><code>__repr__</code></td>
+<td>unicode</td>
+</tr>
+<tr>
+<td>字典的字符键</td>
+<td>unicode</td>
+</tr>
+<tr>
+<td>WSGI 的环境变量键</td>
+<td>unicode</td>
+</tr>
+<tr>
+<td>HTTP 的 header值，WSGI 的 环境变量值</td>
+<td>unicode，在 3.1 中仅限于 ASCII，在 3.2 中仅限于 latin1</td>
+</tr>
+<tr>
+<td>URL</td>
+<td>unicode，部分 API 也接受字节。需要特别注意的是，为了使用所有标准库函数，URL 需要编码为 utf-8</td>
+</tr>
+<tr>
+<td>文件名</td>
+<td>unicode 或者字节，大部分 API 接受两者但不支持隐式转换。</td>
+</tr>
+<tr>
+<td>二进制内容</td>
+<td>字节或字节序列。注意第二种类型是可变的，所以你要清醒认识到你的字符串对象是可变的。</td>
+</tr>
+<tr>
+<td>Python 代码</td>
+<td>unicode，在交给 exec 执行前你需要自行解码。</td>
+</tr>
+</tbody>
+</table>
+<h1>Latin1 很特别</h1>
+<p>在某些地方（比如 WSGI）unicode 字符串必须是 latin1 的子集。这是因为 HTTP 协议并未指定编码方式，为了保证安全，假定为使用 latin1 。假如你要同时控制通信的两端（比如 cookies）你当然可以使用 utf-8 编码。那么问题来了：如果请求头只能是 latin1 编码时是怎么工作的呢？在且仅在 Python 3 中你需要用一些小伎俩：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> cookie_value.encode(<span class="string">'utf-8'</span>).decode(<span class="string">'latin1'</span>)</span><br></pre></td></tr></table></figure>
+<p>你只是反 unicode 字符串伪编码为 utf-8。WSGI 层会将它重新编码为 latin1 并将这个错误的 utf-8 字符串传输出去，你只要在接收端也做一个反向的变换就可以了。</p>
+<p>这虽然很丑陋，但这就是 utf-8 在请求头中的工作方式，而且也只有 cookie 头受此影响，反正 cookie 头也不是很可靠。</p>
+<p>在 WSGI 还剩下的问题就只有 PATH_INFO / SCRIPT_NAME 元组了，你的框架运行在 Python 3 时应该解决这个问题。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/07/ordered-dict/" itemprop="url">
                   Python 有序字典的实现
                 </a>
@@ -1323,7 +1528,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">9</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
