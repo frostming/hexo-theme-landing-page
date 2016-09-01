@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frostming.github.io/"/>
-  <updated>2016-08-24T12:17:36.000Z</updated>
+  <updated>2016-09-01T11:34:35.000Z</updated>
   <id>http://frostming.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://frostming.github.io/2016/08/23/python-2-to-3/"/>
     <id>http://frostming.github.io/2016/08/23/python-2-to-3/</id>
     <published>2016-08-23T07:13:23.000Z</published>
-    <updated>2016-08-24T12:17:36.000Z</updated>
+    <updated>2016-09-01T11:34:35.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
@@ -294,57 +294,6 @@
       <category term="python" scheme="http://frostming.github.io/tags/python/"/>
     
       <category term="小技巧" scheme="http://frostming.github.io/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Requests源码阅读v0.9.0</title>
-    <link href="http://frostming.github.io/2016/06/05/read-requests-v090/"/>
-    <id>http://frostming.github.io/2016/06/05/read-requests-v090/</id>
-    <published>2016-06-05T04:00:00.000Z</published>
-    <updated>2016-06-29T14:43:02.000Z</updated>
-    
-    <content type="html">&lt;p&gt;&lt;img src=&quot;http://docs.python-requests.org/en/master/_static/requests-sidebar.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;从早期代码看过来的一个体验就是其实大神也有年轻的时候，也犯过一些错误，埋了一些不高明的BUG，比如我注意到&lt;code&gt;Request&lt;/code&gt;对象的&lt;code&gt;sent&lt;/code&gt;属性其实并没有起到作用，它本应该在调用&lt;code&gt;send&lt;/code&gt;方法之后被置为&lt;code&gt;True&lt;/code&gt;，然而我找了整个代码都没找到有设为&lt;code&gt;True&lt;/code&gt;的地方，也就是说，无论如何都会发起请求。所幸我看到这个版本的Issue里面有人提到了这个问题。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h2 id=&quot;目标&quot;&gt;目标&lt;/h2&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.9.0 (2011-12-28)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* verify ssl is default.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;v0.9.0的主要改动就是 SSL 认证了。&lt;/p&gt;
-&lt;h2 id=&quot;源码阅读&quot;&gt;源码阅读&lt;/h2&gt;
-&lt;h3 id=&quot;v0-8-1&quot;&gt;v0.8.1&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.8.1 (2011-11-15)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* URL Request path fix&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Proxy fix.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Timeouts fix.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;ul&gt;
-&lt;li&gt;修正了请求的 URL 路径问题&lt;/li&gt;
-&lt;li&gt;修正了代理问题&lt;/li&gt;
-&lt;li&gt;修正了 time out 问题&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;修正了请求的url路径问题&quot;&gt;修正了请求的URL路径问题&lt;/h4&gt;
-&lt;p&gt;新加了两个属性&lt;code&gt;full_url&lt;/code&gt;和&lt;code&gt;path_url&lt;/code&gt;取代了之前的&lt;code&gt;_build_url&lt;/code&gt;方法。&lt;code&gt;full_url&lt;/code&gt;返回完整路径，&lt;code&gt;path_url&lt;/code&gt;返回域名之后的子路径。构建请求时将&lt;code&gt;path_url&lt;/code&gt;传给&lt;code&gt;urlopen&lt;/code&gt;，这样可以改善性能，因为完整的&lt;code&gt;url&lt;/code&gt;信息已经包含在连接对象里了。看具体实现：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;@property&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;path_url&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&quot;&quot;&quot;Build the path URL to use.&quot;&quot;&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    url = []&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    p = urlsplit(self.full_url)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Proxies use full URLs.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; p.scheme &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; self.proxies:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self.full_url&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    path = p.path&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;not&lt;/span&gt; path:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        path = &lt;span class=&quot;string&quot;&gt;&#39;/&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    url.append(path)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    query = p.query&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; query:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        url.append(&lt;span class=&quot;string&quot;&gt;&#39;?&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        url.append(query)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;&#39;&lt;/span&gt;.join(url)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;有一点值得注意，我发现作者在构造字符串时喜欢将各部分放在列表里，再用空字符串连接起来，这要换我来写就直接&lt;code&gt;target_str += component&lt;/code&gt;了，不知道这样有什么好处。&lt;/p&gt;
-&lt;h4 id=&quot;修正代理与超时的问题&quot;&gt;修正代理与超时的问题&lt;/h4&gt;
-&lt;p&gt;简单说就是在重定向循环体中构造请求时把&lt;code&gt;timeout&lt;/code&gt;与&lt;code&gt;proxy&lt;/code&gt;包含进来。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;img src=&quot;http://docs.python-requests.org/en/master/_static/requests-sidebar.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;从早期代码看过来的一个体验就是其实大神也有年轻的时候，也犯过一些错误，埋了一些不高明的BUG，比如我注意到&lt;code&gt;Request&lt;/code&gt;对象的&lt;code&gt;sent&lt;/code&gt;属性其实并没有起到作用，它本应该在调用&lt;code&gt;send&lt;/code&gt;方法之后被置为&lt;code&gt;True&lt;/code&gt;，然而我找了整个代码都没找到有设为&lt;code&gt;True&lt;/code&gt;的地方，也就是说，无论如何都会发起请求。所幸我看到这个版本的Issue里面有人提到了这个问题。&lt;/p&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="python" scheme="http://frostming.github.io/tags/python/"/>
-    
-      <category term="源码阅读" scheme="http://frostming.github.io/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
-    
-      <category term="requests" scheme="http://frostming.github.io/tags/requests/"/>
     
   </entry>
   
@@ -637,13 +586,13 @@
       <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="hexo" scheme="http://frostming.github.io/tags/hexo/"/>
-    
       <category term="markdown" scheme="http://frostming.github.io/tags/markdown/"/>
     
       <category term="evernote" scheme="http://frostming.github.io/tags/evernote/"/>
     
       <category term="个人博客" scheme="http://frostming.github.io/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="hexo" scheme="http://frostming.github.io/tags/hexo/"/>
     
   </entry>
   

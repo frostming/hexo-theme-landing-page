@@ -4,7 +4,7 @@
   <url>
     <loc>http://frostming.github.io/2016/08/23/python-2-to-3/</loc>
     
-    <lastmod>2016-08-24T12:17:36.000Z</lastmod>
+    <lastmod>2016-09-01T11:34:35.000Z</lastmod>
     
   </url>
   
@@ -12,13 +12,6 @@
     <loc>http://frostming.github.io/2016/07/07/ordered-dict/</loc>
     
     <lastmod>2016-07-07T13:41:39.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://frostming.github.io/2016/06/05/read-requests-v090/</loc>
-    
-    <lastmod>2016-06-29T14:43:02.000Z</lastmod>
     
   </url>
   
@@ -44,6 +37,13 @@
   </url>
   
   <url>
+    <loc>http://frostming.github.io/about/index.html</loc>
+    
+    <lastmod>2016-06-23T12:10:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://frostming.github.io/2016/05/25/markdown-in-blog/</loc>
     
     <lastmod>2016-06-23T12:10:00.000Z</lastmod>
@@ -51,28 +51,7 @@
   </url>
   
   <url>
-    <loc>http://frostming.github.io/2016/05/29/next-beautify/</loc>
-    
-    <lastmod>2016-06-23T12:10:00.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://frostming.github.io/2016/06/15/beginning-of-summer/</loc>
-    
-    <lastmod>2016-06-23T12:10:00.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://frostming.github.io//404.html</loc>
-    
-    <lastmod>2016-06-23T12:10:00.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://frostming.github.io/about/index.html</loc>
     
     <lastmod>2016-06-23T12:10:00.000Z</lastmod>
     
@@ -87,6 +66,13 @@
   
   <url>
     <loc>http://frostming.github.io/tags/index.html</loc>
+    
+    <lastmod>2016-06-23T12:10:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://frostming.github.io/2016/05/29/next-beautify/</loc>
     
     <lastmod>2016-06-23T12:10:00.000Z</lastmod>
     
