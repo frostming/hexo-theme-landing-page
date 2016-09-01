@@ -5,7 +5,7 @@
     
     <entry>
       <title><![CDATA[如何编写向前兼容的 Python 代码]]></title>
-      <url>http://frostming.github.io/2016/08/23/python-2-to-3/</url>
+      <url>http://frostming.win/2016/08/23/python-2-to-3/</url>
       <content type="html"><![CDATA[<blockquote>
 <p>本文翻译自 <a href="http://lucumr.pocoo.org/about/" target="_blank" rel="external">Armin Ronacher</a> 的文章 <a href="http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/" target="_blank" rel="external">Writing Forwards Compatible Python Code</a></p>
 </blockquote>
@@ -111,7 +111,7 @@
     
     <entry>
       <title><![CDATA[Python 有序字典的实现]]></title>
-      <url>http://frostming.github.io/2016/07/07/ordered-dict/</url>
+      <url>http://frostming.win/2016/07/07/ordered-dict/</url>
       <content type="html"><![CDATA[<p>最近在看 requests 源码的时候看到作者使用了 urllib3 中自己实现的<code>OrderedDict</code>类，收获颇多。自己实现一个数据结构往往是最需要算法和优化的地方，各种语法糖黑科技，相当的 Pythonic，看这种代码实在是一种享受。如果要我自己实现的话，自己会想到用一个有序存储的对象（如列表）去 hack 内部的实现，但这样有几个缺点：</p>
 <ol>
 <li>列表的插入、删除操作性能不如字典，复杂度是 O(N) 量级的。</li>
@@ -121,7 +121,7 @@
 <a id="more"></a>
 <h2 id="init-方法"><code>__init__</code>方法</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrderedDict</span><span class="params">(dict)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwds)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> len(args) &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">'expected at most 1 arguments, got %d'</span> % len(args))</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.__root</span><br><span class="line">        <span class="keyword">except</span> AttributeError:</span><br><span class="line">            self.__root = root = []                     <span class="comment"># sentinel node</span></span><br><span class="line">            root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line">            self.__map = &#123;&#125;</span><br><span class="line">        self.__update(*args, **kwds)</span><br></pre></td></tr></table></figure>
-<p>在<a href="http://frostming.github.io/2016/06/13/python-list/">上一篇文章</a>中说到一些关于列表的坑，说到不要用<code>a=b=[]</code>这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使<code>self.__root</code>和<code>root</code>同时指向一个空列表，相关于给<code>self.__root</code>起了一个短别名，关键是第 8 行：</p>
+<p>在<a href="http://frostming.github.io/2016/06/13/python-list/" target="_blank" rel="external">上一篇文章</a>中说到一些关于列表的坑，说到不要用<code>a=b=[]</code>这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使<code>self.__root</code>和<code>root</code>同时指向一个空列表，相关于给<code>self.__root</code>起了一个短别名，关键是第 8 行：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br></pre></td></tr></table></figure>
 <p>什么鬼？没见过<code>[...]</code>这种的啊，我来看看</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>]</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>] <span class="keyword">is</span> root</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
@@ -150,9 +150,8 @@
     
     <entry>
       <title><![CDATA[六月夏至]]></title>
-      <url>http://frostming.github.io/2016/06/15/beginning-of-summer/</url>
-      <content type="html"><![CDATA[<p><img src="http://o7u6qrlad.bkt.clouddn.com/4d62291b0c918088fbe83357e2092061.png" alt="言叶之庭"></p>
-<blockquote><p>七岁的那一年，抓住那只蝉，以为能抓住夏天</p>
+      <url>http://frostming.win/2016/06/15/beginning-of-summer/</url>
+      <content type="html"><![CDATA[<blockquote><p>七岁的那一年，抓住那只蝉，以为能抓住夏天</p>
 <footer><strong>阿信</strong><cite>如烟</cite></footer></blockquote>
 <p>对于六月的好感，从小时候起，就根植在我的记忆里。</p>
 <p>暑假就要来了，虽然已经告别学生时代多年，这个时节依然令我躁动。就像一周之中，最喜欢周五的晚上，它不同于周六的尽情狂欢，那是一种对于周末的未知与兴奋。六月，端午节可以放半天假到外婆家吃几枚粽子，中考可以放四天假，高考完可以去网吧包夜，期末考试完可以享受整整两个月的暑假。空气中弥漫的是西瓜的香，知了的聒躁，和七里香的旋律：「窗外的麻雀，在电线杆上多嘴，你说这一句，很有夏天的感觉」。</p>
@@ -164,7 +163,7 @@
     
     <entry>
       <title><![CDATA[Python 列表小技巧]]></title>
-      <url>http://frostming.github.io/2016/06/13/python-list/</url>
+      <url>http://frostming.win/2016/06/13/python-list/</url>
       <content type="html"><![CDATA[<blockquote>
 <p>Python中的列表和字典一样，都是可变数据类型，与字符串和整型相比，它具有一些独特的特性。在平常使用中， 也会经常遇到一些坑，本文试着举一些例子并说明。</p>
 </blockquote>
@@ -202,9 +201,8 @@
     
     <entry>
       <title><![CDATA[Requests源码阅读v0.8.0]]></title>
-      <url>http://frostming.github.io/2016/06/03/read-requests-v080/</url>
-      <content type="html"><![CDATA[<p><img src="http://docs.python-requests.org/en/master/_static/requests-sidebar.png" alt=""></p>
-<blockquote>
+      <url>http://frostming.win/2016/06/03/read-requests-v080/</url>
+      <content type="html"><![CDATA[<blockquote>
 <p>工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到<a href="https://github.com/wangshunping/read_requests" target="_blank" rel="external">@wangshunping</a>的<strong>read requests</strong>，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。<br>
 下面就开始吧！</p>
 </blockquote>
@@ -322,7 +320,7 @@
     
     <entry>
       <title><![CDATA[NexT 主题美化]]></title>
-      <url>http://frostming.github.io/2016/05/29/next-beautify/</url>
+      <url>http://frostming.win/2016/05/29/next-beautify/</url>
       <content type="html"><![CDATA[<h2 id="自定义图标的设置">自定义图标的设置</h2>
 <p><a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="external">NexT</a> 主题自带<code>fontawesome</code>图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在<code>fontawesome</code>中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。</p>
 <h3 id="从-iconfont-下载图标">从 Iconfont 下载图标</h3>
@@ -384,7 +382,7 @@
     
     <entry>
       <title><![CDATA[在博客与笔记中使用Markdown]]></title>
-      <url>http://frostming.github.io/2016/05/25/markdown-in-blog/</url>
+      <url>http://frostming.win/2016/05/25/markdown-in-blog/</url>
       <content type="html"><![CDATA[<h2 id="博客的搭建">博客的搭建</h2>
 <blockquote>
 <p>前段时间在 StackOverflow 与 Quora 上我接触到了 Markdown 标记语言，瞬时就被这种易用、美观、高逼格的东西所俘获，顿时深感之前在 QQ 空间之类的平台上写博的体验之差，往往调格式就要耗费很多的时间。于是就有了迁移到另一个博客平台的想法，用过的产品有：</p>
@@ -429,7 +427,7 @@
     
     <entry>
       <title><![CDATA[Hello World]]></title>
-      <url>http://frostming.github.io/2016/05/21/hello-world/</url>
+      <url>http://frostming.win/2016/05/21/hello-world/</url>
       <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
 <a id="more"></a>
 <h2 id="quick-start">Quick Start</h2>

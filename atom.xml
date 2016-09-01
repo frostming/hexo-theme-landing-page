@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>日月之行</title>
-  <subtitle>Frost Ming&#39;s blog</subtitle>
+  <title>Frost&#39;s Blog</title>
+  <subtitle>只要心还透明，就能折射希望</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://frostming.github.io/"/>
+  <link href="http://frostming.win/"/>
   <updated>2016-09-01T11:34:35.000Z</updated>
-  <id>http://frostming.github.io/</id>
+  <id>http://frostming.win/</id>
   
   <author>
     <name>Frost Ming</name>
-    
+    <email>mianghong@gmail.com</email>
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
     <title>如何编写向前兼容的 Python 代码</title>
-    <link href="http://frostming.github.io/2016/08/23/python-2-to-3/"/>
-    <id>http://frostming.github.io/2016/08/23/python-2-to-3/</id>
+    <link href="http://frostming.win/2016/08/23/python-2-to-3/"/>
+    <id>http://frostming.win/2016/08/23/python-2-to-3/</id>
     <published>2016-08-23T07:13:23.000Z</published>
     <updated>2016-09-01T11:34:35.000Z</updated>
     
@@ -134,19 +134,19 @@
     
     </summary>
     
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://frostming.win/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://frostming.github.io/tags/python/"/>
+      <category term="python" scheme="http://frostming.win/tags/python/"/>
     
-      <category term="python3" scheme="http://frostming.github.io/tags/python3/"/>
+      <category term="python3" scheme="http://frostming.win/tags/python3/"/>
     
   </entry>
   
   <entry>
     <title>Python 有序字典的实现</title>
-    <link href="http://frostming.github.io/2016/07/07/ordered-dict/"/>
-    <id>http://frostming.github.io/2016/07/07/ordered-dict/</id>
+    <link href="http://frostming.win/2016/07/07/ordered-dict/"/>
+    <id>http://frostming.win/2016/07/07/ordered-dict/</id>
     <published>2016-07-07T12:16:20.000Z</published>
     <updated>2016-07-07T13:41:39.000Z</updated>
     
@@ -159,7 +159,7 @@
 &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;h2 id=&quot;init-方法&quot;&gt;&lt;code&gt;__init__&lt;/code&gt;方法&lt;/h2&gt;
 &lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;OrderedDict&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(dict)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, *args, **kwds)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; len(args) &amp;gt; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;raise&lt;/span&gt; TypeError(&lt;span class=&quot;string&quot;&gt;&#39;expected at most 1 arguments, got %d&#39;&lt;/span&gt; % len(args))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            self.__root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; AttributeError:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            self.__root = root = []                     &lt;span class=&quot;comment&quot;&gt;# sentinel node&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            root[:] = [root, root, &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            self.__map = &amp;#123;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        self.__update(*args, **kwds)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;在&lt;a href=&quot;http://frostming.github.io/2016/06/13/python-list/&quot;&gt;上一篇文章&lt;/a&gt;中说到一些关于列表的坑，说到不要用&lt;code&gt;a=b=[]&lt;/code&gt;这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使&lt;code&gt;self.__root&lt;/code&gt;和&lt;code&gt;root&lt;/code&gt;同时指向一个空列表，相关于给&lt;code&gt;self.__root&lt;/code&gt;起了一个短别名，关键是第 8 行：&lt;/p&gt;
+&lt;p&gt;在&lt;a href=&quot;http://frostming.github.io/2016/06/13/python-list/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;上一篇文章&lt;/a&gt;中说到一些关于列表的坑，说到不要用&lt;code&gt;a=b=[]&lt;/code&gt;这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使&lt;code&gt;self.__root&lt;/code&gt;和&lt;code&gt;root&lt;/code&gt;同时指向一个空列表，相关于给&lt;code&gt;self.__root&lt;/code&gt;起了一个短别名，关键是第 8 行：&lt;/p&gt;
 &lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root[:] = [root, root, &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[[...], [...], &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;什么鬼？没见过&lt;code&gt;[...]&lt;/code&gt;这种的啊，我来看看&lt;/p&gt;
 &lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[[...], [...], &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] &lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt; root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -196,24 +196,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://frostming.win/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://frostming.github.io/tags/python/"/>
+      <category term="python" scheme="http://frostming.win/tags/python/"/>
     
-      <category term="源码阅读" scheme="http://frostming.github.io/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+      <category term="源码阅读" scheme="http://frostming.win/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
     
   </entry>
   
   <entry>
     <title>六月夏至</title>
-    <link href="http://frostming.github.io/2016/06/15/beginning-of-summer/"/>
-    <id>http://frostming.github.io/2016/06/15/beginning-of-summer/</id>
+    <link href="http://frostming.win/2016/06/15/beginning-of-summer/"/>
+    <id>http://frostming.win/2016/06/15/beginning-of-summer/</id>
     <published>2016-06-15T13:22:23.000Z</published>
-    <updated>2016-06-23T12:10:00.000Z</updated>
+    <updated>2016-09-01T13:43:21.000Z</updated>
     
-    <content type="html">&lt;p&gt;&lt;img src=&quot;http://o7u6qrlad.bkt.clouddn.com/4d62291b0c918088fbe83357e2092061.png&quot; alt=&quot;言叶之庭&quot;&gt;&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
+    <content type="html">&lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
 &lt;footer&gt;&lt;strong&gt;阿信&lt;/strong&gt;&lt;cite&gt;如烟&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
 &lt;p&gt;对于六月的好感，从小时候起，就根植在我的记忆里。&lt;/p&gt;
 &lt;p&gt;暑假就要来了，虽然已经告别学生时代多年，这个时节依然令我躁动。就像一周之中，最喜欢周五的晚上，它不同于周六的尽情狂欢，那是一种对于周末的未知与兴奋。六月，端午节可以放半天假到外婆家吃几枚粽子，中考可以放四天假，高考完可以去网吧包夜，期末考试完可以享受整整两个月的暑假。空气中弥漫的是西瓜的香，知了的聒躁，和七里香的旋律：「窗外的麻雀，在电线杆上多嘴，你说这一句，很有夏天的感觉」。&lt;/p&gt;
@@ -224,25 +223,26 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;img src=&quot;http://o7u6qrlad.bkt.clouddn.com/4d62291b0c918088fbe83357e2092061.png&quot; alt=&quot;言叶之庭&quot;&gt;&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
-
+      &lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
+&lt;footer&gt;&lt;strong&gt;阿信&lt;/strong&gt;&lt;cite&gt;如烟&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
+&lt;p&gt;对于六月的好感，从小时候起，就根植在我的记忆里。&lt;/p&gt;
+&lt;p&gt;
     
     </summary>
     
-      <category term="随笔" scheme="http://frostming.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+      <category term="随笔" scheme="http://frostming.win/categories/%E9%9A%8F%E7%AC%94/"/>
     
     
-      <category term="心情" scheme="http://frostming.github.io/tags/%E5%BF%83%E6%83%85/"/>
+      <category term="心情" scheme="http://frostming.win/tags/%E5%BF%83%E6%83%85/"/>
     
-      <category term="日志" scheme="http://frostming.github.io/tags/%E6%97%A5%E5%BF%97/"/>
+      <category term="日志" scheme="http://frostming.win/tags/%E6%97%A5%E5%BF%97/"/>
     
   </entry>
   
   <entry>
     <title>Python 列表小技巧</title>
-    <link href="http://frostming.github.io/2016/06/13/python-list/"/>
-    <id>http://frostming.github.io/2016/06/13/python-list/</id>
+    <link href="http://frostming.win/2016/06/13/python-list/"/>
+    <id>http://frostming.win/2016/06/13/python-list/</id>
     <published>2016-06-13T05:00:00.000Z</published>
     <updated>2016-06-29T14:42:57.000Z</updated>
     
@@ -288,24 +288,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://frostming.win/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://frostming.github.io/tags/python/"/>
+      <category term="python" scheme="http://frostming.win/tags/python/"/>
     
-      <category term="小技巧" scheme="http://frostming.github.io/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
+      <category term="小技巧" scheme="http://frostming.win/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
   <entry>
     <title>Requests源码阅读v0.8.0</title>
-    <link href="http://frostming.github.io/2016/06/03/read-requests-v080/"/>
-    <id>http://frostming.github.io/2016/06/03/read-requests-v080/</id>
+    <link href="http://frostming.win/2016/06/03/read-requests-v080/"/>
+    <id>http://frostming.win/2016/06/03/read-requests-v080/</id>
     <published>2016-06-03T10:00:00.000Z</published>
-    <updated>2016-06-29T14:43:01.000Z</updated>
+    <updated>2016-09-01T13:43:12.000Z</updated>
     
-    <content type="html">&lt;p&gt;&lt;img src=&quot;http://docs.python-requests.org/en/master/_static/requests-sidebar.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;blockquote&gt;
+    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到&lt;a href=&quot;https://github.com/wangshunping/read_requests&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;@wangshunping&lt;/a&gt;的&lt;strong&gt;read requests&lt;/strong&gt;，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。&lt;br&gt;
 下面就开始吧！&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -422,31 +421,30 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;img src=&quot;http://docs.python-requests.org/en/master/_static/requests-sidebar.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;blockquote&gt;
+      &lt;blockquote&gt;
 &lt;p&gt;工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到&lt;a href=&quot;https://github.com/wangshunping/read_requests&quot;&gt;@wangshunping&lt;/a&gt;的&lt;strong&gt;read requests&lt;/strong&gt;，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。&lt;br&gt;
 下面就开始吧！&lt;/p&gt;
 &lt;/blockquote&gt;
     
     </summary>
     
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://frostming.win/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://frostming.github.io/tags/python/"/>
+      <category term="python" scheme="http://frostming.win/tags/python/"/>
     
-      <category term="源码阅读" scheme="http://frostming.github.io/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
+      <category term="源码阅读" scheme="http://frostming.win/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
     
-      <category term="requests" scheme="http://frostming.github.io/tags/requests/"/>
+      <category term="requests" scheme="http://frostming.win/tags/requests/"/>
     
   </entry>
   
   <entry>
     <title>NexT 主题美化</title>
-    <link href="http://frostming.github.io/2016/05/29/next-beautify/"/>
-    <id>http://frostming.github.io/2016/05/29/next-beautify/</id>
+    <link href="http://frostming.win/2016/05/29/next-beautify/"/>
+    <id>http://frostming.win/2016/05/29/next-beautify/</id>
     <published>2016-05-29T02:36:39.000Z</published>
-    <updated>2016-06-23T12:10:00.000Z</updated>
+    <updated>2016-09-01T13:42:49.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;自定义图标的设置&quot;&gt;自定义图标的设置&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/iissnan/hexo-theme-next&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; 主题自带&lt;code&gt;fontawesome&lt;/code&gt;图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在&lt;code&gt;fontawesome&lt;/code&gt;中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。&lt;/p&gt;
@@ -515,23 +513,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://frostming.win/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="hexo" scheme="http://frostming.github.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://frostming.win/tags/hexo/"/>
     
-      <category term="NexT" scheme="http://frostming.github.io/tags/NexT/"/>
+      <category term="NexT" scheme="http://frostming.win/tags/NexT/"/>
     
-      <category term="主题" scheme="http://frostming.github.io/tags/%E4%B8%BB%E9%A2%98/"/>
+      <category term="主题" scheme="http://frostming.win/tags/%E4%B8%BB%E9%A2%98/"/>
     
   </entry>
   
   <entry>
     <title>在博客与笔记中使用Markdown</title>
-    <link href="http://frostming.github.io/2016/05/25/markdown-in-blog/"/>
-    <id>http://frostming.github.io/2016/05/25/markdown-in-blog/</id>
+    <link href="http://frostming.win/2016/05/25/markdown-in-blog/"/>
+    <id>http://frostming.win/2016/05/25/markdown-in-blog/</id>
     <published>2016-05-25T11:00:00.000Z</published>
-    <updated>2016-06-23T12:10:00.000Z</updated>
+    <updated>2016-09-01T13:42:44.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;博客的搭建&quot;&gt;博客的搭建&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -583,23 +581,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://frostming.github.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://frostming.win/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="markdown" scheme="http://frostming.github.io/tags/markdown/"/>
+      <category term="markdown" scheme="http://frostming.win/tags/markdown/"/>
     
-      <category term="evernote" scheme="http://frostming.github.io/tags/evernote/"/>
+      <category term="evernote" scheme="http://frostming.win/tags/evernote/"/>
     
-      <category term="个人博客" scheme="http://frostming.github.io/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
+      <category term="个人博客" scheme="http://frostming.win/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
     
-      <category term="hexo" scheme="http://frostming.github.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://frostming.win/tags/hexo/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://frostming.github.io/2016/05/21/hello-world/"/>
-    <id>http://frostming.github.io/2016/05/21/hello-world/</id>
+    <link href="http://frostming.win/2016/05/21/hello-world/"/>
+    <id>http://frostming.win/2016/05/21/hello-world/</id>
     <published>2016-05-21T10:00:00.000Z</published>
     <updated>2016-06-29T14:42:59.000Z</updated>
     
