@@ -208,12 +208,12 @@
 <li>将下载好的文件夹复制到主题文件夹下，我是放在了与<code>fontawesome</code>平行的<code>/source/vendors</code>下面。</li>
 <li>修改<code>/layout/_macro/sidebar.swig</code>的代码:</li>
 </ol>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"links-of-author motion-element"</span>&gt;</span></span><br><span class="line">  &#123;% if theme.social %&#125;</span><br><span class="line">    &#123;% for name, link in theme.social %&#125;</span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"links-of-author-item"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; link &#125;&#125;"</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">title</span>=<span class="string">"&#123;&#123; name &#125;&#125;"</span>&gt;</span></span><br><span class="line">          &#123;% if theme.social_icons.enable %&#125;</span><br><span class="line">            &#123;% set myicon = ["Zhihu", "Lofter"] %&#125;</span><br><span class="line">            &#123;% if myicon.toString().includes(name) %&#125;</span><br><span class="line">              <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"iconfont icon-&#123;&#123; theme.social_icons[name] | lower &#125;&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">            &#123;% else %&#125;</span><br><span class="line">              <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-fw fa-&#123;&#123; theme.social_icons[name] | default('globe') | lower &#125;&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">            &#123;% endif %&#125;</span><br><span class="line">          &#123;% endif %&#125;</span><br><span class="line">          &#123;&#123; name &#125;&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">  &#123;% endif %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"links-of-author motion-element"</span>&gt;</span></span><br><span class="line">  &#123;% if theme.social %&#125;</span><br><span class="line">    &#123;% for name, link in theme.social %&#125;</span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"links-of-author-item"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; link &#125;&#125;"</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">title</span>=<span class="string">"&#123;&#123; name &#125;&#125;"</span>&gt;</span></span><br><span class="line">          &#123;% if theme.social_icons.enable %&#125;</span><br><span class="line">            &#123;% set myicon = ["Zhihu", "Lofter"] %&#125;</span><br><span class="line">            &#123;% if myicon.toString().includes(name) %&#125;</span><br><span class="line">              <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"iconfont icon-&#123;&#123; theme.social_icons[name] | lower &#125;&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">            &#123;% else %&#125;</span><br><span class="line">              <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-fw fa-&#123;&#123; theme.social_icons[name] | default('globe') | lower &#125;&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">            &#123;% endif %&#125;</span><br><span class="line">          &#123;% endif %&#125;</span><br><span class="line">          &#123;&#123; name &#125;&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">  &#123;% endif %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>把加入的图标，加到<code>myicon</code>里面就可以啦。</p>
 <ol start="3">
 <li>修改主题的<code>layout/_partials/head.swig</code>文件，加入 iconfont 相关的 css 文件:</li>
 </ol>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% set icon_font_uri = url_for(theme.vendors._internal + '/iconfont/iconfont.css') %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; icon_font_uri &#125;&#125;"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;% set icon_font_uri = url_for(theme.vendors._internal + '/iconfont/iconfont.css') %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; icon_font_uri &#125;&#125;"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 <ol start="4">
 <li>修改主题的<code>_config.yml</code>文件，在<code>social</code>和<code>social_icons</code>加入新的社交链接的图标，大功告成！</li>
 </ol>
@@ -221,7 +221,7 @@
 <h3 id="更改-font-family">更改 font-family</h3>
 <p>NexT 中使用了 Google 的 Webfont 服务，只需要在<code>_config.yml</code>中指定对应的字体就可以了。然而，我是一个对排版有自己想法的人，希望标题的字体与正文字体区分开来，最好是一个用衬线体一个用非衬线体。而在配置文件中只是指定优先字体，并没有把整个<code>font-family</code> 替换掉。</p>
 <p>这个的解决方法就比较简单了，找到<code>/source/css/_variables/base.styl</code>这个文件，找到 font family 的设置，定义一个 serif 的字体族：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$font-family-serif = Georgia, "Times New Roman", "Songti SC", "Songti TC", serif</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">$font-family-serif = Georgia, "Times New Roman", "Songti SC", "Songti TC", serif</span><br></pre></td></tr></table></figure>
 <p>然后再把<code>$font-family-headings</code>里面的<code>font-family-base</code>替换成<code>font-family-serif</code>就可以了。</p>
 <h3 id="webfont-解决方案">Webfont 解决方案</h3>
 <p>直接更改 font-family 有一点不足，它依赖于当前电脑上是否安装了这个字体，如果没有找到，就只好 fallback 了。而我希望我的博客在多数终端上有同样阅读体验，那么就可以使用 webfont，它的字体文件是存放在网络上的服务器里，前面提到的 Google Font 就是其中之一。<br>
@@ -310,6 +310,20 @@ NexT 主题自带fontawesome图标字体，包含丰富的图标，但是，我�
 
             </div>
     <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
         
 
     <!-- Sidebar Container -->
@@ -560,8 +574,66 @@ NexT 主题自带fontawesome图标字体，包含丰富的图标，但是，我�
 
 <!-- Baidu Tongji -->
 
+<script>
+    // dynamic User by Hux
+    var _baId = '36728230b82aac414fe6220148b2369f';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
 
 <!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
 
 
 

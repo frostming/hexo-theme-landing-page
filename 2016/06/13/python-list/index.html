@@ -155,7 +155,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/img/home-bg.jpg')
+        background-image: url('/img/lens-bg.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -199,32 +199,32 @@
 <a id="more"></a>
 <h2 id="列表的拷贝">列表的拷贝</h2>
 <h3 id="直接赋值">直接赋值</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>]=<span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>]=<span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
 <p>在此例中，直接通过赋值将<code>a</code>赋给了<code>b</code>，此时，仅仅是为该列表增加了一个引用<code>b</code>，<code>a</code>与<code>b</code>指向内存中同一个区域，通过<code>a</code>改变列表的值也同时影响<code>b</code>。请注意，这里有一个坑，很多人在初始化语句中写<code>a = b = []</code>，这是错误的，会导致任意一个变动都会在<code>a</code>与<code>b</code>中同步，而且会很难debug。正确写法应该是分别初始化。</p>
 <h3 id="使用list工厂函数">使用<code>list</code>工厂函数</h3>
 <p>为了创建一个<code>a</code>的拷贝，可以使用<code>list</code>工厂函数，这也是<em>Python Cookbook</em>中的推荐做法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>]=<span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>]=<span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
 <p>完美，<code>a</code>和<code>b</code>是两个不同的列表了！除了使用工厂函数，切片也可以达到同样的效果：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a[:]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b <span class="keyword">is</span> a</span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a[:]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b <span class="keyword">is</span> a</span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
 <h3 id="使用copy模块">使用<code>copy</code>模块</h3>
 <p>一切看起来都很美好，真的是这样吗？</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,[<span class="number">1</span>,<span class="number">2</span>],<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,[<span class="number">1</span>,<span class="number">2</span>],<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
 <p>What?!<code>b</code>的第二个元素子列表中的值还是被改变了！原来，<code>list</code>和<code>[:]</code>都是在内存中创建了一个新的对象并赋给了<code>b</code>，但是子列表仍然只有一份。也就是说，只复制了「一层」。</p>
 <p>为了解决这个问题，python中自带了一个<code>copy</code>模块专门做拷贝的事情，使用模块下的<code>deepcopy</code>函数来深层次拷贝一个对象，调用它试试看：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> copy</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = copy.deepcopy(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, [<span class="number">1</span>, <span class="number">2</span>], <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> copy</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = copy.deepcopy(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, [<span class="number">1</span>, <span class="number">2</span>], <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
 <p>妈妈再也不用担心我的列表交叉影响的问题了！</p>
 <h2 id="列表作为函数参数">列表作为函数参数</h2>
 <h3 id="参数的默认值">参数的默认值</h3>
 <p>python的函数参数传递方法都是引用传递，而不是值传递，对于列表与字典这种可变类型就要特别小心了，可能会出现以下的错误：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(a=[])</span>:</span></span><br><span class="line"><span class="meta">... </span>    a.append(<span class="number">1</span>)</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">print</span> a</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line">[<span class="number">1</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line">[<span class="number">1</span>, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(a=[])</span>:</span></span><br><span class="line"><span class="meta">... </span>    a.append(<span class="number">1</span>)</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">print</span> a</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line">[<span class="number">1</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line">[<span class="number">1</span>, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 <p><code>a</code>列表会保存上次调用之后的内容！因为这个列表在内存中创建以后就一直存在，参数<code>a</code>默认指向这个对象。所以，<strong>要避免使用列表或字典作为函数的默认参数</strong>。使用下面的方法代替，只多一行，而且非常pythonic：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(a=None, b=None)</span>:</span></span><br><span class="line">    a = a <span class="keyword">or</span> []</span><br><span class="line">    b = b <span class="keyword">or</span> &#123;&#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(a=None, b=None)</span>:</span></span><br><span class="line">    a = a <span class="keyword">or</span> []</span><br><span class="line">    b = b <span class="keyword">or</span> &#123;&#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 <h3 id="更改传入列表的内容">更改传入列表的内容。</h3>
 <p>由于列表是可变的，你可以在函数体内增删元素，更改元素的值，从而影响到原列表。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(array)</span>:</span></span><br><span class="line"><span class="meta">... </span>    array.append(<span class="number">1</span>)</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a=[<span class="number">0</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(array)</span>:</span></span><br><span class="line"><span class="meta">... </span>    array.append(<span class="number">1</span>)</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a=[<span class="number">0</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 <p>然而有些时候，我们希望整体更新列表，比如去重操作<code>array = list(set(array)</code>，这时用上面的方法就不行了，因为这里创建了一个新的列表<code>list(set(array))</code>并将其引用重新赋给了<code>array</code>，而函数内的局部变量<code>array</code>的更改是无法影响全局变量的，这与上一例不同的时上个例子并没有改变<code>array</code>的值，只是改变了<code>array</code><strong>指向的对象</strong>的值。</p>
 <p>这时候，我们又要搬出切片了。只需要改成<code>array[:] = list(set(array))</code>就可以了！因为切片本质上是对<code>array</code>中元素的操作，意思是把<code>list(set(array))</code>赋给<code>array</code>中的所有元素。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">unique</span><span class="params">(array)</span>:</span></span><br><span class="line"><span class="meta">... </span>    array[:]=list(set(array))</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>unique(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">unique</span><span class="params">(array)</span>:</span></span><br><span class="line"><span class="meta">... </span>    array[:]=list(set(array))</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>unique(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
 
 
                 <hr>
@@ -284,6 +284,20 @@ Python中的列表和字典一样，都是可变数据类型，与字符串和�
 
             </div>
     <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
         
 
     <!-- Sidebar Container -->
@@ -532,8 +546,66 @@ Python中的列表和字典一样，都是可变数据类型，与字符串和�
 
 <!-- Baidu Tongji -->
 
+<script>
+    // dynamic User by Hux
+    var _baId = '36728230b82aac414fe6220148b2369f';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
 
 <!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
 
 
 

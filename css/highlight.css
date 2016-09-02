@@ -1,6 +1,5 @@
 /*https://github.com/chriskempson/tomorrow-theme*/
-.post-container pre,
-.post-container .highlight {
+.post-container pre {
   overflow: auto;
   margin: 20px 0;
   padding: 15px;
@@ -9,15 +8,15 @@
   background: #f7f7f7;
   line-height: $line-height-code-block;
 }
-/*pre, code { 
+/*pre, code {
   font-family: $code-font-family;
 }*/
 /*
 .post-container code {
-  padding: 2px 4px;
   word-break: break-all;
   color: $code-foreground;
   background: $code-background;
+
   border-radius: $code-border-radius;
   font-size $code-font-size;
 }*/
@@ -28,13 +27,11 @@
   text-shadow: none;
 }
 .post-container .highlight pre {
-  border: none;
-  margin: 0;
-  padding: 1px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
 }
 .post-container .highlight table {
   margin: 0;
-  width: auto;
   border: none;
 }
 .post-container .highlight td {

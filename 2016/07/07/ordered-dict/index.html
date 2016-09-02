@@ -155,7 +155,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/img/home-bg.jpg')
+        background-image: url('/img/lens-bg.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -201,16 +201,16 @@
 <p>来看看大神是怎么实现的吧。</p>
 <a id="more"></a>
 <h2 id="init-方法"><code>__init__</code>方法</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrderedDict</span><span class="params">(dict)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwds)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> len(args) &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">'expected at most 1 arguments, got %d'</span> % len(args))</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.__root</span><br><span class="line">        <span class="keyword">except</span> AttributeError:</span><br><span class="line">            self.__root = root = []                     <span class="comment"># sentinel node</span></span><br><span class="line">            root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line">            self.__map = &#123;&#125;</span><br><span class="line">        self.__update(*args, **kwds)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrderedDict</span><span class="params">(dict)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwds)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> len(args) &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">'expected at most 1 arguments, got %d'</span> % len(args))</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.__root</span><br><span class="line">        <span class="keyword">except</span> AttributeError:</span><br><span class="line">            self.__root = root = []                     <span class="comment"># sentinel node</span></span><br><span class="line">            root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line">            self.__map = &#123;&#125;</span><br><span class="line">        self.__update(*args, **kwds)</span><br></pre></td></tr></table></figure>
 <p>在<a href="http://frostming.github.io/2016/06/13/python-list/" target="_blank" rel="external">上一篇文章</a>中说到一些关于列表的坑，说到不要用<code>a=b=[]</code>这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使<code>self.__root</code>和<code>root</code>同时指向一个空列表，相关于给<code>self.__root</code>起了一个短别名，关键是第 8 行：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br></pre></td></tr></table></figure>
 <p>什么鬼？没见过<code>[...]</code>这种的啊，我来看看</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>]</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>] <span class="keyword">is</span> root</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>]</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>] <span class="keyword">is</span> root</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
 <p>What? 自己是自己的元素？简直是从前有座山山上有座庙啊，子子孙孙无穷尽啊。到底发生了什么事？Python 中万物皆指针，而<code>root[:]=...</code>的赋值是不改变指针指向的地址而是改变指向地址的内容。右边第一个和第二个元素是指向自己的指针，这样就构造了一个我中有我的列表。<br>
 <img src="http://o7u6qrlad.bkt.clouddn.com/1e6f8e56cb6cea791e53c29742da76c9.png" alt=""></p>
 <p>再看命名，明白了，这是一个<strong>双向链表</strong>！列表的前两个元素分别指向上一个结点和下一个结点，第三个元素是结点的值。只用两行就初始化了一个链表，学到了。另外还初始化了一个字典，暂时不知道有什么用。</p>
 <h2 id="setitem-方法"><code>__setitem__</code>方法</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setitem__</span><span class="params">(self, key, value, dict_setitem=dict.__setitem__)</span>:</span></span><br><span class="line">    <span class="string">'od.__setitem__(i, y) &lt;==&gt; od[i]=y'</span></span><br><span class="line">    <span class="comment"># Setting a new item creates a new link which goes at the end of the linked</span></span><br><span class="line">    <span class="comment"># list, and the inherited dictionary is updated with the new key/value pair.</span></span><br><span class="line">    <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> self:</span><br><span class="line">        root = self.__root</span><br><span class="line">        last = root[<span class="number">0</span>]</span><br><span class="line">        last[<span class="number">1</span>] = root[<span class="number">0</span>] = self.__map[key] = [last, root, key]</span><br><span class="line">    dict_setitem(self, key, value)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setitem__</span><span class="params">(self, key, value, dict_setitem=dict.__setitem__)</span>:</span></span><br><span class="line">    <span class="string">'od.__setitem__(i, y) &lt;==&gt; od[i]=y'</span></span><br><span class="line">    <span class="comment"># Setting a new item creates a new link which goes at the end of the linked</span></span><br><span class="line">    <span class="comment"># list, and the inherited dictionary is updated with the new key/value pair.</span></span><br><span class="line">    <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> self:</span><br><span class="line">        root = self.__root</span><br><span class="line">        last = root[<span class="number">0</span>]</span><br><span class="line">        last[<span class="number">1</span>] = root[<span class="number">0</span>] = self.__map[key] = [last, root, key]</span><br><span class="line">    dict_setitem(self, key, value)</span><br></pre></td></tr></table></figure>
 <p>关键的部分到了，这个魔法方法加了第三个参数来方便子类扩展。函数体部分，画一个图就明白了。<br>
 <img src="http://o7u6qrlad.bkt.clouddn.com/dc7661ce1072a03bfe45c6b33647def2.png" alt="">!</p>
 <ol>
@@ -221,7 +221,7 @@
 </ol>
 <p>这样创建就结点就变成了新的末结点了。从此也可看出，<code>root</code>是一个守护结点，本身并不存储值，但会简化算法。<code>__map</code> 是结点的哈希表，避免了从头开始寻找所需的结点。</p>
 <h2 id="delitem-方法"><code>__delitem__</code>方法</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__delitem__</span><span class="params">(self, key, dict_delitem=dict.__delitem__)</span>:</span></span><br><span class="line">    <span class="string">'od.__delitem__(y) &lt;==&gt; del od[y]'</span></span><br><span class="line">    <span class="comment"># Deleting an existing item uses self.__map to find the link which is</span></span><br><span class="line">    <span class="comment"># then removed by updating the links in the predecessor and successor nodes.</span></span><br><span class="line">    dict_delitem(self, key)</span><br><span class="line">    link_prev, link_next, key = self.__map.pop(key)</span><br><span class="line">    link_prev[<span class="number">1</span>] = link_next</span><br><span class="line">    link_next[<span class="number">0</span>] = link_prev</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__delitem__</span><span class="params">(self, key, dict_delitem=dict.__delitem__)</span>:</span></span><br><span class="line">    <span class="string">'od.__delitem__(y) &lt;==&gt; del od[y]'</span></span><br><span class="line">    <span class="comment"># Deleting an existing item uses self.__map to find the link which is</span></span><br><span class="line">    <span class="comment"># then removed by updating the links in the predecessor and successor nodes.</span></span><br><span class="line">    dict_delitem(self, key)</span><br><span class="line">    link_prev, link_next, key = self.__map.pop(key)</span><br><span class="line">    link_prev[<span class="number">1</span>] = link_next</span><br><span class="line">    link_next[<span class="number">0</span>] = link_prev</span><br></pre></td></tr></table></figure>
 <p>删除结点时，从哈希表中弹出该结点，然后将它的上结点和下结点相连，并从字典中删除。</p>
 <p>实现了这三个方法，剩下的就好办了，<code>__iter__</code>只需从头开始遍历链表并取出键值就可以了。</p>
 <h2 id="总结">总结</h2>
@@ -284,6 +284,20 @@
 
             </div>
     <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
         
 
     <!-- Sidebar Container -->
@@ -532,8 +546,66 @@
 
 <!-- Baidu Tongji -->
 
+<script>
+    // dynamic User by Hux
+    var _baId = '36728230b82aac414fe6220148b2369f';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
 
 <!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
 
 
 
