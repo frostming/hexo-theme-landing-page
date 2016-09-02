@@ -30,6 +30,9 @@
   padding: 10px;
   border: 1px solid #ddd;
 }
+.post-container .highlight .table-responsive {
+  border: none;
+}
 .post-container .highlight table {
   margin: 0;
   border: none;
