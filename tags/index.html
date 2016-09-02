@@ -90,14 +90,7 @@
 
                         
                         <li>
-                            <a href="/about/">about</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archives/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -105,6 +98,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
                         </li>
                         
                     
@@ -170,15 +170,17 @@
             <!-- 标签云 -->
             <div id='tag_cloud' class="tags">
                 
-                    <a href="#python" title="python" rel="4">python</a>
-                
-                    <a href="#小技巧" title="小技巧" rel="1">小技巧</a>
-                
                     <a href="#心情" title="心情" rel="1">心情</a>
                 
                     <a href="#日志" title="日志" rel="1">日志</a>
                 
+                    <a href="#python" title="python" rel="4">python</a>
+                
+                    <a href="#小技巧" title="小技巧" rel="1">小技巧</a>
+                
                     <a href="#源码阅读" title="源码阅读" rel="2">源码阅读</a>
+                
+                    <a href="#python3" title="python3" rel="1">python3</a>
                 
                     <a href="#markdown" title="markdown" rel="1">markdown</a>
                 
@@ -192,14 +194,56 @@
                 
                     <a href="#主题" title="主题" rel="1">主题</a>
                 
-                    <a href="#python3" title="python3" rel="1">python3</a>
-                
                     <a href="#requests" title="requests" rel="1">requests</a>
                 
             </div>
 
             <!-- 标签列表 -->
 
+            
+            <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="心情">
+                    <span class="tag-text">心情</span>
+                </span>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <div class="post-preview">
+                     <a href="/2016/06/15/beginning-of-summer/">
+                        <h2 class="post-title">
+                            六月夏至
+                        </h2>
+                        
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </div>
+                <hr>
+                
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="日志">
+                    <span class="tag-text">日志</span>
+                </span>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <div class="post-preview">
+                     <a href="/2016/06/15/beginning-of-summer/">
+                        <h2 class="post-title">
+                            六月夏至
+                        </h2>
+                        
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </div>
+                <hr>
+                
+            </div>
             
             <div class="one-tag-list">
                 <span class="fa fa-tag listing-seperator" id="python">
@@ -291,50 +335,6 @@
             </div>
             
             <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="心情">
-                    <span class="tag-text">心情</span>
-                </span>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <div class="post-preview">
-                     <a href="/2016/06/15/beginning-of-summer/">
-                        <h2 class="post-title">
-                            六月夏至
-                        </h2>
-                        
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </div>
-                <hr>
-                
-            </div>
-            
-            <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="日志">
-                    <span class="tag-text">日志</span>
-                </span>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <div class="post-preview">
-                     <a href="/2016/06/15/beginning-of-summer/">
-                        <h2 class="post-title">
-                            六月夏至
-                        </h2>
-                        
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </div>
-                <hr>
-                
-            </div>
-            
-            <div class="one-tag-list">
                 <span class="fa fa-tag listing-seperator" id="源码阅读">
                     <span class="tag-text">源码阅读</span>
                 </span>
@@ -362,6 +362,28 @@
                      <a href="/2016/06/03/read-requests-v080/">
                         <h2 class="post-title">
                             Requests源码阅读v0.8.0
+                        </h2>
+                        
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </div>
+                <hr>
+                
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="python3">
+                    <span class="tag-text">python3</span>
+                </span>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <div class="post-preview">
+                     <a href="/2016/08/23/python-2-to-3/">
+                        <h2 class="post-title">
+                            如何编写向前兼容的 Python 代码
                         </h2>
                         
                     </a>
@@ -509,28 +531,6 @@
                      <a href="/2016/05/29/next-beautify/">
                         <h2 class="post-title">
                             NexT 主题美化
-                        </h2>
-                        
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </div>
-                <hr>
-                
-            </div>
-            
-            <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="python3">
-                    <span class="tag-text">python3</span>
-                </span>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <div class="post-preview">
-                     <a href="/2016/08/23/python-2-to-3/">
-                        <h2 class="post-title">
-                            如何编写向前兼容的 Python 代码
                         </h2>
                         
                     </a>
