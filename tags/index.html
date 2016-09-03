@@ -97,14 +97,14 @@
 
                         
                         <li>
-                            <a href="/archives/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archives/">Archives</a>
                         </li>
                         
                     
@@ -170,15 +170,15 @@
             <!-- 标签云 -->
             <div id='tag_cloud' class="tags">
                 
-                    <a href="#心情" title="心情" rel="1">心情</a>
-                
-                    <a href="#日志" title="日志" rel="1">日志</a>
-                
                     <a href="#python" title="python" rel="4">python</a>
                 
                     <a href="#小技巧" title="小技巧" rel="1">小技巧</a>
                 
                     <a href="#源码阅读" title="源码阅读" rel="2">源码阅读</a>
+                
+                    <a href="#心情" title="心情" rel="1">心情</a>
+                
+                    <a href="#日志" title="日志" rel="1">日志</a>
                 
                     <a href="#python3" title="python3" rel="1">python3</a>
                 
@@ -200,50 +200,6 @@
 
             <!-- 标签列表 -->
 
-            
-            <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="心情">
-                    <span class="tag-text">心情</span>
-                </span>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <div class="post-preview">
-                     <a href="/2016/06/15/beginning-of-summer/">
-                        <h2 class="post-title">
-                            六月夏至
-                        </h2>
-                        
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </div>
-                <hr>
-                
-            </div>
-            
-            <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="日志">
-                    <span class="tag-text">日志</span>
-                </span>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <div class="post-preview">
-                     <a href="/2016/06/15/beginning-of-summer/">
-                        <h2 class="post-title">
-                            六月夏至
-                        </h2>
-                        
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </div>
-                <hr>
-                
-            </div>
             
             <div class="one-tag-list">
                 <span class="fa fa-tag listing-seperator" id="python">
@@ -362,6 +318,50 @@
                      <a href="/2016/06/03/read-requests-v080/">
                         <h2 class="post-title">
                             Requests源码阅读v0.8.0
+                        </h2>
+                        
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </div>
+                <hr>
+                
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="心情">
+                    <span class="tag-text">心情</span>
+                </span>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <div class="post-preview">
+                     <a href="/2016/06/15/beginning-of-summer/">
+                        <h2 class="post-title">
+                            六月夏至
+                        </h2>
+                        
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </div>
+                <hr>
+                
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="日志">
+                    <span class="tag-text">日志</span>
+                </span>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <div class="post-preview">
+                     <a href="/2016/06/15/beginning-of-summer/">
+                        <h2 class="post-title">
+                            六月夏至
                         </h2>
                         
                     </a>
@@ -628,7 +628,7 @@
                 <p class="copyright text-muted">
                     Copyright &copy; Frost&#39;s Blog 2016
                     <br>
-                    Powered by <a href="https://hexo.io/">Hexo</a> | 
+                    Powered by <a href="https://hexo.io/">Hexo</a> |
                     Theme by <a href="http://huangxuan.me">Hux</a>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
@@ -733,6 +733,21 @@
 
 <!-- Side Catalog -->
 
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
 
 
 
