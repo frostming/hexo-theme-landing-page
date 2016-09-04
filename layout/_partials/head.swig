@@ -3,16 +3,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ site.description }}">
-    <meta name="author" content="{{ site.author }}">
+    <meta name="description" content="{{ config.description }}">
+    <meta name="author" content="{{ config.author }}">
 
-    <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <title>{% if page.title %}{{ page.title }}{% else %}{{ config.title }}{% endif %}</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for("css") }}/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/landing-page.css" rel="stylesheet">
+    <link href="{{ url_for("css") }}/landing-page.css" rel="stylesheet">
+
+    <!-- Code Highlight CSS -->
+    <link href="{{ url_for("css") }}/highlight.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="http://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">

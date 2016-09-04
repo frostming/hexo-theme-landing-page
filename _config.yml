@@ -1,14 +1,16 @@
 # -----------------------------------------------------
 # Langing Page Theme Configurations
+intro_image: /img/intro-bg.jpg
+banner_image: /img/banner-bg.jpg
 
 # Navigation items
 navigation:
     about: /about
 
 social:
-  - title: twitter
-    url: https://twitter.com/SBootstrap
+  - title: weibo
+    url: https://www.zhihu.com/people/ming-xi-47
   - title: github
-    url: https://github.com/IronSummitMedia/startbootstrap
+    url: https://github.com/frostming/
   - title: linkedin
-    url:
+    url: https://www.linkedin.com/in/%E5%B8%8C-%E6%98%8E-33452ba2

@@ -4,6 +4,9 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+$intro_bg = hexo-config('intro_image');
+$banner_bg = hexo-config('banner_image');
+
 body,
 html {
     width: 100%;
@@ -31,7 +34,7 @@ h6 {
     padding-bottom: 50px;
     text-align: center;
     color: #f8f8f8;
-    background: url(../img/intro-bg.jpg) no-repeat center center;
+    background: url($intro_bg) no-repeat center center;
     background-size: cover;
 }
 
@@ -45,6 +48,27 @@ h6 {
     margin: 0;
     text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
     font-size: 5em;
+}
+
+.post-header {
+    position: relative;
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+.post-header > h1 {
+    margin: 0;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+    font-size: 5em;
+}
+
+.post-header > h3 {
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+}
+
+.post-container {
+    font-size: 16px;
+    font-weight: 400;
 }
 
 .intro-divider {
@@ -100,6 +124,13 @@ h6 {
 }
 
 .section-heading {
+    margin-bottom: 15px;
+}
+
+.post-meta {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    font-weight: 400;
     margin-bottom: 30px;
 }
 
@@ -110,9 +141,9 @@ h6 {
 }
 
 .banner {
-    padding: 100px 0;
+    padding: 50px 0;
     color: #f8f8f8;
-    background: url(../img/banner-bg.jpg) no-repeat center center;
+    background: url($banner_bg) no-repeat center center;
     background-size: cover;
 }
 
@@ -129,6 +160,26 @@ h6 {
 .banner-social-buttons {
     float: right;
     margin-top: 0;
+}
+
+.tags a {
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 999em;
+    padding: 2px 10px;
+    color: #fff;
+    line-height: 24px;
+    font-size: 18px;
+    font-weight: 300;
+    text-decoration: none;
+    margin: 0 1px 6px;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+}
+
+.tags a:hover {
+    color: #fff;
+    border-color: #fff;
+    background-color: rgba(255,255,255,.4);
+    text-decoration: none;
 }
 
 @media(max-width:1199px) {
@@ -156,7 +207,7 @@ h6 {
     }
 }
 
-footer {
+#footer {
     padding: 50px 0;
     background-color: #f8f8f8;
 }
