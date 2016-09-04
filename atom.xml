@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frostming.win/"/>
-  <updated>2016-09-02T13:33:48.000Z</updated>
+  <updated>2016-09-04T03:15:24.000Z</updated>
   <id>http://frostming.win/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://frostming.win/2016/08/23/python-2-to-3/"/>
     <id>http://frostming.win/2016/08/23/python-2-to-3/</id>
     <published>2016-08-23T07:13:23.000Z</published>
-    <updated>2016-09-02T13:33:48.000Z</updated>
+    <updated>2016-09-04T03:15:24.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
@@ -28,7 +28,7 @@
 &lt;p&gt;对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？&lt;/p&gt;
 &lt;p&gt;对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。&lt;/p&gt;
 &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h1&gt;以 2.6 为基准&lt;/h1&gt;
+&lt;h2 id=&quot;以-2-6-为基准&quot;&gt;以 2.6 为基准&lt;/h2&gt;
 &lt;p&gt;如果你要编写一个新项目，就从 Python 2.6 或 2.7 开始，它们有许多升级到 Python 3 的便利。如果你不打算支持旧版本的 Python 你已经可以使用许多 Python 3 中的新特性了，只要在代码中打开就行了。&lt;/p&gt;
 &lt;p&gt;你应该使用的一些 &lt;code&gt;__future__&lt;/code&gt; 中的特性：&lt;/p&gt;
 &lt;ul&gt;
@@ -37,7 +37,7 @@
 &lt;/ul&gt;
 &lt;p&gt;至于函数形式的 &lt;code&gt;print&lt;/code&gt; 导入，为了代码清晰，我不建议使用它。因为所有的编辑器会将&lt;code&gt;print&lt;/code&gt; 作为关键字高亮，这此让人产生困惑。如果一件事情在不同的文件里表现不一致我们最好尽可能避免它。好在用 2to3 工具可以很方便地转换，所以我们完全没必要从 future 中导入它。&lt;/p&gt;
 &lt;p&gt;最好不要从 future 中导入 &lt;code&gt;unicode_literals&lt;/code&gt;，尽管它看上去很吸引人。原因很简单，许多 API 在不同地方支持的字符串类型是不同的，&lt;code&gt;unicode_literals&lt;/code&gt; 会产生反作用。诚然，这个导入在某些情况下很有用，但它更多地受制于底层的接口（库），且由于它是 Python 2.6 的特性，有许多库支持这个导入。不需要导入 &lt;code&gt;unicode_literals&lt;/code&gt; 你就能使用 &lt;code&gt;b&#39;foo&#39;&lt;/code&gt; 这样的写法，两种方法都是可用的并且对 2to3 工具很有帮助。&lt;/p&gt;
-&lt;h1&gt;文件输入输出与 Unicode&lt;/h1&gt;
+&lt;h2 id=&quot;文件输入输出与-unicode&quot;&gt;文件输入输出与 Unicode&lt;/h2&gt;
 &lt;p&gt;文件的输入输出在 Python 3 中改变很大。你终于不用在为新项目开发 API 时费尽心力处理文件 unicode 编码的问题了。&lt;/p&gt;
 &lt;p&gt;当你处理文本数据时，使用 &lt;a href=&quot;http://docs.python.org/library/codecs.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;codecs.open&lt;/a&gt; 来打开文件。默认使用 utf-8 编码除非显式地定义或者只对 unicode 字符串操作。若你决定使用二进制输入输出，打开文件时记得用 &lt;code&gt;&#39;rb&#39;&lt;/code&gt; 而不是 &lt;code&gt;&#39;r&#39;&lt;/code&gt; 标志。这对于适当的 Windows 支持来说是必要的。&lt;/p&gt;
 &lt;p&gt;当你处理字节型数据时，使用 &lt;code&gt;b&#39;foo&#39;&lt;/code&gt; 将字符串标为字节型，这样 2to3 就不会将它转换为 unicode。注意以下 Python 2.6：&lt;/p&gt;
@@ -47,9 +47,9 @@
 &lt;p&gt;为了达成与 Python 2.6 同样的效果，你可以这样做：&lt;/p&gt;
 &lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;b&#39;f&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt; + &lt;span class=&quot;string&quot;&gt;&#39;bar&#39;&lt;/span&gt;.encode(&lt;span class=&quot;string&quot;&gt;&#39;latin1&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foobar&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;to_charlist = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt; x: [x[c:c + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; c &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; range(len(x))]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;to_charlist(&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;string&quot;&gt;b&#39;f&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;b&#39;o&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;b&#39;o&#39;&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;此代码在 2.6 和 3.x 上均能正常工作。&lt;/p&gt;
-&lt;h1&gt;安全好过道歉&lt;/h1&gt;
+&lt;h2 id=&quot;安全好过道歉&quot;&gt;安全好过道歉&lt;/h2&gt;
 &lt;p&gt;在很多事情上 2to3 并不能达到预期效果。一部分是 2to3 可能有 BUG 的地方，另外的则是因为 2to3 不能很好的预测你的代码的目的。&lt;/p&gt;
-&lt;h2 id=&quot;str-相关的递归错误&quot;&gt;str 相关的递归错误&lt;/h2&gt;
+&lt;h3 id=&quot;str-相关的递归错误&quot;&gt;str 相关的递归错误&lt;/h3&gt;
 &lt;p&gt;在 Python 2 中很多人像下面这样写代码：&lt;/p&gt;
 &lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(object)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; unicode(self).encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__unicode__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;u&#39;Hello World&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;2to3 预设你的 API 不兼容 unicode ，会将它转换成下面这样：&lt;/p&gt;
@@ -57,14 +57,14 @@
 &lt;p&gt;这就有错误了。首先 &lt;code&gt;__unicode__&lt;/code&gt; 不能在 Python 3 中使用，其次当你对 &lt;code&gt;Foo&lt;/code&gt; 的一个实例调用 &lt;code&gt;str()&lt;/code&gt; 方法时，&lt;code&gt;__str__&lt;/code&gt; 将调用自身而由于无限递归触发一个 RuntimeError。这个错误可以通过自定义 2to3 修改器解决，也可以写一个简单的辅助类来检查是否是 Python 3：&lt;/p&gt;
 &lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; sys&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;UnicodeMixin&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(object)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; sys.version_info &amp;gt; (&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        __str__ = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt; x: x.__unicode__()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        __str__ = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt; x: unicode(x).encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(UnicodeMixin)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__unicode__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;u&#39;Hello World&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;用这种方法你的对象在 Python 3 中仍然有一个 &lt;code&gt;__unicode__&lt;/code&gt; 属性，但却不会有任何损害。当你想去掉 Python 2 支持时你只需遍历 &lt;code&gt;UnicodeMixin&lt;/code&gt; 的所有派生类，将 &lt;code&gt;__unicode__&lt;/code&gt; 重命名为 &lt;code&gt;__str__&lt;/code&gt;，然后再删掉辅助类。&lt;/p&gt;
-&lt;h2 id=&quot;字符串比较&quot;&gt;字符串比较&lt;/h2&gt;
+&lt;h3 id=&quot;字符串比较&quot;&gt;字符串比较&lt;/h3&gt;
 &lt;p&gt;这个问题会稍微棘手一点，在 Python 2 中下面这段代码是正确的：&lt;/p&gt;
 &lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt; == &lt;span class=&quot;string&quot;&gt;u&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;在 Python 3 中却并非如此：&lt;/p&gt;
 &lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt; == &lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;更糟糕的是 Python 2 不会抛出一个比较的警告（即使打开了 Python-3-warnings），Python 3 也不会。那么你如何找到问题所在呢？我写了一个名为 &lt;a href=&quot;http://pypi.python.org/pypi/unicode-nazi&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;unicode-nazi&lt;/a&gt; 的小型辅助模块。只要导入该模块，当你试图同时操作 unicode 和 bytes 型字符串时会自动抛出警告：&lt;/p&gt;
 &lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; unicodenazi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;u&#39;foo&#39;&lt;/span&gt; == &lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;__main__:&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;: UnicodeWarning: Implicit conversion of str to unicode&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h1&gt;字符串是什么？&lt;/h1&gt;
+&lt;h2 id=&quot;字符串是什么？&quot;&gt;字符串是什么？&lt;/h2&gt;
 &lt;p&gt;下面这张表列举了一些字节型字符串，和它们在 Python 3 中将变成什么：&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -116,7 +116,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h1&gt;Latin1 很特别&lt;/h1&gt;
+&lt;h2 id=&quot;latin1-很特别&quot;&gt;Latin1 很特别&lt;/h2&gt;
 &lt;p&gt;在某些地方（比如 WSGI）unicode 字符串必须是 latin1 的子集。这是因为 HTTP 协议并未指定编码方式，为了保证安全，假定为使用 latin1 。假如你要同时控制通信的两端（比如 cookies）你当然可以使用 utf-8 编码。那么问题来了：如果请求头只能是 latin1 编码时是怎么工作的呢？在且仅在 Python 3 中你需要用一些小伎俩：&lt;/p&gt;
 &lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; cookie_value.encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;).decode(&lt;span class=&quot;string&quot;&gt;&#39;latin1&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;p&gt;你只是反 unicode 字符串伪编码为 utf-8。WSGI 层会将它重新编码为 latin1 并将这个错误的 utf-8 字符串传输出去，你只要在接收端也做一个反向的变换就可以了。&lt;/p&gt;

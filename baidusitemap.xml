@@ -3,6 +3,25 @@
 
 
     
+  <url>
+    <loc>http://frostming.win/2016/08/23/python-2-to-3/</loc>
+    <lastmod>2016-09-04T03:15:24.000Z</lastmod>
+    <data>
+        <display>
+        <title>如何编写向前兼容的 Python 代码</title>
+        <pubTime>2016-08-23T07:13:23.000Z</pubTime>
+        
+        <tag>python</tag>
+         
+        <tag>python3</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://frostming.win/2016/05/29/next-beautify/</loc>
@@ -47,25 +66,6 @@
 
     
   <url>
-    <loc>http://frostming.win/2016/06/13/python-list/</loc>
-    <lastmod>2016-09-02T13:33:48.000Z</lastmod>
-    <data>
-        <display>
-        <title>Python 列表小技巧</title>
-        <pubTime>2016-06-13T05:00:00.000Z</pubTime>
-        
-        <tag>python</tag>
-         
-        <tag>小技巧</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://frostming.win/2016/06/15/beginning-of-summer/</loc>
     <lastmod>2016-09-02T13:33:48.000Z</lastmod>
     <data>
@@ -76,25 +76,6 @@
         <tag>心情</tag>
          
         <tag>日志</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://frostming.win/2016/08/23/python-2-to-3/</loc>
-    <lastmod>2016-09-02T13:33:48.000Z</lastmod>
-    <data>
-        <display>
-        <title>如何编写向前兼容的 Python 代码</title>
-        <pubTime>2016-08-23T07:13:23.000Z</pubTime>
-        
-        <tag>python</tag>
-         
-        <tag>python3</tag>
          
          
            
@@ -137,6 +118,25 @@
         <tag>python</tag>
          
         <tag>源码阅读</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://frostming.win/2016/06/13/python-list/</loc>
+    <lastmod>2016-09-02T13:33:48.000Z</lastmod>
+    <data>
+        <display>
+        <title>Python 列表小技巧</title>
+        <pubTime>2016-06-13T05:00:00.000Z</pubTime>
+        
+        <tag>python</tag>
+         
+        <tag>小技巧</tag>
          
          
            
