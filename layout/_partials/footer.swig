@@ -1,0 +1,13 @@
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="copyright text-muted small">{{ site.copyright }}</p>
+            </div>
+            <div class="col-md-4">
+                {{ site.credits }}
+            </div>
+        </div>
+    </div>
+</footer>
