@@ -35,7 +35,7 @@ h5 {
   padding-bottom: 50px;
   text-align: center;
   color: #f8f8f8;
-  background: url("/img/intro-bg.jpg") no-repeat center center;
+  background: url("img/intro-bg.jpg") no-repeat center center;
   background-size: cover;
 }
 .intro-message {
@@ -147,7 +147,7 @@ h5 {
 .banner {
   padding: 50px 0;
   color: #f8f8f8;
-  background: url("/img/banner-bg.jpg") no-repeat center center;
+  background: url("img/banner-bg.jpg") no-repeat center center;
   background-size: cover;
 }
 .banner h2 {
