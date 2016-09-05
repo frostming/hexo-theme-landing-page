@@ -1,7 +1,7 @@
 /*https://github.com/chriskempson/tomorrow-theme*/
 .post-container pre {
   overflow: auto;
-  margin: 0 0 10px;
+  margin: 0;
   padding: 15px;
   font-size: 13px;
   color: #4d4d4c;
@@ -26,6 +26,9 @@
   background: none;
   text-shadow: none;
 }
+.post-container .highlight {
+  margin: 10px 0;
+}
 .post-container .highlight pre {
   padding: 10px;
   border: 1px solid #ddd;
@@ -36,6 +39,8 @@
 .post-container .highlight table {
   margin: 0;
   border: none;
+  width: 100%;
+  max-width: 100%;
 }
 .post-container .highlight td {
   border: none !important;
@@ -43,10 +48,10 @@
 }
 .post-container .highlight figcaption {
   zoom: 1;
-  font-size: 1em;
-  color: #4d4d4c;
+  font-size: 0.9em;
+  color: #8e908c;
   line-height: 1em;
-  margin-bottom: 1em;
+  margin-bottom: 0.2em;
 }
 .post-container .highlight figcaption:before,
 .post-container .highlight figcaption:after {

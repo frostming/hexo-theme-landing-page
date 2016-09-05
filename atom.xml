@@ -5,590 +5,196 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frostming.win/"/>
-  <updated>2016-09-04T03:15:24.000Z</updated>
+  <updated>2016-09-05T12:09:38.000Z</updated>
   <id>http://frostming.win/</id>
   
   <author>
     <name>Frost Ming</name>
-    <email>mianghong@gmail.com</email>
+    
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>如何编写向前兼容的 Python 代码</title>
-    <link href="http://frostming.win/2016/08/23/python-2-to-3/"/>
-    <id>http://frostming.win/2016/08/23/python-2-to-3/</id>
-    <published>2016-08-23T07:13:23.000Z</published>
-    <updated>2016-09-04T03:15:24.000Z</updated>
+    <title>中文测试</title>
+    <link href="http://frostming.win/2014/12/25/%E4%B8%AD%E6%96%87%E6%B5%8B%E8%AF%95/"/>
+    <id>http://frostming.win/2014/12/25/中文测试/</id>
+    <published>2014-12-24T16:19:15.000Z</published>
+    <updated>2016-09-05T12:09:38.000Z</updated>
     
-    <content type="html">&lt;blockquote&gt;
-&lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？&lt;/p&gt;
-&lt;p&gt;对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。&lt;/p&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h2 id=&quot;以-2-6-为基准&quot;&gt;以 2.6 为基准&lt;/h2&gt;
-&lt;p&gt;如果你要编写一个新项目，就从 Python 2.6 或 2.7 开始，它们有许多升级到 Python 3 的便利。如果你不打算支持旧版本的 Python 你已经可以使用许多 Python 3 中的新特性了，只要在代码中打开就行了。&lt;/p&gt;
-&lt;p&gt;你应该使用的一些 &lt;code&gt;__future__&lt;/code&gt; 中的特性：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;division&lt;/code&gt; 我必须承认我非常讨厌 Python 2 中的 future division。当我审核代码时我需要不停地跳到文件开头来检查用的是哪种除法机制。然而这是 Python 3 中的默认除法机制，所以你需要使用它。&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;absolute_import&lt;/code&gt; 最重要的特性。当你在 foo 包内部时，&lt;code&gt;from xml import bar&lt;/code&gt; 不再导入一个 &lt;code&gt;foo.xml&lt;/code&gt; 的模块，你需要改为 &lt;code&gt;from .xml import bar&lt;/code&gt;。更加清晰明了，帮助很大。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;至于函数形式的 &lt;code&gt;print&lt;/code&gt; 导入，为了代码清晰，我不建议使用它。因为所有的编辑器会将&lt;code&gt;print&lt;/code&gt; 作为关键字高亮，这此让人产生困惑。如果一件事情在不同的文件里表现不一致我们最好尽可能避免它。好在用 2to3 工具可以很方便地转换，所以我们完全没必要从 future 中导入它。&lt;/p&gt;
-&lt;p&gt;最好不要从 future 中导入 &lt;code&gt;unicode_literals&lt;/code&gt;，尽管它看上去很吸引人。原因很简单，许多 API 在不同地方支持的字符串类型是不同的，&lt;code&gt;unicode_literals&lt;/code&gt; 会产生反作用。诚然，这个导入在某些情况下很有用，但它更多地受制于底层的接口（库），且由于它是 Python 2.6 的特性，有许多库支持这个导入。不需要导入 &lt;code&gt;unicode_literals&lt;/code&gt; 你就能使用 &lt;code&gt;b&#39;foo&#39;&lt;/code&gt; 这样的写法，两种方法都是可用的并且对 2to3 工具很有帮助。&lt;/p&gt;
-&lt;h2 id=&quot;文件输入输出与-unicode&quot;&gt;文件输入输出与 Unicode&lt;/h2&gt;
-&lt;p&gt;文件的输入输出在 Python 3 中改变很大。你终于不用在为新项目开发 API 时费尽心力处理文件 unicode 编码的问题了。&lt;/p&gt;
-&lt;p&gt;当你处理文本数据时，使用 &lt;a href=&quot;http://docs.python.org/library/codecs.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;codecs.open&lt;/a&gt; 来打开文件。默认使用 utf-8 编码除非显式地定义或者只对 unicode 字符串操作。若你决定使用二进制输入输出，打开文件时记得用 &lt;code&gt;&#39;rb&#39;&lt;/code&gt; 而不是 &lt;code&gt;&#39;r&#39;&lt;/code&gt; 标志。这对于适当的 Windows 支持来说是必要的。&lt;/p&gt;
-&lt;p&gt;当你处理字节型数据时，使用 &lt;code&gt;b&#39;foo&#39;&lt;/code&gt; 将字符串标为字节型，这样 2to3 就不会将它转换为 unicode。注意以下 Python 2.6：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&#39;f&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt; + &lt;span class=&quot;string&quot;&gt;u&#39;bar&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;u&#39;foobar&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;list(&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;string&quot;&gt;&#39;f&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;o&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;o&#39;&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;与 Python 3 对待字节型字符串的区别：&lt;/p&gt;
-&lt;figure class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;gt;&amp;gt;&amp;gt; b&#39;foo&#39;[0]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;102&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;gt;&amp;gt;&amp;gt; b&#39;foo&#39; + &#39;bar&#39;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Traceback (most recent call last):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  File &quot;&amp;lt;stdin&amp;gt;&quot;, line 1, in &amp;lt;module&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;TypeError: can&#39;t concat bytes to str&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;gt;&amp;gt;&amp;gt; list(b&#39;foo&#39;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[102, 111, 111]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Traceback (most recent call last):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  File &quot;&amp;lt;stdin&amp;gt;&quot;, line 1, in &amp;lt;module&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;TypeError: can&#39;t concat bytes to str&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;为了达成与 Python 2.6 同样的效果，你可以这样做：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;:&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;b&#39;f&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt; + &lt;span class=&quot;string&quot;&gt;&#39;bar&#39;&lt;/span&gt;.encode(&lt;span class=&quot;string&quot;&gt;&#39;latin1&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foobar&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;to_charlist = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt; x: [x[c:c + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; c &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; range(len(x))]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;to_charlist(&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;string&quot;&gt;b&#39;f&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;b&#39;o&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;b&#39;o&#39;&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;此代码在 2.6 和 3.x 上均能正常工作。&lt;/p&gt;
-&lt;h2 id=&quot;安全好过道歉&quot;&gt;安全好过道歉&lt;/h2&gt;
-&lt;p&gt;在很多事情上 2to3 并不能达到预期效果。一部分是 2to3 可能有 BUG 的地方，另外的则是因为 2to3 不能很好的预测你的代码的目的。&lt;/p&gt;
-&lt;h3 id=&quot;str-相关的递归错误&quot;&gt;str 相关的递归错误&lt;/h3&gt;
-&lt;p&gt;在 Python 2 中很多人像下面这样写代码：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(object)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; unicode(self).encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__unicode__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;u&#39;Hello World&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;2to3 预设你的 API 不兼容 unicode ，会将它转换成下面这样：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(object)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; str(self).encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__unicode__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;Hello World&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;这就有错误了。首先 &lt;code&gt;__unicode__&lt;/code&gt; 不能在 Python 3 中使用，其次当你对 &lt;code&gt;Foo&lt;/code&gt; 的一个实例调用 &lt;code&gt;str()&lt;/code&gt; 方法时，&lt;code&gt;__str__&lt;/code&gt; 将调用自身而由于无限递归触发一个 RuntimeError。这个错误可以通过自定义 2to3 修改器解决，也可以写一个简单的辅助类来检查是否是 Python 3：&lt;/p&gt;
-&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; sys&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;UnicodeMixin&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(object)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; sys.version_info &amp;gt; (&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        __str__ = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt; x: x.__unicode__()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        __str__ = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt; x: unicode(x).encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(UnicodeMixin)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__unicode__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;u&#39;Hello World&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;用这种方法你的对象在 Python 3 中仍然有一个 &lt;code&gt;__unicode__&lt;/code&gt; 属性，但却不会有任何损害。当你想去掉 Python 2 支持时你只需遍历 &lt;code&gt;UnicodeMixin&lt;/code&gt; 的所有派生类，将 &lt;code&gt;__unicode__&lt;/code&gt; 重命名为 &lt;code&gt;__str__&lt;/code&gt;，然后再删掉辅助类。&lt;/p&gt;
-&lt;h3 id=&quot;字符串比较&quot;&gt;字符串比较&lt;/h3&gt;
-&lt;p&gt;这个问题会稍微棘手一点，在 Python 2 中下面这段代码是正确的：&lt;/p&gt;
-&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt; == &lt;span class=&quot;string&quot;&gt;u&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;在 Python 3 中却并非如此：&lt;/p&gt;
-&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;b&#39;foo&#39;&lt;/span&gt; == &lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;更糟糕的是 Python 2 不会抛出一个比较的警告（即使打开了 Python-3-warnings），Python 3 也不会。那么你如何找到问题所在呢？我写了一个名为 &lt;a href=&quot;http://pypi.python.org/pypi/unicode-nazi&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;unicode-nazi&lt;/a&gt; 的小型辅助模块。只要导入该模块，当你试图同时操作 unicode 和 bytes 型字符串时会自动抛出警告：&lt;/p&gt;
-&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; unicodenazi&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;string&quot;&gt;u&#39;foo&#39;&lt;/span&gt; == &lt;span class=&quot;string&quot;&gt;&#39;foo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;__main__:&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;: UnicodeWarning: Implicit conversion of str to unicode&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h2 id=&quot;字符串是什么？&quot;&gt;字符串是什么？&lt;/h2&gt;
-&lt;p&gt;下面这张表列举了一些字节型字符串，和它们在 Python 3 中将变成什么：&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;类型&lt;/th&gt;
-&lt;th&gt;Python 3 中的类型（unicode == str）&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;标识&lt;/td&gt;
-&lt;td&gt;unicode&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;文档字符串&lt;/td&gt;
-&lt;td&gt;unicode&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;__repr__&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;unicode&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;字典的字符键&lt;/td&gt;
-&lt;td&gt;unicode&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;WSGI 的环境变量键&lt;/td&gt;
-&lt;td&gt;unicode&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;HTTP 的 header值，WSGI 的 环境变量值&lt;/td&gt;
-&lt;td&gt;unicode，在 3.1 中仅限于 ASCII，在 3.2 中仅限于 latin1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;URL&lt;/td&gt;
-&lt;td&gt;unicode，部分 API 也接受字节。需要特别注意的是，为了使用所有标准库函数，URL 需要编码为 utf-8&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;文件名&lt;/td&gt;
-&lt;td&gt;unicode 或者字节，大部分 API 接受两者但不支持隐式转换。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;二进制内容&lt;/td&gt;
-&lt;td&gt;字节或字节序列。注意第二种类型是可变的，所以你要清醒认识到你的字符串对象是可变的。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Python 代码&lt;/td&gt;
-&lt;td&gt;unicode，在交给 exec 执行前你需要自行解码。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2 id=&quot;latin1-很特别&quot;&gt;Latin1 很特别&lt;/h2&gt;
-&lt;p&gt;在某些地方（比如 WSGI）unicode 字符串必须是 latin1 的子集。这是因为 HTTP 协议并未指定编码方式，为了保证安全，假定为使用 latin1 。假如你要同时控制通信的两端（比如 cookies）你当然可以使用 utf-8 编码。那么问题来了：如果请求头只能是 latin1 编码时是怎么工作的呢？在且仅在 Python 3 中你需要用一些小伎俩：&lt;/p&gt;
-&lt;figure class=&quot;highlight py&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; cookie_value.encode(&lt;span class=&quot;string&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;).decode(&lt;span class=&quot;string&quot;&gt;&#39;latin1&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;你只是反 unicode 字符串伪编码为 utf-8。WSGI 层会将它重新编码为 latin1 并将这个错误的 utf-8 字符串传输出去，你只要在接收端也做一个反向的变换就可以了。&lt;/p&gt;
-&lt;p&gt;这虽然很丑陋，但这就是 utf-8 在请求头中的工作方式，而且也只有 cookie 头受此影响，反正 cookie 头也不是很可靠。&lt;/p&gt;
-&lt;p&gt;在 WSGI 还剩下的问题就只有 PATH_INFO / SCRIPT_NAME 元组了，你的框架运行在 Python 3 时应该解决这个问题。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？&lt;/p&gt;
-&lt;p&gt;对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="python" scheme="http://frostming.win/tags/python/"/>
-    
-      <category term="python3" scheme="http://frostming.win/tags/python3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python 有序字典的实现</title>
-    <link href="http://frostming.win/2016/07/07/ordered-dict/"/>
-    <id>http://frostming.win/2016/07/07/ordered-dict/</id>
-    <published>2016-07-07T12:16:20.000Z</published>
-    <updated>2016-09-02T13:33:48.000Z</updated>
-    
-    <content type="html">&lt;p&gt;最近在看 requests 源码的时候看到作者使用了 urllib3 中自己实现的&lt;code&gt;OrderedDict&lt;/code&gt;类，收获颇多。自己实现一个数据结构往往是最需要算法和优化的地方，各种语法糖黑科技，相当的 Pythonic，看这种代码实在是一种享受。如果要我自己实现的话，自己会想到用一个有序存储的对象（如列表）去 hack 内部的实现，但这样有几个缺点：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;列表的插入、删除操作性能不如字典，复杂度是 O(N) 量级的。&lt;/li&gt;
-&lt;li&gt;自定义类需要继承于&lt;code&gt;dict&lt;/code&gt;，没有利用继承的方法特性。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;来看看大神是怎么实现的吧。&lt;/p&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h2 id=&quot;init-方法&quot;&gt;&lt;code&gt;__init__&lt;/code&gt;方法&lt;/h2&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;OrderedDict&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(dict)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, *args, **kwds)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; len(args) &amp;gt; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;raise&lt;/span&gt; TypeError(&lt;span class=&quot;string&quot;&gt;&#39;expected at most 1 arguments, got %d&#39;&lt;/span&gt; % len(args))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            self.__root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; AttributeError:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            self.__root = root = []                     &lt;span class=&quot;comment&quot;&gt;# sentinel node&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            root[:] = [root, root, &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            self.__map = &amp;#123;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        self.__update(*args, **kwds)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;在&lt;a href=&quot;http://frostming.github.io/2016/06/13/python-list/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;上一篇文章&lt;/a&gt;中说到一些关于列表的坑，说到不要用&lt;code&gt;a=b=[]&lt;/code&gt;这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使&lt;code&gt;self.__root&lt;/code&gt;和&lt;code&gt;root&lt;/code&gt;同时指向一个空列表，相关于给&lt;code&gt;self.__root&lt;/code&gt;起了一个短别名，关键是第 8 行：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root[:] = [root, root, &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[[...], [...], &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;什么鬼？没见过&lt;code&gt;[...]&lt;/code&gt;这种的啊，我来看看&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[[...], [...], &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;root[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] &lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt; root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;What? 自己是自己的元素？简直是从前有座山山上有座庙啊，子子孙孙无穷尽啊。到底发生了什么事？Python 中万物皆指针，而&lt;code&gt;root[:]=...&lt;/code&gt;的赋值是不改变指针指向的地址而是改变指向地址的内容。右边第一个和第二个元素是指向自己的指针，这样就构造了一个我中有我的列表。&lt;br&gt;
-&lt;img src=&quot;http://o7u6qrlad.bkt.clouddn.com/1e6f8e56cb6cea791e53c29742da76c9.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;再看命名，明白了，这是一个&lt;strong&gt;双向链表&lt;/strong&gt;！列表的前两个元素分别指向上一个结点和下一个结点，第三个元素是结点的值。只用两行就初始化了一个链表，学到了。另外还初始化了一个字典，暂时不知道有什么用。&lt;/p&gt;
-&lt;h2 id=&quot;setitem-方法&quot;&gt;&lt;code&gt;__setitem__&lt;/code&gt;方法&lt;/h2&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__setitem__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, key, value, dict_setitem=dict.__setitem__)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&#39;od.__setitem__(i, y) &amp;lt;==&amp;gt; od[i]=y&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Setting a new item creates a new link which goes at the end of the linked&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# list, and the inherited dictionary is updated with the new key/value pair.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; key &lt;span class=&quot;keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; self:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        root = self.__root&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        last = root[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        last[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] = root[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] = self.__map[key] = [last, root, key]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    dict_setitem(self, key, value)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;关键的部分到了，这个魔法方法加了第三个参数来方便子类扩展。函数体部分，画一个图就明白了。&lt;br&gt;
-&lt;img src=&quot;http://o7u6qrlad.bkt.clouddn.com/dc7661ce1072a03bfe45c6b33647def2.png&quot; alt=&quot;&quot;&gt;!&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;code&gt;root&lt;/code&gt;的上一个结点就是末结点，保存为&lt;code&gt;last&lt;/code&gt;。&lt;/li&gt;
-&lt;li&gt;创建一个新结点，它的上结点和下结点分别设为&lt;code&gt;last&lt;/code&gt;和&lt;code&gt;root&lt;/code&gt;，结点的值为字典的键。&lt;/li&gt;
-&lt;li&gt;将&lt;code&gt;last&lt;/code&gt;的下结点和&lt;code&gt;root&lt;/code&gt;的上结点指向该结点。&lt;/li&gt;
-&lt;li&gt;将结点加入&lt;code&gt;__map&lt;/code&gt;并加入字典。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;这样创建就结点就变成了新的末结点了。从此也可看出，&lt;code&gt;root&lt;/code&gt;是一个守护结点，本身并不存储值，但会简化算法。&lt;code&gt;__map&lt;/code&gt; 是结点的哈希表，避免了从头开始寻找所需的结点。&lt;/p&gt;
-&lt;h2 id=&quot;delitem-方法&quot;&gt;&lt;code&gt;__delitem__&lt;/code&gt;方法&lt;/h2&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;__delitem__&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self, key, dict_delitem=dict.__delitem__)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&#39;od.__delitem__(y) &amp;lt;==&amp;gt; del od[y]&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Deleting an existing item uses self.__map to find the link which is&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# then removed by updating the links in the predecessor and successor nodes.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    dict_delitem(self, key)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    link_prev, link_next, key = self.__map.pop(key)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    link_prev[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] = link_next&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    link_next[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] = link_prev&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;删除结点时，从哈希表中弹出该结点，然后将它的上结点和下结点相连，并从字典中删除。&lt;/p&gt;
-&lt;p&gt;实现了这三个方法，剩下的就好办了，&lt;code&gt;__iter__&lt;/code&gt;只需从头开始遍历链表并取出键值就可以了。&lt;/p&gt;
-&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
-&lt;p&gt;实现有序字典的关键在于选取一个合适的数据结构来存储顺序信息，这里作者使用了双向链表，然后把结点哈希。这样进行插入、删除操作的时间复杂度为 O(1) ，与&lt;code&gt;dict&lt;/code&gt;类型一致，代价就是 O(2n) 的空间复杂度。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近在看 requests 源码的时候看到作者使用了 urllib3 中自己实现的&lt;code&gt;OrderedDict&lt;/code&gt;类，收获颇多。自己实现一个数据结构往往是最需要算法和优化的地方，各种语法糖黑科技，相当的 Pythonic，看这种代码实在是一种享受。如果要我自己实现的话，自己会想到用一个有序存储的对象（如列表）去 hack 内部的实现，但这样有几个缺点：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;列表的插入、删除操作性能不如字典，复杂度是 O(N) 量级的。&lt;/li&gt;
-&lt;li&gt;自定义类需要继承于&lt;code&gt;dict&lt;/code&gt;，没有利用继承的方法特性。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;来看看大神是怎么实现的吧。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="python" scheme="http://frostming.win/tags/python/"/>
-    
-      <category term="源码阅读" scheme="http://frostming.win/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>六月夏至</title>
-    <link href="http://frostming.win/2016/06/15/beginning-of-summer/"/>
-    <id>http://frostming.win/2016/06/15/beginning-of-summer/</id>
-    <published>2016-06-15T13:22:23.000Z</published>
-    <updated>2016-09-02T13:33:48.000Z</updated>
-    
-    <content type="html">&lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
-&lt;footer&gt;&lt;strong&gt;阿信&lt;/strong&gt;&lt;cite&gt;如烟&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
-&lt;p&gt;对于六月的好感，从小时候起，就根植在我的记忆里。&lt;/p&gt;
-&lt;p&gt;暑假就要来了，虽然已经告别学生时代多年，这个时节依然令我躁动。就像一周之中，最喜欢周五的晚上，它不同于周六的尽情狂欢，那是一种对于周末的未知与兴奋。六月，端午节可以放半天假到外婆家吃几枚粽子，中考可以放四天假，高考完可以去网吧包夜，期末考试完可以享受整整两个月的暑假。空气中弥漫的是西瓜的香，知了的聒躁，和七里香的旋律：「窗外的麻雀，在电线杆上多嘴，你说这一句，很有夏天的感觉」。&lt;/p&gt;
-&lt;p&gt;我的家乡是一个江西南部的小县城，端午节前后这段日子，老人称作「龙舟水」，雷鸣电闪，大雨瓢泼，路上积水是少不了的。于是我经常淌着浅至脚踝，深过膝盖的积水前行，伞是不太顶用的。与好友约好大战魔兽，涉水一路到网吧，辛酸又艰难，竟也有些快乐。&lt;/p&gt;
-&lt;p&gt;外面大汗淋漓，回到家全家都缩进空调屋里，边吃着饭，边回顾着《我爱我家》，那时候的电视剧，朴素又温馨，实足的包袱让我们不时发出阵阵笑声。&lt;/p&gt;
-&lt;p&gt;这三个片段平实无奇，却构成了我对六月，对夏天的独特记忆。&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
-&lt;footer&gt;&lt;strong&gt;阿信&lt;/strong&gt;&lt;cite&gt;如烟&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
-&lt;p&gt;对于六月的好感，从小时候起，就根植在我的记忆里。&lt;/p&gt;
-&lt;p&gt;
-    
-    </summary>
-    
-    
-      <category term="心情" scheme="http://frostming.win/tags/%E5%BF%83%E6%83%85/"/>
-    
-      <category term="日志" scheme="http://frostming.win/tags/%E6%97%A5%E5%BF%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python 列表小技巧</title>
-    <link href="http://frostming.win/2016/06/13/python-list/"/>
-    <id>http://frostming.win/2016/06/13/python-list/</id>
-    <published>2016-06-13T05:00:00.000Z</published>
-    <updated>2016-09-02T13:33:48.000Z</updated>
-    
-    <content type="html">&lt;blockquote&gt;
-&lt;p&gt;Python中的列表和字典一样，都是可变数据类型，与字符串和整型相比，它具有一些独特的特性。在平常使用中， 也会经常遇到一些坑，本文试着举一些例子并说明。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h2 id=&quot;列表的拷贝&quot;&gt;列表的拷贝&lt;/h2&gt;
-&lt;h3 id=&quot;直接赋值&quot;&gt;直接赋值&lt;/h3&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a = [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b = a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a &lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt; b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]=&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;在此例中，直接通过赋值将&lt;code&gt;a&lt;/code&gt;赋给了&lt;code&gt;b&lt;/code&gt;，此时，仅仅是为该列表增加了一个引用&lt;code&gt;b&lt;/code&gt;，&lt;code&gt;a&lt;/code&gt;与&lt;code&gt;b&lt;/code&gt;指向内存中同一个区域，通过&lt;code&gt;a&lt;/code&gt;改变列表的值也同时影响&lt;code&gt;b&lt;/code&gt;。请注意，这里有一个坑，很多人在初始化语句中写&lt;code&gt;a = b = []&lt;/code&gt;，这是错误的，会导致任意一个变动都会在&lt;code&gt;a&lt;/code&gt;与&lt;code&gt;b&lt;/code&gt;中同步，而且会很难debug。正确写法应该是分别初始化。&lt;/p&gt;
-&lt;h3 id=&quot;使用list工厂函数&quot;&gt;使用&lt;code&gt;list&lt;/code&gt;工厂函数&lt;/h3&gt;
-&lt;p&gt;为了创建一个&lt;code&gt;a&lt;/code&gt;的拷贝，可以使用&lt;code&gt;list&lt;/code&gt;工厂函数，这也是&lt;em&gt;Python Cookbook&lt;/em&gt;中的推荐做法。&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a = [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b = list(a)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a &lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt; b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]=&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;完美，&lt;code&gt;a&lt;/code&gt;和&lt;code&gt;b&lt;/code&gt;是两个不同的列表了！除了使用工厂函数，切片也可以达到同样的效果：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b = a[:]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b &lt;span class=&quot;keyword&quot;&gt;is&lt;/span&gt; a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h3 id=&quot;使用copy模块&quot;&gt;使用&lt;code&gt;copy&lt;/code&gt;模块&lt;/h3&gt;
-&lt;p&gt;一切看起来都很美好，真的是这样吗？&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a = [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;],&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b = list(a)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;][&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;, [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;], &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;], &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;What?!&lt;code&gt;b&lt;/code&gt;的第二个元素子列表中的值还是被改变了！原来，&lt;code&gt;list&lt;/code&gt;和&lt;code&gt;[:]&lt;/code&gt;都是在内存中创建了一个新的对象并赋给了&lt;code&gt;b&lt;/code&gt;，但是子列表仍然只有一份。也就是说，只复制了「一层」。&lt;/p&gt;
-&lt;p&gt;为了解决这个问题，python中自带了一个&lt;code&gt;copy&lt;/code&gt;模块专门做拷贝的事情，使用模块下的&lt;code&gt;deepcopy&lt;/code&gt;函数来深层次拷贝一个对象，调用它试试看：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; copy&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b = copy.deepcopy(a)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;][&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;] = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;, [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;], &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;b&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;], &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;妈妈再也不用担心我的列表交叉影响的问题了！&lt;/p&gt;
-&lt;h2 id=&quot;列表作为函数参数&quot;&gt;列表作为函数参数&lt;/h2&gt;
-&lt;h3 id=&quot;参数的默认值&quot;&gt;参数的默认值&lt;/h3&gt;
-&lt;p&gt;python的函数参数传递方法都是引用传递，而不是值传递，对于列表与字典这种可变类型就要特别小心了，可能会出现以下的错误：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(a=[])&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;... &lt;/span&gt;    a.append(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;... &lt;/span&gt;    &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;foo()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;foo()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;&lt;code&gt;a&lt;/code&gt;列表会保存上次调用之后的内容！因为这个列表在内存中创建以后就一直存在，参数&lt;code&gt;a&lt;/code&gt;默认指向这个对象。所以，&lt;strong&gt;要避免使用列表或字典作为函数的默认参数&lt;/strong&gt;。使用下面的方法代替，只多一行，而且非常pythonic：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(a=None, b=None)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    a = a &lt;span class=&quot;keyword&quot;&gt;or&lt;/span&gt; []&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    b = b &lt;span class=&quot;keyword&quot;&gt;or&lt;/span&gt; &amp;#123;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    ...&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h3 id=&quot;更改传入列表的内容&quot;&gt;更改传入列表的内容。&lt;/h3&gt;
-&lt;p&gt;由于列表是可变的，你可以在函数体内增删元素，更改元素的值，从而影响到原列表。&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(array)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;... &lt;/span&gt;    array.append(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a=[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;foo(a)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;然而有些时候，我们希望整体更新列表，比如去重操作&lt;code&gt;array = list(set(array)&lt;/code&gt;，这时用上面的方法就不行了，因为这里创建了一个新的列表&lt;code&gt;list(set(array))&lt;/code&gt;并将其引用重新赋给了&lt;code&gt;array&lt;/code&gt;，而函数内的局部变量&lt;code&gt;array&lt;/code&gt;的更改是无法影响全局变量的，这与上一例不同的时上个例子并没有改变&lt;code&gt;array&lt;/code&gt;的值，只是改变了&lt;code&gt;array&lt;/code&gt;&lt;strong&gt;指向的对象&lt;/strong&gt;的值。&lt;/p&gt;
-&lt;p&gt;这时候，我们又要搬出切片了。只需要改成&lt;code&gt;array[:] = list(set(array))&lt;/code&gt;就可以了！因为切片本质上是对&lt;code&gt;array&lt;/code&gt;中元素的操作，意思是把&lt;code&gt;list(set(array))&lt;/code&gt;赋给&lt;code&gt;array&lt;/code&gt;中的所有元素。&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;unique&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(array)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;... &lt;/span&gt;    array[:]=list(set(array))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;...&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a = [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;unique(a)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;a&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;Python中的列表和字典一样，都是可变数据类型，与字符串和整型相比，它具有一些独特的特性。在平常使用中， 也会经常遇到一些坑，本文试着举一些例子并说明。&lt;/p&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="python" scheme="http://frostming.win/tags/python/"/>
-    
-      <category term="小技巧" scheme="http://frostming.win/tags/%E5%B0%8F%E6%8A%80%E5%B7%A7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Requests源码阅读v0.8.0</title>
-    <link href="http://frostming.win/2016/06/03/read-requests-v080/"/>
-    <id>http://frostming.win/2016/06/03/read-requests-v080/</id>
-    <published>2016-06-03T10:00:00.000Z</published>
-    <updated>2016-09-02T13:34:01.000Z</updated>
-    
-    <content type="html">&lt;blockquote&gt;
-&lt;p&gt;工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到&lt;a href=&quot;https://github.com/wangshunping/read_requests&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;@wangshunping&lt;/a&gt;的&lt;strong&gt;read requests&lt;/strong&gt;，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。&lt;br&gt;
-下面就开始吧！&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;h2 id=&quot;目标&quot;&gt;目标&lt;/h2&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.8.0 (2011-11-13)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Keep-alive support!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Complete removal of Urllib2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Complete removal of Poster&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Complete removal of CookieJars&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* New ConnectionError raising&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Safe_mode for error catching&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* prefetch parameter for request methods&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* OPTION method&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Async pool size throttling&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* File uploads send real names&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h2 id=&quot;源码阅读&quot;&gt;源码阅读&lt;/h2&gt;
-&lt;h3 id=&quot;v0-7-1&quot;&gt;v0.7.1&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.7.1 (2011-10-23)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Move away from urllib2 authentication handling.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Fully Remove AuthManager, AuthObject, &amp;amp;c.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* New tuple-based auth system with handler callbacks.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;ul&gt;
-&lt;li&gt;移除&lt;code&gt;urllib2&lt;/code&gt;的authentication处理&lt;/li&gt;
-&lt;li&gt;完全移除&lt;code&gt;AuthManager&lt;/code&gt;, &lt;code&gt;AuthObject&lt;/code&gt;和。。。&amp;amp;c？&lt;/li&gt;
-&lt;li&gt;新的元组形式的&lt;code&gt;auth&lt;/code&gt;机制和处理器回调函数。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;1-移除urllib2的authentication处理&quot;&gt;1. 移除&lt;code&gt;urllib2&lt;/code&gt;的authentication处理&lt;/h4&gt;
-&lt;p&gt;添加一个&lt;code&gt;auth.py&lt;/code&gt;文件，加入了自己实现的auth处理器，包含&lt;code&gt;http_basic&lt;/code&gt;和&lt;code&gt;http_digest&lt;/code&gt;，分别对应Headers中&lt;code&gt;Autohorization&lt;/code&gt;以&lt;code&gt;Basic&lt;/code&gt;和&lt;code&gt;Digest&lt;/code&gt;开头的情形。&lt;/p&gt;
-&lt;h4 id=&quot;2-完全删除authmanager-authobject和-c？&quot;&gt;2. 完全删除&lt;code&gt;AuthManager&lt;/code&gt;, &lt;code&gt;AuthObject&lt;/code&gt;和。。。&amp;amp;c？&lt;/h4&gt;
-&lt;p&gt;由于接口改用了session，于是就没有必要使用&lt;code&gt;AuthManager&lt;/code&gt;储存认证信息。使用自己实现的处理器，完全删除&lt;code&gt;models.py&lt;/code&gt;中相关的代码。&lt;/p&gt;
-&lt;h4 id=&quot;3-新的元组形式的auth机制和处理器回调函数&quot;&gt;3. 新的元组形式的&lt;code&gt;auth&lt;/code&gt;机制和处理器回调函数。&lt;/h4&gt;
-&lt;p&gt;现在：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;self.auth = auth_dispatch(auth)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; self.auth:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    auth_func, auth_args = self.auth&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = auth_func(self, *auth_args)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    self.__dict__.update(r.__dict__)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(t)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&quot;&quot;&quot;Given an auth tuple, return an expanded version.&quot;&quot;&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;not&lt;/span&gt; t:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; t&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        t = list(t)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Make sure they&#39;re passing in something.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; len(t) &amp;gt;= &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# If only two items are passed in, assume HTTPBasic.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (len(t) == &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        t.insert(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;basic&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Allow built-in string referenced auths.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; isinstance(t[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;], basestring):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; t[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; (&lt;span class=&quot;string&quot;&gt;&#39;basic&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;forced_basic&#39;&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            t[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] = http_basic&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;elif&lt;/span&gt; t[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; (&lt;span class=&quot;string&quot;&gt;&#39;digest&#39;&lt;/span&gt;,):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            t[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] = http_digest&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Return a custom callable.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; (t[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;], tuple(t[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;:]))&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;通过&lt;code&gt;dispatch&lt;/code&gt;函数，若传入二元元组，则默认前面加上&lt;code&gt;&#39;basic&#39;&lt;/code&gt;，使用&lt;code&gt;http_basic&lt;/code&gt;处理，否则需要指定处理类型。支持自定义处理器：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;pizza_auth&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(r, username)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&quot;&quot;&quot;Attaches HTTP Pizza Authentication to the given Request object.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &quot;&quot;&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r.headers[&lt;span class=&quot;string&quot;&gt;&#39;X-Pizza&#39;&lt;/span&gt;] = username&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; r&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Then, we can make a request using our Pizza Auth::&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;requests.get(&lt;span class=&quot;string&quot;&gt;&#39;http://pizzabin.org/admin&#39;&lt;/span&gt;, auth=(pizza_auth, &lt;span class=&quot;string&quot;&gt;&#39;kenneth&#39;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;lt;Response [&lt;span class=&quot;number&quot;&gt;200&lt;/span&gt;]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h3 id=&quot;v0-7-2&quot;&gt;v0.7.2&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.7.2 (2011-10-23)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* PATCH Fix.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;修正BUG（略）&lt;/p&gt;
-&lt;h3 id=&quot;v0-7-3&quot;&gt;v0.7.3&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.7.3 (2011-10-23)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Digest Auth fix.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;修正Digest Auth的BUG&lt;br&gt;
-主要是删除了一些debug的print语句，估计当时作者脑子也不清醒了，我还注意到他改了一个文件头的&amp;quot;~&amp;quot;的长度，是有够无聊的！0.7.1到0.7.3都在一个多小时内完成，小伙子动力很足啊！&lt;/p&gt;
-&lt;h3 id=&quot;v0-7-4&quot;&gt;v0.7.4&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.7.4 (2011-10-26)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Sesion Hooks fix.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;主要是一些代码的美化和小BUG，给&lt;code&gt;session&lt;/code&gt;加了一个&lt;code&gt;keep_alive&lt;/code&gt;参数，暂时还没用上，应该是为以后做准备。&lt;/p&gt;
-&lt;h3 id=&quot;v0-7-5&quot;&gt;v0.7.5&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.7.5 (2001-11-04)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Response.content = None if there was an invalid repsonse.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Redirection auth handling.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;咦？日期穿越了10年？哈哈，什么时候会改呢？&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;如果是无效响应则&lt;code&gt;content = None&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;重定向认证处理&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;1-无效响应content-none&quot;&gt;1. 无效响应&lt;code&gt;content = None&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;加入一个Error Handling:&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    self._content = self.raw.read()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; AttributeError:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h4 id=&quot;2-重定向认证处理&quot;&gt;2. 重定向认证处理&lt;/h4&gt;
-&lt;p&gt;一个BUG，原来是用dispatch后的auth构造新的Request会导致错误，现在使用&lt;code&gt;self._auth&lt;/code&gt;保存原始auth并传入新的Request对象。&lt;/p&gt;
-&lt;h3 id=&quot;v0-7-6&quot;&gt;v0.7.6&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.7.6 (2011-11-07)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Digest authentication bugfix (attach query data to path)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;ul&gt;
-&lt;li&gt;Digest 认证的BUG 修复（在路径后附上query）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;原来：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;path = urlparse(r.request.url).path&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;现在：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;p_parsed = urlparse(r.request.url)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;path = p_parsed.path + p_parsed.query&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;我注意到日期问题已经修复了：&lt;/p&gt;
+    <content type="html">&lt;p&gt;This is a Chinese test post.&lt;/p&gt;
+&lt;p&gt;善我王上魚、產生資西員合兒臉趣論。畫衣生這著爸毛親可時，安程幾？合學作。觀經而作建。都非子作這！法如言子你關！手師也。&lt;/p&gt;
+&lt;p&gt;以也座論頭室業放。要車時地變此親不老高小是統習直麼調未，行年香一？&lt;/p&gt;
+&lt;p&gt;就竟在，是我童示讓利分和異種百路關母信過明驗有個歷洋中前合著區亮風值新底車有正結，進快保的行戰從：弟除文辦條國備當來際年每小腳識世可的的外的廣下歌洲保輪市果底天影；全氣具些回童但倒影發狀在示，數上學大法很，如要我……月品大供這起服滿老？應學傳者國：山式排只不之然清同關；細車是！停屋常間又，資畫領生，相們制在？公別的人寫教資夠。資再我我！只臉夫藝量不路政吃息緊回力之；兒足灣電空時局我怎初安。意今一子區首者微陸現際安除發連由子由而走學體區園我車當會，經時取頭，嚴了新科同？很夫營動通打，出和導一樂，查旅他。坐是收外子發物北看蘭戰坐車身做可來。道就學務。&lt;/p&gt;
+&lt;p&gt;國新故。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Updated your 2001, to 2011… unless you went back in time ;)&lt;/p&gt;
+&lt;p&gt;工步他始能詩的，裝進分星海演意學值例道……於財型目古香亮自和這乎？化經溫詩。只賽嚴大一主價世哥受的沒有中年即病行金拉麼河。主小路了種就小為廣不？&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;这个幽默。&lt;/p&gt;
-&lt;h3 id=&quot;v0-8-0&quot;&gt;v0.8.0&lt;/h3&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;0.8.0 (2011-11-13)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;++++++++++++++++++&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Keep-alive support!&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Complete removal of Urllib2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Complete removal of Poster&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Complete removal of CookieJars&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* New ConnectionError raising&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Safe_mode for error catching&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* prefetch parameter for request methods&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* OPTION method&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* Async pool size throttling&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;* File uploads send real names&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;ul&gt;
-&lt;li&gt;支持&lt;code&gt;keep_alive&lt;/code&gt;参数（填坑来了）&lt;/li&gt;
-&lt;li&gt;完全抛弃&lt;code&gt;urllib2&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;完全抛弃&lt;code&gt;Poster&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;完全抛弃&lt;code&gt;CookieJars&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;新的&lt;code&gt;ConnectionError&lt;/code&gt;抛出&lt;/li&gt;
-&lt;li&gt;安全的处理异常机制。&lt;/li&gt;
-&lt;li&gt;为请求方法加入&lt;code&gt;prefetch&lt;/code&gt;参数&lt;/li&gt;
-&lt;li&gt;新的&lt;code&gt;OPTION&lt;/code&gt;方法&lt;/li&gt;
-&lt;li&gt;节省Async池的大小&lt;/li&gt;
-&lt;li&gt;上传文件发送真实文件名&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;1-支持keep-alive参数&quot;&gt;1. 支持&lt;code&gt;keep_alive&lt;/code&gt;参数&lt;/h4&gt;
-&lt;p&gt;作者在v0.8.0全面转向&lt;code&gt;urllib3&lt;/code&gt;，这是个第三方的轮子，它相对于&lt;code&gt;urllib2&lt;/code&gt;最大的改进是可以重用 HTTP 连接，不用每个 request 都新建一个连接了。这样大大加快了大量 request 时的响应速度。&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;self.poolmanager = PoolManager(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    num_pools=self.config.get(&lt;span class=&quot;string&quot;&gt;&#39;pool_connections&#39;&lt;/span&gt;),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    maxsize=self.config.get(&lt;span class=&quot;string&quot;&gt;&#39;pool_maxsize&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;proxy = self.proxies.get(_p.scheme)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; proxy:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    conn = poolmanager.proxy_from_url(url)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Check to see if keep_alive is allowed.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; self.config.get(&lt;span class=&quot;string&quot;&gt;&#39;keep_alive&#39;&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        conn = self._poolmanager.connection_from_url(url)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        conn = connectionpool.connection_from_url(url)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;&lt;code&gt;keep_alive&lt;/code&gt;是默认打开的，在&lt;code&gt;urllib3&lt;/code&gt;中维护了一个连接池，当对某个url进行请求时，会从连接池中取出该连接，然后发送请求时直接调用此连接的子方法。&lt;/p&gt;
-&lt;h4 id=&quot;2-完全抛弃urllib2&quot;&gt;2. 完全抛弃&lt;code&gt;urllib2&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;删除了&lt;code&gt;models.py&lt;/code&gt;中用来发送请求的&lt;code&gt;build_opener&lt;/code&gt;函数，使用&lt;code&gt;urllib3&lt;/code&gt;的&lt;code&gt;conn.urlopen&lt;/code&gt;方法。&lt;/p&gt;
-&lt;h4 id=&quot;3-完全抛弃poster&quot;&gt;3.完全抛弃&lt;code&gt;Poster&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;同上，用一个轮子换了另一个轮子。。&lt;/p&gt;
-&lt;h4 id=&quot;4-完全抛弃cookiejars&quot;&gt;4. 完全抛弃&lt;code&gt;CookieJars&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;上测试&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;test_session_persistent_cookies&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(self)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    s = requests.session()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Internally dispatched cookies are sent.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    _c = &amp;#123;&lt;span class=&quot;string&quot;&gt;&#39;kenneth&#39;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&#39;reitz&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;bessie&#39;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&#39;monke&#39;&lt;/span&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;), cookies=_c)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Those cookies persist transparently.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = json.loads(r.content).get(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; c == _c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Double check.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;), cookies=&amp;#123;&amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = json.loads(r.content).get(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; c == _c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Remove a cookie by setting it&#39;s value to None.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;), cookies=&amp;#123;&lt;span class=&quot;string&quot;&gt;&#39;bessie&#39;&lt;/span&gt;: &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;&amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = json.loads(r.content).get(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;del&lt;/span&gt; _c[&lt;span class=&quot;string&quot;&gt;&#39;bessie&#39;&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; c == _c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Test session-level cookies.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    s = requests.session(cookies=_c)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = json.loads(r.content).get(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; c == _c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Have the server set a cookie.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;set&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;k&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;v&#39;&lt;/span&gt;), allow_redirects=&lt;span class=&quot;keyword&quot;&gt;True&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = json.loads(r.content).get(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;k&#39;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; c&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# And server-set cookie persistience.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    r = s.get(httpbin(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = json.loads(r.content).get(&lt;span class=&quot;string&quot;&gt;&#39;cookies&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;k&#39;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; c&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;处理响应的cookie:&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;set-cookie&#39;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; response.headers:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    cookie_header = response.headers[&lt;span class=&quot;string&quot;&gt;&#39;set-cookie&#39;&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c = SimpleCookie()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    c.load(cookie_header)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; k,v &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; c.items():&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        cookies.update(&amp;#123;k: v.value&amp;#125;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# Save cookies in Response.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;response.cookies = cookies&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;cookies = self.cookies&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;self.cookies.update(r.cookies)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;发送请求时：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; self.cookies:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;# Skip if &#39;cookie&#39; header is explicitly set.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;cookie&#39;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; self.headers:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;# Simple cookie with our dict.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        c = SimpleCookie()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (k, v) &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; self.cookies.items():&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            c[k] = v&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;# Turn it into a header.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        cookie_header = c.output(header=&lt;span class=&quot;string&quot;&gt;&#39;&#39;&lt;/span&gt;).strip()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;# Attach Cookie header to request.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        self.headers[&lt;span class=&quot;string&quot;&gt;&#39;Cookie&#39;&lt;/span&gt;] = cookie_header&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;使用了标准库里的&lt;code&gt;SimpleCookie&lt;/code&gt;处理和生成cookie，而读取cookie全部都是字典类型。其实这些都是为了新的&lt;code&gt;urllib3&lt;/code&gt;接口而服务的，从原来的各种Handler改成&lt;code&gt;conn.urlopen&lt;/code&gt;以后原来的东西都相应的变化。&lt;/p&gt;
-&lt;h4 id=&quot;5-新的connectionerror&quot;&gt;5. 新的&lt;code&gt;ConnectionError&lt;/code&gt;&lt;/h4&gt;
-&lt;h4 id=&quot;6-安全模式&quot;&gt;6. 安全模式&lt;/h4&gt;
-&lt;p&gt;直接看代码吧：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; MaxRetryError, e:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;not&lt;/span&gt; self.config.get(&lt;span class=&quot;string&quot;&gt;&#39;safe_mode&#39;&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;raise&lt;/span&gt; ConnectionError(e)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        r = &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;except&lt;/span&gt; (_SSLError, _HTTPError), e:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;not&lt;/span&gt; self.config.get(&lt;span class=&quot;string&quot;&gt;&#39;safe_mode&#39;&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;False&lt;/span&gt;):&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;raise&lt;/span&gt; Timeout(&lt;span class=&quot;string&quot;&gt;&#39;Request timed out.&#39;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;所谓安全模式就是不抛出异常。&lt;/p&gt;
-&lt;h4 id=&quot;7-新的prefetch参数&quot;&gt;7. 新的&lt;code&gt;prefetch&lt;/code&gt;参数&lt;/h4&gt;
-&lt;p&gt;也是&lt;code&gt;urllib3&lt;/code&gt;支持的参数，当为&lt;code&gt;True&lt;/code&gt;时，在发送请求时就读取响应内容，否则跟原来一样调用&lt;code&gt;content&lt;/code&gt;方法时读取。至于这个有什么用我还不是太懂，因为我发现当&lt;code&gt;prefetch=True&lt;/code&gt;时读取&lt;code&gt;content&lt;/code&gt;会出错并且无法获取响应内容，疑似BUG，先放在这里。&lt;/p&gt;
-&lt;h4 id=&quot;8-option请求方法&quot;&gt;8. &lt;code&gt;OPTION&lt;/code&gt;请求方法&lt;/h4&gt;
-&lt;p&gt;Option 是一种 HTTP 的请求类型，返回当前 url 支持的全部方法。&lt;/p&gt;
-&lt;h4 id=&quot;9-节省-async-池的大小&quot;&gt;9. 节省 async 池的大小&lt;/h4&gt;
-&lt;p&gt;原来：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;jobs = [gevent.spawn(send, r) &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; r &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; requests]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gevent.joinall(jobs)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;现在：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; size:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    pool = Pool(size)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    pool.map(send, requests)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    pool.join()&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    jobs = [gevent.spawn(send, r) &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; r &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; requests]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    gevent.joinall(jobs)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;大概就是传入一个&lt;code&gt;size&lt;/code&gt;参数，所有的异步请求都在这个有限大小的池里处理，嗯，又是池，真是一个好用的东西。&lt;/p&gt;
-&lt;h4 id=&quot;10-上传文件时包含真实文件名&quot;&gt;10. 上传文件时包含真实文件名&lt;/h4&gt;
-&lt;p&gt;看代码：&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;guess_filename&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(obj)&lt;/span&gt;:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;string&quot;&gt;&quot;&quot;&quot;Tries to guess the filename of the given object.&quot;&quot;&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    name = getattr(obj, &lt;span class=&quot;string&quot;&gt;&#39;name&#39;&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;None&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; name &lt;span class=&quot;keyword&quot;&gt;and&lt;/span&gt; name[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;] != &lt;span class=&quot;string&quot;&gt;&#39;&amp;lt;&#39;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;and&lt;/span&gt; name[&lt;span class=&quot;number&quot;&gt;-1&lt;/span&gt;] != &lt;span class=&quot;string&quot;&gt;&#39;&amp;gt;&#39;&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; name&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;嗯，怎么得到真实文件名？靠猜啊，没有就拉倒。&lt;/p&gt;
-&lt;h2 id=&quot;后记&quot;&gt;后记&lt;/h2&gt;
-&lt;p&gt;呼，终于整完了，v0.8.0 包含一个大的重构，我这个累的啊。第一次写这种东西，感觉不是很满意，代码太多了自己的试验不太够，总的也就能理解 80% 左右吧。不管怎样，谢谢大家的阅读，欢迎交流。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;From &lt;a href=&quot;http://www.richyli.com/tool/loremipsum/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;亂數假文產生器 - Chinese Lorem Ipsum&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 </content>
     
     <summary type="html">
     
-      &lt;blockquote&gt;
-&lt;p&gt;工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到&lt;a href=&quot;https://github.com/wangshunping/read_requests&quot;&gt;@wangshunping&lt;/a&gt;的&lt;strong&gt;read requests&lt;/strong&gt;，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。&lt;br&gt;
-下面就开始吧！&lt;/p&gt;
-&lt;/blockquote&gt;
+      &lt;p&gt;This is a Chinese test post.&lt;/p&gt;
+&lt;p&gt;善我王上魚、產生資西員合兒臉趣論。畫衣生這著爸毛親可時，安程幾？合學作。觀經而作建。都非子作這！法如言子你關！手師也。&lt;/p&gt;
+&lt;p&gt;以也座論頭室業放。要車時地變此親不老高小是統習直麼調未，行年香一？&lt;
     
     </summary>
     
     
-      <category term="python" scheme="http://frostming.win/tags/python/"/>
+      <category term="Test" scheme="http://frostming.win/tags/Test/"/>
     
-      <category term="源码阅读" scheme="http://frostming.win/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"/>
-    
-      <category term="requests" scheme="http://frostming.win/tags/requests/"/>
+      <category term="中文" scheme="http://frostming.win/tags/%E4%B8%AD%E6%96%87/"/>
     
   </entry>
   
   <entry>
-    <title>NexT 主题美化</title>
-    <link href="http://frostming.win/2016/05/29/next-beautify/"/>
-    <id>http://frostming.win/2016/05/29/next-beautify/</id>
-    <published>2016-05-29T02:36:39.000Z</published>
-    <updated>2016-09-02T13:34:11.000Z</updated>
+    <title>Tag Plugins</title>
+    <link href="http://frostming.win/2013/12/25/tag-plugins/"/>
+    <id>http://frostming.win/2013/12/25/tag-plugins/</id>
+    <published>2013-12-24T16:19:15.000Z</published>
+    <updated>2016-09-05T12:11:38.000Z</updated>
     
-    <content type="html">&lt;h2 id=&quot;自定义图标的设置&quot;&gt;自定义图标的设置&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/iissnan/hexo-theme-next&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; 主题自带&lt;code&gt;fontawesome&lt;/code&gt;图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在&lt;code&gt;fontawesome&lt;/code&gt;中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。&lt;/p&gt;
-&lt;h3 id=&quot;从-iconfont-下载图标&quot;&gt;从 Iconfont 下载图标&lt;/h3&gt;
-&lt;p&gt;通过搜索比较，最后发现阿里的 &lt;a href=&quot;http://iconfont.cn/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Iconfont&lt;/a&gt; 能够满足我的要求，能够自选图标以后生成字体文件及 css 文件，使用起来也相当简单。&lt;/p&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;p&gt;&lt;img src=&quot;http://o7u6qrlad.bkt.clouddn.com/f29192e4e5b493c00c35fb2dbeb58a02.png&quot; alt=&quot;&quot;&gt;&lt;br&gt;
-搜索需要的图标，点击一下，就会像加入购物车一下加到图标库，选完之后只需点一下下载就把包含 css 文件和所有格式的字体文件下载到本地啦。&lt;/p&gt;
-&lt;h3 id=&quot;集成到-next-主题中&quot;&gt;集成到 NexT 主题中&lt;/h3&gt;
-&lt;p&gt;简单地阅读了一下关于社交链接图标以后，得到了将 Iconfont 加入主题的步骤如下：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;将下载好的文件夹复制到主题文件夹下，我是放在了与&lt;code&gt;fontawesome&lt;/code&gt;平行的&lt;code&gt;/source/vendors&lt;/code&gt;下面。&lt;/li&gt;
-&lt;li&gt;修改&lt;code&gt;/layout/_macro/sidebar.swig&lt;/code&gt;的代码:&lt;/li&gt;
-&lt;/ol&gt;
-&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;links-of-author motion-element&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#123;% if theme.social %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123;% for name, link in theme.social %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;links-of-author-item&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;&amp;#123;&amp;#123; link &amp;#125;&amp;#125;&quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;target&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;_blank&quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;title&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;&amp;#123;&amp;#123; name &amp;#125;&amp;#125;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;          &amp;#123;% if theme.social_icons.enable %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#123;% set myicon = [&quot;Zhihu&quot;, &quot;Lofter&quot;] %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#123;% if myicon.toString().includes(name) %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;iconfont icon-&amp;#123;&amp;#123; theme.social_icons[name] | lower &amp;#125;&amp;#125;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;i&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#123;% else %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;              &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;class&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;fa fa-fw fa-&amp;#123;&amp;#123; theme.social_icons[name] | default(&#39;globe&#39;) | lower &amp;#125;&amp;#125;&quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;i&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &amp;#123;% endif %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;          &amp;#123;% endif %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;          &amp;#123;&amp;#123; name &amp;#125;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;a&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;span&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123;% endfor %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#123;% endif %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;把加入的图标，加到&lt;code&gt;myicon&lt;/code&gt;里面就可以啦。&lt;/p&gt;
-&lt;ol start=&quot;3&quot;&gt;
-&lt;li&gt;修改主题的&lt;code&gt;layout/_partials/head.swig&lt;/code&gt;文件，加入 iconfont 相关的 css 文件:&lt;/li&gt;
-&lt;/ol&gt;
-&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;% set icon_font_uri = url_for(theme.vendors._internal + &#39;/iconfont/iconfont.css&#39;) %&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;href&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;&amp;#123;&amp;#123; icon_font_uri &amp;#125;&amp;#125;&quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;rel&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&quot;text/css&quot;&lt;/span&gt; /&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;ol start=&quot;4&quot;&gt;
-&lt;li&gt;修改主题的&lt;code&gt;_config.yml&lt;/code&gt;文件，在&lt;code&gt;social&lt;/code&gt;和&lt;code&gt;social_icons&lt;/code&gt;加入新的社交链接的图标，大功告成！&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&quot;更换标题字体&quot;&gt;更换标题字体&lt;/h2&gt;
-&lt;h3 id=&quot;更改-font-family&quot;&gt;更改 font-family&lt;/h3&gt;
-&lt;p&gt;NexT 中使用了 Google 的 Webfont 服务，只需要在&lt;code&gt;_config.yml&lt;/code&gt;中指定对应的字体就可以了。然而，我是一个对排版有自己想法的人，希望标题的字体与正文字体区分开来，最好是一个用衬线体一个用非衬线体。而在配置文件中只是指定优先字体，并没有把整个&lt;code&gt;font-family&lt;/code&gt; 替换掉。&lt;/p&gt;
-&lt;p&gt;这个的解决方法就比较简单了，找到&lt;code&gt;/source/css/_variables/base.styl&lt;/code&gt;这个文件，找到 font family 的设置，定义一个 serif 的字体族：&lt;/p&gt;
-&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$font-family-serif = Georgia, &quot;Times New Roman&quot;, &quot;Songti SC&quot;, &quot;Songti TC&quot;, serif&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;然后再把&lt;code&gt;$font-family-headings&lt;/code&gt;里面的&lt;code&gt;font-family-base&lt;/code&gt;替换成&lt;code&gt;font-family-serif&lt;/code&gt;就可以了。&lt;/p&gt;
-&lt;h3 id=&quot;webfont-解决方案&quot;&gt;Webfont 解决方案&lt;/h3&gt;
-&lt;p&gt;直接更改 font-family 有一点不足，它依赖于当前电脑上是否安装了这个字体，如果没有找到，就只好 fallback 了。而我希望我的博客在多数终端上有同样阅读体验，那么就可以使用 webfont，它的字体文件是存放在网络上的服务器里，前面提到的 Google Font 就是其中之一。&lt;br&gt;
-主要有以下 webfont 提供商：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://typekit.com/foundries/adobe&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Adobe | Typekit&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://www.fonts.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;蒙纳字库 fonts.com&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.youziku.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;有字库&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;到网站上注册一个账号再按说明一步一步操作就可以了，虽说很多字体都要付费，但对于个人博客来说免费服务就够用了。&lt;br&gt;
-除此之外，还可以自己外挂字体，通过压缩字体工具去掉不需要用到的字符来加快加载速度，推荐&lt;a href=&quot;http://font-spider.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;字蛛&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&quot;markdown-语法支持&quot;&gt;Markdown 语法支持&lt;/h2&gt;
-&lt;p&gt;hexo 自带的 markdown renderer 对于 markdown 的语法支持的并不是很够，推荐使用 &lt;a href=&quot;https://github.com/celsomiranda/hexo-renderer-markdown-it&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;markdown it&lt;/a&gt; 引擎，它具有如下特性：&lt;/p&gt;
+    <content type="html">&lt;p&gt;This post is used for testing tag plugins. See &lt;a href=&quot;https://hexo.io/docs/tag-plugins.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;docs&lt;/a&gt; for more info.&lt;/p&gt;
+&lt;h2 id=&quot;block-quote&quot;&gt;Block Quote&lt;/h2&gt;
+&lt;h3 id=&quot;normal-blockquote&quot;&gt;Normal blockquote&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;Support for [Markdown], [GFM] and [CommonMark]&lt;/li&gt;
-&lt;li&gt;Extensive configuration&lt;/li&gt;
-&lt;li&gt;Faster than the default renderer | &lt;code&gt;hexo-renderer-marked&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Safe ID for headings&lt;/li&gt;
-&lt;li&gt;Anchors for headings with ID&lt;/li&gt;
-&lt;li&gt;Footnotes&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;lt;sub&amp;gt;&lt;/code&gt; H&lt;sub&gt;2&lt;/sub&gt;O&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;lt;sup&amp;gt;&lt;/code&gt; x&lt;sup&gt;2&lt;/sup&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;&amp;lt;ins&amp;gt;&lt;/code&gt; &lt;ins&gt;Inserted&lt;/ins&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;Praesent diam elit, interdum ut pulvinar placerat, imperdiet at magna.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;大功告成！重新生成你的页面用浏览器打开看看效果吧！&lt;/p&gt;
-&lt;p&gt;我的博客托管在 github 上：&lt;br&gt;
-&lt;a href=&quot;https://github.com/frostming/frostming.github.io&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/frostming/frostming.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;quote-from-a-book&quot;&gt;Quote from a book&lt;/h3&gt;
+&lt;blockquote&gt;&lt;p&gt;Do not just seek happiness for yourself. Seek happiness for all. Through kindness. Through mercy.&lt;/p&gt;
+&lt;footer&gt;&lt;strong&gt;David Levithan&lt;/strong&gt;&lt;cite&gt;Wide Awake&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
+&lt;h3 id=&quot;quote-from-twitter&quot;&gt;Quote from Twitter&lt;/h3&gt;
+&lt;blockquote&gt;&lt;p&gt;NEW: DevDocs now comes with syntax highlighting. &lt;a href=&quot;http://devdocs.io&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://devdocs.io&lt;/a&gt;&lt;/p&gt;
+&lt;footer&gt;&lt;strong&gt;@DevDocs&lt;/strong&gt;&lt;cite&gt;&lt;a href=&quot;https://twitter.com/devdocs/status/356095192085962752&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;twitter.com/devdocs/status/356095192085962752&lt;/a&gt;&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
+&lt;h3 id=&quot;quote-from-an-article-on-the-web&quot;&gt;Quote from an article on the web&lt;/h3&gt;
+&lt;blockquote&gt;&lt;p&gt;Every interaction is both precious and an opportunity to delight.&lt;/p&gt;
+&lt;footer&gt;&lt;strong&gt;Seth Godin&lt;/strong&gt;&lt;cite&gt;&lt;a href=&quot;http://sethgodin.typepad.com/seths_blog/2009/07/welcome-to-island-marketing.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Welcome to Island Marketing&lt;/a&gt;&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
+&lt;h2 id=&quot;code-block&quot;&gt;Code Block&lt;/h2&gt;
+&lt;h3 id=&quot;normal-code-block&quot;&gt;Normal code block&lt;/h3&gt;
+&lt;figure class=&quot;highlight lisp&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;alert(&#39;Hello World!&#39;)&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;with-caption&quot;&gt;With caption&lt;/h3&gt;
+&lt;figure class=&quot;highlight cpp&quot;&gt;&lt;figcaption&gt;&lt;span&gt;Array.map&lt;/span&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;array&lt;/span&gt;.&lt;span class=&quot;built_in&quot;&gt;map&lt;/span&gt;(callback[, thisArg])&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;with-caption-and-url&quot;&gt;With caption and URL&lt;/h3&gt;
+&lt;figure class=&quot;highlight ruby&quot;&gt;&lt;figcaption&gt;&lt;span&gt;.compact&lt;/span&gt;&lt;a href=&quot;http://underscorejs.org/#compact&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Underscore.js&lt;/a&gt;&lt;/figcaption&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;.compact([&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;false&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, ‘’, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;=&amp;gt; [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;gist&quot;&gt;Gist&lt;/h3&gt;
+&lt;script src=&quot;//gist.github.com/2f66506c03d782837922cea61741f7be.js?file=TestCase.rb&quot;&gt;&lt;/script&gt;
+&lt;h3 id=&quot;jsfiddle&quot;&gt;jsFiddle&lt;/h3&gt;
+&lt;iframe scrolling=&quot;no&quot; width=&quot;100%&quot; height=&quot;300&quot; src=&quot;http://jsfiddle.net/ccWP7/embedded/js,resources,html,css,result/light&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;h2 id=&quot;pullquote&quot;&gt;Pullquote&lt;/h2&gt;
+&lt;h3 id=&quot;left&quot;&gt;Left&lt;/h3&gt;
+&lt;blockquote class=&quot;pullquote left&quot;&gt;&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tempus molestie arcu, et fringilla mauris placerat ac. Nullam luctus bibendum risus. Ut cursus sed ipsum feugiat egestas. Suspendisse elementum, velit eu consequat consequat, augue lorem dapibus libero, eget pulvinar dolor est sit amet nulla. Suspendisse a porta tortor, et posuere mi. Pellentesque ultricies, mi quis volutpat malesuada, erat felis vulputate nisl, ac congue ante tortor ut ante. Proin aliquam sem vel mauris tincidunt, eget scelerisque tortor euismod. Nulla tincidunt enim nec commodo dictum. Mauris id sapien et orci gravida luctus id ut dui. In vel vulputate odio. Duis vel turpis molestie, scelerisque enim eu, lobortis eros. Cras at ipsum gravida, sagittis ante vel, viverra tellus. Nunc mauris turpis, elementum ullamcorper nisl pretium, ultrices cursus justo. Mauris porttitor commodo eros, ac ornare orci interdum in. Cras fermentum cursus leo sed mattis. In dignissim lorem sem, sit amet elementum mauris venenatis ac.&lt;/p&gt;
+&lt;h3 id=&quot;right&quot;&gt;Right&lt;/h3&gt;
+&lt;blockquote class=&quot;pullquote right&quot;&gt;&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ligula justo, lobortis sit amet semper vel, dignissim sit amet libero. Praesent ac tempus ligula. Maecenas at gravida odio. Etiam tristique volutpat lacus eu faucibus. Donec non tempus arcu. Phasellus adipiscing, mauris nec mollis egestas, ipsum nunc auctor velit, et rhoncus lorem ipsum at ante. Praesent et sem in velit volutpat auctor. Duis vel mauris nulla. Maecenas mattis interdum ante, quis sagittis nibh cursus et. Nulla facilisi. Morbi convallis gravida tortor, ut fermentum enim gravida et. Nunc vel dictum nisl, non ultrices libero. Proin vestibulum felis eget orci consectetur lobortis. Vestibulum augue nulla, iaculis vitae augue vehicula, dignissim ultrices libero. Sed imperdiet urna et quam ultrices tincidunt nec ac magna. Etiam vel pharetra elit.&lt;/p&gt;
 </content>
     
     <summary type="html">
     
-      &lt;h2 id=&quot;自定义图标的设置&quot;&gt;自定义图标的设置&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/iissnan/hexo-theme-next&quot;&gt;NexT&lt;/a&gt; 主题自带&lt;code&gt;fontawesome&lt;/code&gt;图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在&lt;code&gt;fontawesome&lt;/code&gt;中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。&lt;/p&gt;
-&lt;h3 id=&quot;从-iconfont-下载图标&quot;&gt;从 Iconfont 下载图标&lt;/h3&gt;
-&lt;p&gt;通过搜索比较，最后发现阿里的 &lt;a href=&quot;http://iconfont.cn/&quot;&gt;Iconfont&lt;/a&gt; 能够满足我的要求，能够自选图标以后生成字体文件及 css 文件，使用起来也相当简单。&lt;/p&gt;
+      &lt;p&gt;This post is used for testing tag plugins. See &lt;a href=&quot;https://hexo.io/docs/tag-plugins.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;docs&lt;/a&gt; fo
     
     </summary>
     
     
-      <category term="hexo" scheme="http://frostming.win/tags/hexo/"/>
+      <category term="Test" scheme="http://frostming.win/tags/Test/"/>
     
-      <category term="NexT" scheme="http://frostming.win/tags/NexT/"/>
-    
-      <category term="主题" scheme="http://frostming.win/tags/%E4%B8%BB%E9%A2%98/"/>
+      <category term="Tag" scheme="http://frostming.win/tags/Tag/"/>
     
   </entry>
   
   <entry>
-    <title>在博客与笔记中使用Markdown</title>
-    <link href="http://frostming.win/2016/05/25/markdown-in-blog/"/>
-    <id>http://frostming.win/2016/05/25/markdown-in-blog/</id>
-    <published>2016-05-25T11:00:00.000Z</published>
-    <updated>2016-09-02T13:33:48.000Z</updated>
+    <title>Videos</title>
+    <link href="http://frostming.win/2013/12/25/videos/"/>
+    <id>http://frostming.win/2013/12/25/videos/</id>
+    <published>2013-12-24T16:14:39.000Z</published>
+    <updated>2016-09-05T12:37:21.000Z</updated>
     
-    <content type="html">&lt;h2 id=&quot;博客的搭建&quot;&gt;博客的搭建&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;前段时间在 StackOverflow 与 Quora 上我接触到了 Markdown 标记语言，瞬时就被这种易用、美观、高逼格的东西所俘获，顿时深感之前在 QQ 空间之类的平台上写博的体验之差，往往调格式就要耗费很多的时间。于是就有了迁移到另一个博客平台的想法，用过的产品有：&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.jianshu.com&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;简书&lt;/a&gt;：包含社交功能的 Markdown 博客网站。&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://www.zybuluo.com/mdeditor&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CmdMarkdown&lt;/a&gt;：简单纯粹，功能强大，丰富语法支持，但是自带样式我不是很喜欢。&lt;/li&gt;
-&lt;li&gt;PyCharm 的 Markdown 插件：HTML样式简陋，高级功能需付费。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这些我都不是特别满意，于是便萌生了干脆建一个个人博客的想法。通过多方考查，得到一个比较好的解决方案：Hexo + Github page。Github page 是基于静态页面的免费个人网站，而 Hexo 刚好就是基于 node.js 的静态博客，并且原生支持 Markdown 还有海量美观的模板。&lt;sup class=&quot;footnote-ref&quot;&gt;&lt;a href=&quot;#fn1&quot; id=&quot;fnref1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-&lt;h2 id=&quot;文章云存储&quot;&gt;文章云存储&lt;/h2&gt;
-&lt;p&gt;博客建好以后，那么问题来了：如何随时随地地把想法记录下来以待日后放进博客？这就需要一个云同步的平台，有以下几种选择：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;将 markdown 文件托管到 GitHub&lt;/li&gt;
-&lt;li&gt;使用笔记应用存取 Markdown 文件&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;目前很多 markdown 编辑器都支持保存到 github 或者笔记应用，最终我选择了后者。原因是我只在家用的笔记本上配置了博客的环境，所以只能在家里更新博客。而且我总归需要一个笔记应用来存放笔记。&lt;/p&gt;
-&lt;h2 id=&quot;笔记应用&quot;&gt;笔记应用&lt;/h2&gt;
-&lt;p&gt;考察了 Onenote，有道云，印象笔记之后我最终选择了印象笔记。首先是因为界面美观，其次是支持丰富的扩展，在 Chrome 上的 &lt;a href=&quot;https://www.yinxiang.com/webclipper/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;印象剪藏&lt;/a&gt;也是相当好用，而相比而言有道云虽然界面简洁大方，但 Chrome 的扩展就大为不及了。&lt;/p&gt;
-&lt;h2 id=&quot;markdown-编辑器&quot;&gt;Markdown 编辑器&lt;/h2&gt;
-&lt;p&gt;那么下一步就是选用合适的编辑器了，有以下几点要求：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;需要有网页端&lt;/li&gt;
-&lt;li&gt;支持保存到 Evernote&lt;/li&gt;
-&lt;li&gt;双栏预览功能&lt;/li&gt;
-&lt;li&gt;语法支持不能太少&lt;/li&gt;
-&lt;li&gt;界面不能太难看&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;综合以上考虑，&lt;a href=&quot;http://soft.xiaoshujiang.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;小书匠&lt;/a&gt;无疑是一个很好的选择，全平台支持，并且有网页版，支持保存到 dropbox, github, evernote 等。还自带图床，简直不要更赞。&lt;br&gt;
-&lt;img src=&quot;http://soft.xiaoshujiang.com/img/bind.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;好了，一切都搞定了，赶紧来试一下吧，把文章同步到印象笔记后，文章末尾会附上一个 md 源文件的链接，这样你在任何一台电脑上只要下载这个文件再导入小书匠就可以继续编辑了。&lt;/p&gt;
-&lt;hr class=&quot;footnotes-sep&quot;&gt;
-&lt;section class=&quot;footnotes&quot;&gt;
-&lt;ol class=&quot;footnotes-list&quot;&gt;
-&lt;li id=&quot;fn1&quot; class=&quot;footnote-item&quot;&gt;&lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/p/465830080ea9&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;HEXO+Github,搭建属于自己的博客 - 简书&lt;/a&gt; &lt;a href=&quot;#fnref1&quot; class=&quot;footnote-backref&quot;&gt;↩&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/section&gt;
+    <content type="html">&lt;p&gt;This is a video test post.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Youtube&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;video-container&quot;&gt;&lt;iframe src=&quot;//www.youtube.com/embed/dQw4w9WgXcQ&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Vimeo&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;video-container&quot;&gt;&lt;iframe src=&quot;//player.vimeo.com/video/82090131&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;
 </content>
     
     <summary type="html">
     
-      &lt;h2 id=&quot;博客的搭建&quot;&gt;博客的搭建&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;前段时间在 StackOverflow 与 Quora 上我接触到了 Markdown 标记语言，瞬时就被这种易用、美观、高逼格的东西所俘获，顿时深感之前在 QQ 空间之类的平台上写博的体验之差，往往调格式就要耗费很多的时间。于是就有了迁移到另一个博客平台的想法，用过的产品有：&lt;/p&gt;
-&lt;/blockquote&gt;
+      &lt;p&gt;This is a video test post.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Youtube&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;video-container&quot;&gt;&lt;iframe src=&quot;//www.youtube.com/embed/dQw4w9Wg
     
     </summary>
     
     
-      <category term="markdown" scheme="http://frostming.win/tags/markdown/"/>
+  </entry>
+  
+  <entry>
+    <title>日本語テスト</title>
+    <link href="http://frostming.win/2013/12/24/%E6%97%A5%E6%9C%AC%E8%AA%9E%E6%B8%AC%E8%A9%A6/"/>
+    <id>http://frostming.win/2013/12/24/日本語測試/</id>
+    <published>2013-12-24T15:33:26.000Z</published>
+    <updated>2016-09-05T12:11:33.000Z</updated>
     
-      <category term="evernote" scheme="http://frostming.win/tags/evernote/"/>
+    <content type="html">&lt;p&gt;This is a Japanese test post.&lt;/p&gt;
+&lt;p&gt;私は昨日ついにその助力家というのの上よりするたなけれ。&lt;/p&gt;
+&lt;p&gt;最も今をお話団はちょうどこの前後なかろでくらいに困りがいるたをは帰着考えたなかって、そうにもするでうたらない。&lt;/p&gt;
+&lt;p&gt;がたを知っないはずも同時に九月をいよいよたありた。&lt;/p&gt;
+&lt;p&gt;もっと槙さんにぼんやり金少し説明にえた自分大した人私か影響にというお関係たうませないが、この次第も私か兄具合に使うて、槙さんののに当人のあなたにさぞご意味と行くて私個人が小尊敬を聴いように同時に同反抗に集っだうて、いよいよまず相当へあっうからいだ事をしでなけれ。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;それでそれでもご時日をしはずはたったいやと突き抜けるますて、その元がは行ったてという獄を尽すていけですた。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;この中道具の日その学校はあなたごろがすまなりかとネルソンさんの考えるですん、辺の事実ないというご盲従ありたですと、爺さんのためが薬缶が結果までの箸の当時してならて、多少の十月にためからそういう上からとにかくしましないと触れべきものたで、ないうですと多少お人達したのでたた。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;From &lt;a href=&quot;http://lipsum.sugutsukaeru.jp/index.cgi&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;すぐ使えるダミーテキスト - 日本語 Lorem ipsum&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+</content>
     
-      <category term="个人博客" scheme="http://frostming.win/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
+    <summary type="html">
     
-      <category term="hexo" scheme="http://frostming.win/tags/hexo/"/>
+      &lt;p&gt;This is a Japanese test post.&lt;/p&gt;
+&lt;p&gt;私は昨日ついにその助力家というのの上よりするたなけれ。&lt;/p&gt;
+&lt;p&gt;最も今をお話団はちょうどこの前後なかろでくらいに困りがいるたをは帰着考えたなかって、そうにもするでうたらない。&lt;/p&gt;
+&lt;p&gt;がた
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam justo turpis, tincidunt ac convallis id.</title>
+    <link href="http://frostming.win/2013/12/24/long-title/"/>
+    <id>http://frostming.win/2013/12/24/long-title/</id>
+    <published>2013-12-24T15:31:06.000Z</published>
+    <updated>2016-09-04T14:33:34.000Z</updated>
+    
+    <content type="html">&lt;p&gt;This post has a long title. Make sure the title is displaying correctly.&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;This post has a long title. Make sure the title is displaying correctly.&lt;/p&gt;
+
+    
+    </summary>
+    
+    
+      <category term="Tag1" scheme="http://frostming.win/tags/Tag1/"/>
+    
+      <category term="Tag2" scheme="http://frostming.win/tags/Tag2/"/>
+    
+      <category term="Tag3" scheme="http://frostming.win/tags/Tag3/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://frostming.win/2016/05/21/hello-world/"/>
-    <id>http://frostming.win/2016/05/21/hello-world/</id>
-    <published>2016-05-21T10:00:00.000Z</published>
-    <updated>2016-06-29T14:42:59.000Z</updated>
+    <link href="http://frostming.win/2013/12/24/hello-world/"/>
+    <id>http://frostming.win/2013/12/24/hello-world/</id>
+    <published>2013-12-24T15:29:08.000Z</published>
+    <updated>2016-09-04T14:33:34.000Z</updated>
     
     <content type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
 &lt;h2 id=&quot;quick-start&quot;&gt;Quick Start&lt;/h2&gt;
 &lt;h3 id=&quot;create-a-new-post&quot;&gt;Create a new post&lt;/h3&gt;
 &lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo new &lt;span class=&quot;string&quot;&gt;&quot;My New Post&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -606,10 +212,16 @@
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
     
     </summary>
     
+      <category term="Tutorials" scheme="http://frostming.win/categories/Tutorials/"/>
+    
+    
+      <category term="Test" scheme="http://frostming.win/tags/Test/"/>
+    
+      <category term="Hexo" scheme="http://frostming.win/tags/Hexo/"/>
     
   </entry>
   
