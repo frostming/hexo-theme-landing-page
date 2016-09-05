@@ -64,6 +64,11 @@ h5 {
 .post-container {
   font-size: 16px;
   font-weight: 400;
+  margin-bottom: 10px;
+}
+.post-container p {
+  line-height: 1.6;
+  margin-bottom: 1.5em;
 }
 .post-container blockquote footer cite:before {
   content: "-";

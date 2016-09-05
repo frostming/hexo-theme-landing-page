@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Frost&#39;s Blog</title>
   <subtitle>只要心还透明，就能折射希望</subtitle>
-  <link href="/atom.xml" rel="self"/>
+  <link href="/hexo-theme-landing-page/atom.xml" rel="self"/>
   
   <link href="http://frostming.win/"/>
   <updated>2016-09-05T12:09:38.000Z</updated>
@@ -219,9 +219,9 @@
       <category term="Tutorials" scheme="http://frostming.win/categories/Tutorials/"/>
     
     
-      <category term="Test" scheme="http://frostming.win/tags/Test/"/>
-    
       <category term="Hexo" scheme="http://frostming.win/tags/Hexo/"/>
+    
+      <category term="Test" scheme="http://frostming.win/tags/Test/"/>
     
   </entry>
   
