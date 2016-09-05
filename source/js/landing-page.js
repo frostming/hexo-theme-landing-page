@@ -1,3 +1,9 @@
+// add table class for tables
+$(document).ready(function() {
+    $("table").wrap("<div class='table-responsive'></div>");
+    $("table").addClass("table");
+});
+
 // jQuery for page scrolling feature - requires jQuery Easing plugin
 $(function() {
     $('a.page-scroll').bind('click', function(event) {

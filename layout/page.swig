@@ -32,8 +32,12 @@
 <div class="content-section-a">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-9 post-container">
-				{{ page.content }}
+			<div class="col-lg-8 col-lg-offset-1">
+				<div class="post-container">
+					{{ page.content }}
+				</div>
+				{% include '_partials/sharing.swig' %}
+				{% include '_partials/comments.swig' %}
 			</div>
 		</div>
 	</div>

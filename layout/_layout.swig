@@ -8,5 +8,6 @@
         {% include '_partials/contact.swig' %}
         {% include '_partials/footer.swig' %}
         {% include 'scripts/js.swig' %}
+        {% include 'scripts/comments.swig' %}
     </body>
 </html>
