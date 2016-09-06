@@ -54,15 +54,18 @@
                         {{ post.excerpt }}
                     {% else %}
                         {% set content = post.content | striptags %}
-                        {{ content.substring(0, 150) }}
-                    {% if content.length > 150 %}...<br><a href="{{ post.path }}">Read More</a>{% endif %}
+                        {{ content.substring(0, 200) }}
+                    {% if content.length > 200 %}...{% endif %}
                     {% endif %}
 					</div>
+					{% if content.length > 200 || post.excerpt %}
+						<a class="read-more" href="{{ post.path }}">Read More</a>
+					{% endif %}
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					{% if post.img %}
-                    <img class="img-responsive" src="{{ post.img }}" alt="">
-					{% endif %}
+				{% if post.img %}
+                    <img class="img-responsive" src="{{ url_for(post.img) }}" alt="">
+				{% endif %}
                 </div>
             </div>
 
@@ -87,25 +90,27 @@
                         {{ post.excerpt }}
                     {% else %}
                         {% set content = post.content | striptags %}
-                        {{ content.substring(0, 150) }}
-                    {% if content.length > 150 %}...<br><a href="{{ post.path }}">Read More</a>{% endif %}
+                        {{ content.substring(0, 200) }}
+                    {% if content.length > 200 %}...{% endif %}
                     {% endif %}
 				</div>
+				{% if content.length > 200 || post.excerpt %}
+					<a class="read-more" href="{{ post.path }}">Read More</a>
+				{% endif %}
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-					{% if post.img %}
-                    <img class="img-responsive" src="{{ post.img }}" alt="">
-					{% endif %}
+				{% if post.img %}
+                    <img class="img-responsive" src="{{ url_for(post.img) }}" alt="">
+				{% endif %}
                 </div>
             </div>
 
         </div>
         <!-- /.container -->
-
     </div>
     <!-- /.content-section-b -->
     {% endif %}
-
 {% endfor %}
+{% include '_partials/pagination.swig' %}
 </section>
 {% endblock %}
