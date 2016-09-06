@@ -4,47 +4,19 @@
 
     
   <url>
-    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/25/videos/</loc>
-    <lastmod>2016-09-05T12:37:21.000Z</lastmod>
+    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/24/long-title/</loc>
+    <lastmod>2016-09-05T14:08:57.000Z</lastmod>
     <data>
         <display>
-        <title>Videos</title>
-        <pubTime>2013-12-24T16:14:39.000Z</pubTime>
+        <title>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam justo turpis, tincidunt ac convallis id.</title>
+        <pubTime>2013-12-24T15:31:06.000Z</pubTime>
         
+        <tag>Tag1</tag>
          
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/25/tag-plugins/</loc>
-    <lastmod>2016-09-05T12:11:38.000Z</lastmod>
-    <data>
-        <display>
-        <title>Tag Plugins</title>
-        <pubTime>2013-12-24T16:19:15.000Z</pubTime>
-        
-        <tag>Test</tag>
+        <tag>Tag2</tag>
          
-        <tag>Tag</tag>
+        <tag>Tag3</tag>
          
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/24/%E6%97%A5%E6%9C%AC%E8%AA%9E%E6%B8%AC%E8%A9%A6/</loc>
-    <lastmod>2016-09-05T12:11:33.000Z</lastmod>
-    <data>
-        <display>
-        <title>日本語テスト</title>
-        <pubTime>2013-12-24T15:33:26.000Z</pubTime>
-        
          
            
         </display>
@@ -54,7 +26,7 @@
     
   <url>
     <loc>http://frostming.win/hexo-theme-landing-page/2014/12/25/%E4%B8%AD%E6%96%87%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2016-09-05T12:09:38.000Z</lastmod>
+    <lastmod>2016-09-05T14:08:57.000Z</lastmod>
     <data>
         <display>
         <title>中文测试</title>
@@ -73,15 +45,15 @@
     
   <url>
     <loc>http://frostming.win/hexo-theme-landing-page/2013/12/24/hello-world/</loc>
-    <lastmod>2016-09-04T14:33:34.000Z</lastmod>
+    <lastmod>2016-09-05T14:08:57.000Z</lastmod>
     <data>
         <display>
         <title>Hello World</title>
         <pubTime>2013-12-24T15:29:08.000Z</pubTime>
         
-        <tag>Hexo</tag>
-         
         <tag>Test</tag>
+         
+        <tag>Hexo</tag>
          
          
            
@@ -94,19 +66,47 @@
 
     
   <url>
-    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/24/long-title/</loc>
-    <lastmod>2016-09-04T14:33:34.000Z</lastmod>
+    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/25/tag-plugins/</loc>
+    <lastmod>2016-09-05T14:08:57.000Z</lastmod>
     <data>
         <display>
-        <title>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam justo turpis, tincidunt ac convallis id.</title>
-        <pubTime>2013-12-24T15:31:06.000Z</pubTime>
+        <title>Tag Plugins</title>
+        <pubTime>2013-12-24T16:19:15.000Z</pubTime>
         
-        <tag>Tag1</tag>
+        <tag>Test</tag>
          
-        <tag>Tag2</tag>
+        <tag>Tag</tag>
          
-        <tag>Tag3</tag>
          
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/25/videos/</loc>
+    <lastmod>2016-09-05T14:08:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>Videos</title>
+        <pubTime>2013-12-24T16:14:39.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://frostming.win/hexo-theme-landing-page/2013/12/24/%E6%97%A5%E6%9C%AC%E8%AA%9E%E6%B8%AC%E8%A9%A6/</loc>
+    <lastmod>2016-09-05T14:08:57.000Z</lastmod>
+    <data>
+        <display>
+        <title>日本語テスト</title>
+        <pubTime>2013-12-24T15:33:26.000Z</pubTime>
+        
          
            
         </display>
