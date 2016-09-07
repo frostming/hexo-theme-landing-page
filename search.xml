@@ -4,432 +4,99 @@
   
     
     <entry>
-      <title><![CDATA[如何编写向前兼容的 Python 代码]]></title>
-      <url>http://frostming.win/2016/08/23/python-2-to-3/</url>
-      <content type="html"><![CDATA[<blockquote>
-<p>本文翻译自 <a href="http://lucumr.pocoo.org/about/" target="_blank" rel="external">Armin Ronacher</a> 的文章 <a href="http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/" target="_blank" rel="external">Writing Forwards Compatible Python Code</a></p>
-</blockquote>
-<p>对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和痛苦的时候，我们如何才能让这件事变得容易一点呢？</p>
-<p>对于一个顶层应用来说，如果它的依赖库移植后行为一致，把它升级到 Python 3 就不难了。其实升级到 Python 3 从来都不应该是一件痛苦的事。因此，本文尝试列举一些编写新的代码时应该和不应该做的事。</p>
-<a id="more"></a>
-<h2 id="以-2-6-为基准">以 2.6 为基准</h2>
-<p>如果你要编写一个新项目，就从 Python 2.6 或 2.7 开始，它们有许多升级到 Python 3 的便利。如果你不打算支持旧版本的 Python 你已经可以使用许多 Python 3 中的新特性了，只要在代码中打开就行了。</p>
-<p>你应该使用的一些 <code>__future__</code> 中的特性：</p>
-<ul>
-<li><code>division</code> 我必须承认我非常讨厌 Python 2 中的 future division。当我审核代码时我需要不停地跳到文件开头来检查用的是哪种除法机制。然而这是 Python 3 中的默认除法机制，所以你需要使用它。</li>
-<li><code>absolute_import</code> 最重要的特性。当你在 foo 包内部时，<code>from xml import bar</code> 不再导入一个 <code>foo.xml</code> 的模块，你需要改为 <code>from .xml import bar</code>。更加清晰明了，帮助很大。</li>
-</ul>
-<p>至于函数形式的 <code>print</code> 导入，为了代码清晰，我不建议使用它。因为所有的编辑器会将<code>print</code> 作为关键字高亮，这此让人产生困惑。如果一件事情在不同的文件里表现不一致我们最好尽可能避免它。好在用 2to3 工具可以很方便地转换，所以我们完全没必要从 future 中导入它。</p>
-<p>最好不要从 future 中导入 <code>unicode_literals</code>，尽管它看上去很吸引人。原因很简单，许多 API 在不同地方支持的字符串类型是不同的，<code>unicode_literals</code> 会产生反作用。诚然，这个导入在某些情况下很有用，但它更多地受制于底层的接口（库），且由于它是 Python 2.6 的特性，有许多库支持这个导入。不需要导入 <code>unicode_literals</code> 你就能使用 <code>b'foo'</code> 这样的写法，两种方法都是可用的并且对 2to3 工具很有帮助。</p>
-<h2 id="文件输入输出与-unicode">文件输入输出与 Unicode</h2>
-<p>文件的输入输出在 Python 3 中改变很大。你终于不用在为新项目开发 API 时费尽心力处理文件 unicode 编码的问题了。</p>
-<p>当你处理文本数据时，使用 <a href="http://docs.python.org/library/codecs.html" target="_blank" rel="external">codecs.open</a> 来打开文件。默认使用 utf-8 编码除非显式地定义或者只对 unicode 字符串操作。若你决定使用二进制输入输出，打开文件时记得用 <code>'rb'</code> 而不是 <code>'r'</code> 标志。这对于适当的 Windows 支持来说是必要的。</p>
-<p>当你处理字节型数据时，使用 <code>b'foo'</code> 将字符串标为字节型，这样 2to3 就不会将它转换为 unicode。注意以下 Python 2.6：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span></span><br><span class="line"><span class="string">'foo'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span>[<span class="number">0</span>]</span><br><span class="line"><span class="string">'f'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span> + <span class="string">u'bar'</span></span><br><span class="line"><span class="string">u'foobar'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(<span class="string">b'foo'</span>)</span><br><span class="line">[<span class="string">'f'</span>, <span class="string">'o'</span>, <span class="string">'o'</span>]</span><br></pre></td></tr></table></figure>
-<p>与 Python 3 对待字节型字符串的区别：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&gt;&gt;&gt; b'foo'[0]</span><br><span class="line">102</span><br><span class="line">&gt;&gt;&gt; b'foo' + 'bar'</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">TypeError: can't concat bytes to str</span><br><span class="line">&gt;&gt;&gt; list(b'foo')</span><br><span class="line">[102, 111, 111]</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File "&lt;stdin&gt;", line 1, in &lt;module&gt;</span><br><span class="line">TypeError: can't concat bytes to str</span><br></pre></td></tr></table></figure>
-<p>为了达成与 Python 2.6 同样的效果，你可以这样做：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span>[<span class="number">0</span>:<span class="number">0</span> + <span class="number">1</span>]</span><br><span class="line"><span class="string">b'f'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span> + <span class="string">'bar'</span>.encode(<span class="string">'latin1'</span>)</span><br><span class="line"><span class="string">b'foobar'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>to_charlist = <span class="keyword">lambda</span> x: [x[c:c + <span class="number">1</span>] <span class="keyword">for</span> c <span class="keyword">in</span> range(len(x))]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>to_charlist(<span class="string">b'foo'</span>)</span><br><span class="line">[<span class="string">b'f'</span>, <span class="string">b'o'</span>, <span class="string">b'o'</span>]</span><br></pre></td></tr></table></figure>
-<p>此代码在 2.6 和 3.x 上均能正常工作。</p>
-<h2 id="安全好过道歉">安全好过道歉</h2>
-<p>在很多事情上 2to3 并不能达到预期效果。一部分是 2to3 可能有 BUG 的地方，另外的则是因为 2to3 不能很好的预测你的代码的目的。</p>
-<h3 id="str-相关的递归错误">str 相关的递归错误</h3>
-<p>在 Python 2 中很多人像下面这样写代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> unicode(self).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__unicode__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">u'Hello World'</span></span><br></pre></td></tr></table></figure>
-<p>2to3 预设你的 API 不兼容 unicode ，会将它转换成下面这样：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> str(self).encode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__unicode__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Hello World'</span></span><br></pre></td></tr></table></figure>
-<p>这就有错误了。首先 <code>__unicode__</code> 不能在 Python 3 中使用，其次当你对 <code>Foo</code> 的一个实例调用 <code>str()</code> 方法时，<code>__str__</code> 将调用自身而由于无限递归触发一个 RuntimeError。这个错误可以通过自定义 2to3 修改器解决，也可以写一个简单的辅助类来检查是否是 Python 3：</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnicodeMixin</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> sys.version_info &gt; (<span class="number">3</span>, <span class="number">0</span>):</span><br><span class="line">        __str__ = <span class="keyword">lambda</span> x: x.__unicode__()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        __str__ = <span class="keyword">lambda</span> x: unicode(x).encode(<span class="string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(UnicodeMixin)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__unicode__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">u'Hello World'</span></span><br></pre></td></tr></table></figure>
-<p>用这种方法你的对象在 Python 3 中仍然有一个 <code>__unicode__</code> 属性，但却不会有任何损害。当你想去掉 Python 2 支持时你只需遍历 <code>UnicodeMixin</code> 的所有派生类，将 <code>__unicode__</code> 重命名为 <code>__str__</code>，然后再删掉辅助类。</p>
-<h3 id="字符串比较">字符串比较</h3>
-<p>这个问题会稍微棘手一点，在 Python 2 中下面这段代码是正确的：</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'foo'</span> == <span class="string">u'foo'</span></span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<p>在 Python 3 中却并非如此：</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">b'foo'</span> == <span class="string">'foo'</span></span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-<p>更糟糕的是 Python 2 不会抛出一个比较的警告（即使打开了 Python-3-warnings），Python 3 也不会。那么你如何找到问题所在呢？我写了一个名为 <a href="http://pypi.python.org/pypi/unicode-nazi" target="_blank" rel="external">unicode-nazi</a> 的小型辅助模块。只要导入该模块，当你试图同时操作 unicode 和 bytes 型字符串时会自动抛出警告：</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> unicodenazi</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">u'foo'</span> == <span class="string">'foo'</span></span><br><span class="line">__main__:<span class="number">1</span>: UnicodeWarning: Implicit conversion of str to unicode</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<h2 id="字符串是什么？">字符串是什么？</h2>
-<p>下面这张表列举了一些字节型字符串，和它们在 Python 3 中将变成什么：</p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>Python 3 中的类型（unicode == str）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>标识</td>
-<td>unicode</td>
-</tr>
-<tr>
-<td>文档字符串</td>
-<td>unicode</td>
-</tr>
-<tr>
-<td><code>__repr__</code></td>
-<td>unicode</td>
-</tr>
-<tr>
-<td>字典的字符键</td>
-<td>unicode</td>
-</tr>
-<tr>
-<td>WSGI 的环境变量键</td>
-<td>unicode</td>
-</tr>
-<tr>
-<td>HTTP 的 header值，WSGI 的 环境变量值</td>
-<td>unicode，在 3.1 中仅限于 ASCII，在 3.2 中仅限于 latin1</td>
-</tr>
-<tr>
-<td>URL</td>
-<td>unicode，部分 API 也接受字节。需要特别注意的是，为了使用所有标准库函数，URL 需要编码为 utf-8</td>
-</tr>
-<tr>
-<td>文件名</td>
-<td>unicode 或者字节，大部分 API 接受两者但不支持隐式转换。</td>
-</tr>
-<tr>
-<td>二进制内容</td>
-<td>字节或字节序列。注意第二种类型是可变的，所以你要清醒认识到你的字符串对象是可变的。</td>
-</tr>
-<tr>
-<td>Python 代码</td>
-<td>unicode，在交给 exec 执行前你需要自行解码。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="latin1-很特别">Latin1 很特别</h2>
-<p>在某些地方（比如 WSGI）unicode 字符串必须是 latin1 的子集。这是因为 HTTP 协议并未指定编码方式，为了保证安全，假定为使用 latin1 。假如你要同时控制通信的两端（比如 cookies）你当然可以使用 utf-8 编码。那么问题来了：如果请求头只能是 latin1 编码时是怎么工作的呢？在且仅在 Python 3 中你需要用一些小伎俩：</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> cookie_value.encode(<span class="string">'utf-8'</span>).decode(<span class="string">'latin1'</span>)</span><br></pre></td></tr></table></figure>
-<p>你只是反 unicode 字符串伪编码为 utf-8。WSGI 层会将它重新编码为 latin1 并将这个错误的 utf-8 字符串传输出去，你只要在接收端也做一个反向的变换就可以了。</p>
-<p>这虽然很丑陋，但这就是 utf-8 在请求头中的工作方式，而且也只有 cookie 头受此影响，反正 cookie 头也不是很可靠。</p>
-<p>在 WSGI 还剩下的问题就只有 PATH_INFO / SCRIPT_NAME 元组了，你的框架运行在 Python 3 时应该解决这个问题。</p>
-]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[Python 有序字典的实现]]></title>
-      <url>http://frostming.win/2016/07/07/ordered-dict/</url>
-      <content type="html"><![CDATA[<p>最近在看 requests 源码的时候看到作者使用了 urllib3 中自己实现的<code>OrderedDict</code>类，收获颇多。自己实现一个数据结构往往是最需要算法和优化的地方，各种语法糖黑科技，相当的 Pythonic，看这种代码实在是一种享受。如果要我自己实现的话，自己会想到用一个有序存储的对象（如列表）去 hack 内部的实现，但这样有几个缺点：</p>
-<ol>
-<li>列表的插入、删除操作性能不如字典，复杂度是 O(N) 量级的。</li>
-<li>自定义类需要继承于<code>dict</code>，没有利用继承的方法特性。</li>
-</ol>
-<p>来看看大神是怎么实现的吧。</p>
-<a id="more"></a>
-<h2 id="init-方法"><code>__init__</code>方法</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrderedDict</span><span class="params">(dict)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwds)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> len(args) &gt; <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">'expected at most 1 arguments, got %d'</span> % len(args))</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.__root</span><br><span class="line">        <span class="keyword">except</span> AttributeError:</span><br><span class="line">            self.__root = root = []                     <span class="comment"># sentinel node</span></span><br><span class="line">            root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line">            self.__map = &#123;&#125;</span><br><span class="line">        self.__update(*args, **kwds)</span><br></pre></td></tr></table></figure>
-<p>在<a href="http://frostming.github.io/2016/06/13/python-list/" target="_blank" rel="external">上一篇文章</a>中说到一些关于列表的坑，说到不要用<code>a=b=[]</code>这样的语句来初始化，其实也不全然，我们来看 7-8 行做了什么。第 7 行使<code>self.__root</code>和<code>root</code>同时指向一个空列表，相关于给<code>self.__root</code>起了一个短别名，关键是第 8 行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[:] = [root, root, <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br></pre></td></tr></table></figure>
-<p>什么鬼？没见过<code>[...]</code>这种的啊，我来看看</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>]</span><br><span class="line">[[...], [...], <span class="keyword">None</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>] <span class="keyword">is</span> root</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<p>What? 自己是自己的元素？简直是从前有座山山上有座庙啊，子子孙孙无穷尽啊。到底发生了什么事？Python 中万物皆指针，而<code>root[:]=...</code>的赋值是不改变指针指向的地址而是改变指向地址的内容。右边第一个和第二个元素是指向自己的指针，这样就构造了一个我中有我的列表。<br>
-<img src="http://o7u6qrlad.bkt.clouddn.com/1e6f8e56cb6cea791e53c29742da76c9.png" alt=""></p>
-<p>再看命名，明白了，这是一个<strong>双向链表</strong>！列表的前两个元素分别指向上一个结点和下一个结点，第三个元素是结点的值。只用两行就初始化了一个链表，学到了。另外还初始化了一个字典，暂时不知道有什么用。</p>
-<h2 id="setitem-方法"><code>__setitem__</code>方法</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setitem__</span><span class="params">(self, key, value, dict_setitem=dict.__setitem__)</span>:</span></span><br><span class="line">    <span class="string">'od.__setitem__(i, y) &lt;==&gt; od[i]=y'</span></span><br><span class="line">    <span class="comment"># Setting a new item creates a new link which goes at the end of the linked</span></span><br><span class="line">    <span class="comment"># list, and the inherited dictionary is updated with the new key/value pair.</span></span><br><span class="line">    <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> self:</span><br><span class="line">        root = self.__root</span><br><span class="line">        last = root[<span class="number">0</span>]</span><br><span class="line">        last[<span class="number">1</span>] = root[<span class="number">0</span>] = self.__map[key] = [last, root, key]</span><br><span class="line">    dict_setitem(self, key, value)</span><br></pre></td></tr></table></figure>
-<p>关键的部分到了，这个魔法方法加了第三个参数来方便子类扩展。函数体部分，画一个图就明白了。<br>
-<img src="http://o7u6qrlad.bkt.clouddn.com/dc7661ce1072a03bfe45c6b33647def2.png" alt="">!</p>
-<ol>
-<li><code>root</code>的上一个结点就是末结点，保存为<code>last</code>。</li>
-<li>创建一个新结点，它的上结点和下结点分别设为<code>last</code>和<code>root</code>，结点的值为字典的键。</li>
-<li>将<code>last</code>的下结点和<code>root</code>的上结点指向该结点。</li>
-<li>将结点加入<code>__map</code>并加入字典。</li>
-</ol>
-<p>这样创建就结点就变成了新的末结点了。从此也可看出，<code>root</code>是一个守护结点，本身并不存储值，但会简化算法。<code>__map</code> 是结点的哈希表，避免了从头开始寻找所需的结点。</p>
-<h2 id="delitem-方法"><code>__delitem__</code>方法</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__delitem__</span><span class="params">(self, key, dict_delitem=dict.__delitem__)</span>:</span></span><br><span class="line">    <span class="string">'od.__delitem__(y) &lt;==&gt; del od[y]'</span></span><br><span class="line">    <span class="comment"># Deleting an existing item uses self.__map to find the link which is</span></span><br><span class="line">    <span class="comment"># then removed by updating the links in the predecessor and successor nodes.</span></span><br><span class="line">    dict_delitem(self, key)</span><br><span class="line">    link_prev, link_next, key = self.__map.pop(key)</span><br><span class="line">    link_prev[<span class="number">1</span>] = link_next</span><br><span class="line">    link_next[<span class="number">0</span>] = link_prev</span><br></pre></td></tr></table></figure>
-<p>删除结点时，从哈希表中弹出该结点，然后将它的上结点和下结点相连，并从字典中删除。</p>
-<p>实现了这三个方法，剩下的就好办了，<code>__iter__</code>只需从头开始遍历链表并取出键值就可以了。</p>
-<h2 id="总结">总结</h2>
-<p>实现有序字典的关键在于选取一个合适的数据结构来存储顺序信息，这里作者使用了双向链表，然后把结点哈希。这样进行插入、删除操作的时间复杂度为 O(1) ，与<code>dict</code>类型一致，代价就是 O(2n) 的空间复杂度。</p>
-]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[六月夏至]]></title>
-      <url>http://frostming.win/2016/06/15/beginning-of-summer/</url>
-      <content type="html"><![CDATA[<blockquote><p>七岁的那一年，抓住那只蝉，以为能抓住夏天</p>
-<footer><strong>阿信</strong><cite>如烟</cite></footer></blockquote>
-<p>对于六月的好感，从小时候起，就根植在我的记忆里。</p>
-<p>暑假就要来了，虽然已经告别学生时代多年，这个时节依然令我躁动。就像一周之中，最喜欢周五的晚上，它不同于周六的尽情狂欢，那是一种对于周末的未知与兴奋。六月，端午节可以放半天假到外婆家吃几枚粽子，中考可以放四天假，高考完可以去网吧包夜，期末考试完可以享受整整两个月的暑假。空气中弥漫的是西瓜的香，知了的聒躁，和七里香的旋律：「窗外的麻雀，在电线杆上多嘴，你说这一句，很有夏天的感觉」。</p>
-<p>我的家乡是一个江西南部的小县城，端午节前后这段日子，老人称作「龙舟水」，雷鸣电闪，大雨瓢泼，路上积水是少不了的。于是我经常淌着浅至脚踝，深过膝盖的积水前行，伞是不太顶用的。与好友约好大战魔兽，涉水一路到网吧，辛酸又艰难，竟也有些快乐。</p>
-<p>外面大汗淋漓，回到家全家都缩进空调屋里，边吃着饭，边回顾着《我爱我家》，那时候的电视剧，朴素又温馨，实足的包袱让我们不时发出阵阵笑声。</p>
-<p>这三个片段平实无奇，却构成了我对六月，对夏天的独特记忆。</p>
-]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[Python 列表小技巧]]></title>
-      <url>http://frostming.win/2016/06/13/python-list/</url>
-      <content type="html"><![CDATA[<blockquote>
-<p>Python中的列表和字典一样，都是可变数据类型，与字符串和整型相比，它具有一些独特的特性。在平常使用中， 也会经常遇到一些坑，本文试着举一些例子并说明。</p>
-</blockquote>
-<a id="more"></a>
-<h2 id="列表的拷贝">列表的拷贝</h2>
-<h3 id="直接赋值">直接赋值</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>]=<span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-<p>在此例中，直接通过赋值将<code>a</code>赋给了<code>b</code>，此时，仅仅是为该列表增加了一个引用<code>b</code>，<code>a</code>与<code>b</code>指向内存中同一个区域，通过<code>a</code>改变列表的值也同时影响<code>b</code>。请注意，这里有一个坑，很多人在初始化语句中写<code>a = b = []</code>，这是错误的，会导致任意一个变动都会在<code>a</code>与<code>b</code>中同步，而且会很难debug。正确写法应该是分别初始化。</p>
-<h3 id="使用list工厂函数">使用<code>list</code>工厂函数</h3>
-<p>为了创建一个<code>a</code>的拷贝，可以使用<code>list</code>工厂函数，这也是<em>Python Cookbook</em>中的推荐做法。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>]=<span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-<p>完美，<code>a</code>和<code>b</code>是两个不同的列表了！除了使用工厂函数，切片也可以达到同样的效果：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a[:]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b <span class="keyword">is</span> a</span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
-<h3 id="使用copy模块">使用<code>copy</code>模块</h3>
-<p>一切看起来都很美好，真的是这样吗？</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>,[<span class="number">1</span>,<span class="number">2</span>],<span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-<p>What?!<code>b</code>的第二个元素子列表中的值还是被改变了！原来，<code>list</code>和<code>[:]</code>都是在内存中创建了一个新的对象并赋给了<code>b</code>，但是子列表仍然只有一份。也就是说，只复制了「一层」。</p>
-<p>为了解决这个问题，python中自带了一个<code>copy</code>模块专门做拷贝的事情，使用模块下的<code>deepcopy</code>函数来深层次拷贝一个对象，调用它试试看：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> copy</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = copy.deepcopy(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">5</span>, [<span class="number">1</span>, <span class="number">5</span>], <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, [<span class="number">1</span>, <span class="number">2</span>], <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-<p>妈妈再也不用担心我的列表交叉影响的问题了！</p>
-<h2 id="列表作为函数参数">列表作为函数参数</h2>
-<h3 id="参数的默认值">参数的默认值</h3>
-<p>python的函数参数传递方法都是引用传递，而不是值传递，对于列表与字典这种可变类型就要特别小心了，可能会出现以下的错误：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(a=[])</span>:</span></span><br><span class="line"><span class="meta">... </span>    a.append(<span class="number">1</span>)</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">print</span> a</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line">[<span class="number">1</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo()</span><br><span class="line">[<span class="number">1</span>, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<p><code>a</code>列表会保存上次调用之后的内容！因为这个列表在内存中创建以后就一直存在，参数<code>a</code>默认指向这个对象。所以，<strong>要避免使用列表或字典作为函数的默认参数</strong>。使用下面的方法代替，只多一行，而且非常pythonic：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(a=None, b=None)</span>:</span></span><br><span class="line">    a = a <span class="keyword">or</span> []</span><br><span class="line">    b = b <span class="keyword">or</span> &#123;&#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
-<h3 id="更改传入列表的内容">更改传入列表的内容。</h3>
-<p>由于列表是可变的，你可以在函数体内增删元素，更改元素的值，从而影响到原列表。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(array)</span>:</span></span><br><span class="line"><span class="meta">... </span>    array.append(<span class="number">1</span>)</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a=[<span class="number">0</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>foo(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-<p>然而有些时候，我们希望整体更新列表，比如去重操作<code>array = list(set(array)</code>，这时用上面的方法就不行了，因为这里创建了一个新的列表<code>list(set(array))</code>并将其引用重新赋给了<code>array</code>，而函数内的局部变量<code>array</code>的更改是无法影响全局变量的，这与上一例不同的时上个例子并没有改变<code>array</code>的值，只是改变了<code>array</code><strong>指向的对象</strong>的值。</p>
-<p>这时候，我们又要搬出切片了。只需要改成<code>array[:] = list(set(array))</code>就可以了！因为切片本质上是对<code>array</code>中元素的操作，意思是把<code>list(set(array))</code>赋给<code>array</code>中的所有元素。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">unique</span><span class="params">(array)</span>:</span></span><br><span class="line"><span class="meta">... </span>    array[:]=list(set(array))</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>unique(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[Requests源码阅读v0.8.0]]></title>
-      <url>http://frostming.win/2016/06/03/read-requests-v080/</url>
-      <content type="html"><![CDATA[<blockquote>
-<p>工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到<a href="https://github.com/wangshunping/read_requests" target="_blank" rel="external">@wangshunping</a>的<strong>read requests</strong>，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。<br>
-下面就开始吧！</p>
-</blockquote>
-<a id="more"></a>
-<h2 id="目标">目标</h2>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.8.0 (2011-11-13)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Keep-alive support!</span><br><span class="line">* Complete removal of Urllib2</span><br><span class="line">* Complete removal of Poster</span><br><span class="line">* Complete removal of CookieJars</span><br><span class="line">* New ConnectionError raising</span><br><span class="line">* Safe_mode for error catching</span><br><span class="line">* prefetch parameter for request methods</span><br><span class="line">* OPTION method</span><br><span class="line">* Async pool size throttling</span><br><span class="line">* File uploads send real names</span><br></pre></td></tr></table></figure>
-<h2 id="源码阅读">源码阅读</h2>
-<h3 id="v0-7-1">v0.7.1</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.1 (2011-10-23)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Move away from urllib2 authentication handling.</span><br><span class="line">* Fully Remove AuthManager, AuthObject, &amp;c.</span><br><span class="line">* New tuple-based auth system with handler callbacks.</span><br></pre></td></tr></table></figure>
-<ul>
-<li>移除<code>urllib2</code>的authentication处理</li>
-<li>完全移除<code>AuthManager</code>, <code>AuthObject</code>和。。。&amp;c？</li>
-<li>新的元组形式的<code>auth</code>机制和处理器回调函数。</li>
-</ul>
-<h4 id="1-移除urllib2的authentication处理">1. 移除<code>urllib2</code>的authentication处理</h4>
-<p>添加一个<code>auth.py</code>文件，加入了自己实现的auth处理器，包含<code>http_basic</code>和<code>http_digest</code>，分别对应Headers中<code>Autohorization</code>以<code>Basic</code>和<code>Digest</code>开头的情形。</p>
-<h4 id="2-完全删除authmanager-authobject和-c？">2. 完全删除<code>AuthManager</code>, <code>AuthObject</code>和。。。&amp;c？</h4>
-<p>由于接口改用了session，于是就没有必要使用<code>AuthManager</code>储存认证信息。使用自己实现的处理器，完全删除<code>models.py</code>中相关的代码。</p>
-<h4 id="3-新的元组形式的auth机制和处理器回调函数">3. 新的元组形式的<code>auth</code>机制和处理器回调函数。</h4>
-<p>现在：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.auth = auth_dispatch(auth)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> self.auth:</span><br><span class="line">    auth_func, auth_args = self.auth</span><br><span class="line">    r = auth_func(self, *auth_args)</span><br><span class="line">    self.__dict__.update(r.__dict__)</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dispatch</span><span class="params">(t)</span>:</span></span><br><span class="line">    <span class="string">"""Given an auth tuple, return an expanded version."""</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> t:</span><br><span class="line">        <span class="keyword">return</span> t</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        t = list(t)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Make sure they're passing in something.</span></span><br><span class="line">    <span class="keyword">assert</span> len(t) &gt;= <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># If only two items are passed in, assume HTTPBasic.</span></span><br><span class="line">    <span class="keyword">if</span> (len(t) == <span class="number">2</span>):</span><br><span class="line">        t.insert(<span class="number">0</span>, <span class="string">'basic'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Allow built-in string referenced auths.</span></span><br><span class="line">    <span class="keyword">if</span> isinstance(t[<span class="number">0</span>], basestring):</span><br><span class="line">        <span class="keyword">if</span> t[<span class="number">0</span>] <span class="keyword">in</span> (<span class="string">'basic'</span>, <span class="string">'forced_basic'</span>):</span><br><span class="line">            t[<span class="number">0</span>] = http_basic</span><br><span class="line">        <span class="keyword">elif</span> t[<span class="number">0</span>] <span class="keyword">in</span> (<span class="string">'digest'</span>,):</span><br><span class="line">            t[<span class="number">0</span>] = http_digest</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Return a custom callable.</span></span><br><span class="line">    <span class="keyword">return</span> (t[<span class="number">0</span>], tuple(t[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
-<p>通过<code>dispatch</code>函数，若传入二元元组，则默认前面加上<code>'basic'</code>，使用<code>http_basic</code>处理，否则需要指定处理类型。支持自定义处理器：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pizza_auth</span><span class="params">(r, username)</span>:</span></span><br><span class="line">    <span class="string">"""Attaches HTTP Pizza Authentication to the given Request object.</span><br><span class="line">    """</span></span><br><span class="line">    r.headers[<span class="string">'X-Pizza'</span>] = username</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> r</span><br><span class="line"></span><br><span class="line">Then, we can make a request using our Pizza Auth::</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>requests.get(<span class="string">'http://pizzabin.org/admin'</span>, auth=(pizza_auth, <span class="string">'kenneth'</span>))</span><br><span class="line">&lt;Response [<span class="number">200</span>]&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="v0-7-2">v0.7.2</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.2 (2011-10-23)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* PATCH Fix.</span><br></pre></td></tr></table></figure>
-<p>修正BUG（略）</p>
-<h3 id="v0-7-3">v0.7.3</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.3 (2011-10-23)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Digest Auth fix.</span><br></pre></td></tr></table></figure>
-<p>修正Digest Auth的BUG<br>
-主要是删除了一些debug的print语句，估计当时作者脑子也不清醒了，我还注意到他改了一个文件头的&quot;~&quot;的长度，是有够无聊的！0.7.1到0.7.3都在一个多小时内完成，小伙子动力很足啊！</p>
-<h3 id="v0-7-4">v0.7.4</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.4 (2011-10-26)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Sesion Hooks fix.</span><br></pre></td></tr></table></figure>
-<p>主要是一些代码的美化和小BUG，给<code>session</code>加了一个<code>keep_alive</code>参数，暂时还没用上，应该是为以后做准备。</p>
-<h3 id="v0-7-5">v0.7.5</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.5 (2001-11-04)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Response.content = None if there was an invalid repsonse.</span><br><span class="line">* Redirection auth handling.</span><br></pre></td></tr></table></figure>
-<p>咦？日期穿越了10年？哈哈，什么时候会改呢？</p>
-<ul>
-<li>如果是无效响应则<code>content = None</code></li>
-<li>重定向认证处理</li>
-</ul>
-<h4 id="1-无效响应content-none">1. 无效响应<code>content = None</code></h4>
-<p>加入一个Error Handling:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    self._content = self.raw.read()</span><br><span class="line"><span class="keyword">except</span> AttributeError:</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
-<h4 id="2-重定向认证处理">2. 重定向认证处理</h4>
-<p>一个BUG，原来是用dispatch后的auth构造新的Request会导致错误，现在使用<code>self._auth</code>保存原始auth并传入新的Request对象。</p>
-<h3 id="v0-7-6">v0.7.6</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.6 (2011-11-07)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Digest authentication bugfix (attach query data to path)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Digest 认证的BUG 修复（在路径后附上query）</li>
-</ul>
-<p>原来：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">path = urlparse(r.request.url).path</span><br></pre></td></tr></table></figure>
-<p>现在：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p_parsed = urlparse(r.request.url)</span><br><span class="line">path = p_parsed.path + p_parsed.query</span><br></pre></td></tr></table></figure>
-<p>我注意到日期问题已经修复了：</p>
+      <title><![CDATA[中文测试]]></title>
+      <url>http://frostming.win/hexo-theme-landing-page/2014/12/25/%E4%B8%AD%E6%96%87%E6%B5%8B%E8%AF%95/</url>
+      <content type="html"><![CDATA[<p>This is a Chinese test post.</p>
+<p>善我王上魚、產生資西員合兒臉趣論。畫衣生這著爸毛親可時，安程幾？合學作。觀經而作建。都非子作這！法如言子你關！手師也。</p>
+<p>以也座論頭室業放。要車時地變此親不老高小是統習直麼調未，行年香一？</p>
+<p>就竟在，是我童示讓利分和異種百路關母信過明驗有個歷洋中前合著區亮風值新底車有正結，進快保的行戰從：弟除文辦條國備當來際年每小腳識世可的的外的廣下歌洲保輪市果底天影；全氣具些回童但倒影發狀在示，數上學大法很，如要我……月品大供這起服滿老？應學傳者國：山式排只不之然清同關；細車是！停屋常間又，資畫領生，相們制在？公別的人寫教資夠。資再我我！只臉夫藝量不路政吃息緊回力之；兒足灣電空時局我怎初安。意今一子區首者微陸現際安除發連由子由而走學體區園我車當會，經時取頭，嚴了新科同？很夫營動通打，出和導一樂，查旅他。坐是收外子發物北看蘭戰坐車身做可來。道就學務。</p>
+<p>國新故。</p>
 <blockquote>
-<p>Updated your 2001, to 2011… unless you went back in time ;)</p>
+<p>工步他始能詩的，裝進分星海演意學值例道……於財型目古香亮自和這乎？化經溫詩。只賽嚴大一主價世哥受的沒有中年即病行金拉麼河。主小路了種就小為廣不？</p>
 </blockquote>
-<p>这个幽默。</p>
-<h3 id="v0-8-0">v0.8.0</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.8.0 (2011-11-13)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Keep-alive support!</span><br><span class="line">* Complete removal of Urllib2</span><br><span class="line">* Complete removal of Poster</span><br><span class="line">* Complete removal of CookieJars</span><br><span class="line">* New ConnectionError raising</span><br><span class="line">* Safe_mode for error catching</span><br><span class="line">* prefetch parameter for request methods</span><br><span class="line">* OPTION method</span><br><span class="line">* Async pool size throttling</span><br><span class="line">* File uploads send real names</span><br></pre></td></tr></table></figure>
-<ul>
-<li>支持<code>keep_alive</code>参数（填坑来了）</li>
-<li>完全抛弃<code>urllib2</code></li>
-<li>完全抛弃<code>Poster</code></li>
-<li>完全抛弃<code>CookieJars</code></li>
-<li>新的<code>ConnectionError</code>抛出</li>
-<li>安全的处理异常机制。</li>
-<li>为请求方法加入<code>prefetch</code>参数</li>
-<li>新的<code>OPTION</code>方法</li>
-<li>节省Async池的大小</li>
-<li>上传文件发送真实文件名</li>
-</ul>
-<h4 id="1-支持keep-alive参数">1. 支持<code>keep_alive</code>参数</h4>
-<p>作者在v0.8.0全面转向<code>urllib3</code>，这是个第三方的轮子，它相对于<code>urllib2</code>最大的改进是可以重用 HTTP 连接，不用每个 request 都新建一个连接了。这样大大加快了大量 request 时的响应速度。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.poolmanager = PoolManager(</span><br><span class="line">    num_pools=self.config.get(<span class="string">'pool_connections'</span>),</span><br><span class="line">    maxsize=self.config.get(<span class="string">'pool_maxsize'</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">proxy = self.proxies.get(_p.scheme)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> proxy:</span><br><span class="line">    conn = poolmanager.proxy_from_url(url)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># Check to see if keep_alive is allowed.</span></span><br><span class="line">    <span class="keyword">if</span> self.config.get(<span class="string">'keep_alive'</span>):</span><br><span class="line">        conn = self._poolmanager.connection_from_url(url)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        conn = connectionpool.connection_from_url(url)</span><br></pre></td></tr></table></figure>
-<p><code>keep_alive</code>是默认打开的，在<code>urllib3</code>中维护了一个连接池，当对某个url进行请求时，会从连接池中取出该连接，然后发送请求时直接调用此连接的子方法。</p>
-<h4 id="2-完全抛弃urllib2">2. 完全抛弃<code>urllib2</code></h4>
-<p>删除了<code>models.py</code>中用来发送请求的<code>build_opener</code>函数，使用<code>urllib3</code>的<code>conn.urlopen</code>方法。</p>
-<h4 id="3-完全抛弃poster">3.完全抛弃<code>Poster</code></h4>
-<p>同上，用一个轮子换了另一个轮子。。</p>
-<h4 id="4-完全抛弃cookiejars">4. 完全抛弃<code>CookieJars</code></h4>
-<p>上测试</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_session_persistent_cookies</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">    s = requests.session()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Internally dispatched cookies are sent.</span></span><br><span class="line">    _c = &#123;<span class="string">'kenneth'</span>: <span class="string">'reitz'</span>, <span class="string">'bessie'</span>: <span class="string">'monke'</span>&#125;</span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>), cookies=_c)</span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Those cookies persist transparently.</span></span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Double check.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>), cookies=&#123;&#125;)</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Remove a cookie by setting it's value to None.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>), cookies=&#123;<span class="string">'bessie'</span>: <span class="keyword">None</span>&#125;)</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">del</span> _c[<span class="string">'bessie'</span>]</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Test session-level cookies.</span></span><br><span class="line">    s = requests.session(cookies=_c)</span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>))</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Have the server set a cookie.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>, <span class="string">'set'</span>, <span class="string">'k'</span>, <span class="string">'v'</span>), allow_redirects=<span class="keyword">True</span>)</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> <span class="string">'k'</span> <span class="keyword">in</span> c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># And server-set cookie persistience.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>))</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> <span class="string">'k'</span> <span class="keyword">in</span> c</span><br></pre></td></tr></table></figure>
-<p>处理响应的cookie:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">'set-cookie'</span> <span class="keyword">in</span> response.headers:</span><br><span class="line">    cookie_header = response.headers[<span class="string">'set-cookie'</span>]</span><br><span class="line"></span><br><span class="line">    c = SimpleCookie()</span><br><span class="line">    c.load(cookie_header)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> c.items():</span><br><span class="line">        cookies.update(&#123;k: v.value&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Save cookies in Response.</span></span><br><span class="line">response.cookies = cookies</span><br><span class="line">cookies = self.cookies</span><br><span class="line">self.cookies.update(r.cookies)</span><br></pre></td></tr></table></figure>
-<p>发送请求时：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> self.cookies:</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Skip if 'cookie' header is explicitly set.</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">'cookie'</span> <span class="keyword">not</span> <span class="keyword">in</span> self.headers:</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Simple cookie with our dict.</span></span><br><span class="line">        c = SimpleCookie()</span><br><span class="line">        <span class="keyword">for</span> (k, v) <span class="keyword">in</span> self.cookies.items():</span><br><span class="line">            c[k] = v</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Turn it into a header.</span></span><br><span class="line">        cookie_header = c.output(header=<span class="string">''</span>).strip()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Attach Cookie header to request.</span></span><br><span class="line">        self.headers[<span class="string">'Cookie'</span>] = cookie_header</span><br></pre></td></tr></table></figure>
-<p>使用了标准库里的<code>SimpleCookie</code>处理和生成cookie，而读取cookie全部都是字典类型。其实这些都是为了新的<code>urllib3</code>接口而服务的，从原来的各种Handler改成<code>conn.urlopen</code>以后原来的东西都相应的变化。</p>
-<h4 id="5-新的connectionerror">5. 新的<code>ConnectionError</code></h4>
-<h4 id="6-安全模式">6. 安全模式</h4>
-<p>直接看代码吧：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">except</span> MaxRetryError, e:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.config.get(<span class="string">'safe_mode'</span>, <span class="keyword">False</span>):</span><br><span class="line">        <span class="keyword">raise</span> ConnectionError(e)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        r = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> (_SSLError, _HTTPError), e:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.config.get(<span class="string">'safe_mode'</span>, <span class="keyword">False</span>):</span><br><span class="line">        <span class="keyword">raise</span> Timeout(<span class="string">'Request timed out.'</span>)</span><br></pre></td></tr></table></figure>
-<p>所谓安全模式就是不抛出异常。</p>
-<h4 id="7-新的prefetch参数">7. 新的<code>prefetch</code>参数</h4>
-<p>也是<code>urllib3</code>支持的参数，当为<code>True</code>时，在发送请求时就读取响应内容，否则跟原来一样调用<code>content</code>方法时读取。至于这个有什么用我还不是太懂，因为我发现当<code>prefetch=True</code>时读取<code>content</code>会出错并且无法获取响应内容，疑似BUG，先放在这里。</p>
-<h4 id="8-option请求方法">8. <code>OPTION</code>请求方法</h4>
-<p>Option 是一种 HTTP 的请求类型，返回当前 url 支持的全部方法。</p>
-<h4 id="9-节省-async-池的大小">9. 节省 async 池的大小</h4>
-<p>原来：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">jobs = [gevent.spawn(send, r) <span class="keyword">for</span> r <span class="keyword">in</span> requests]</span><br><span class="line">gevent.joinall(jobs)</span><br></pre></td></tr></table></figure>
-<p>现在：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> size:</span><br><span class="line">    pool = Pool(size)</span><br><span class="line">    pool.map(send, requests)</span><br><span class="line">    pool.join()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    jobs = [gevent.spawn(send, r) <span class="keyword">for</span> r <span class="keyword">in</span> requests]</span><br><span class="line">    gevent.joinall(jobs)</span><br></pre></td></tr></table></figure>
-<p>大概就是传入一个<code>size</code>参数，所有的异步请求都在这个有限大小的池里处理，嗯，又是池，真是一个好用的东西。</p>
-<h4 id="10-上传文件时包含真实文件名">10. 上传文件时包含真实文件名</h4>
-<p>看代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">guess_filename</span><span class="params">(obj)</span>:</span></span><br><span class="line">    <span class="string">"""Tries to guess the filename of the given object."""</span></span><br><span class="line">    name = getattr(obj, <span class="string">'name'</span>, <span class="keyword">None</span>)</span><br><span class="line">    <span class="keyword">if</span> name <span class="keyword">and</span> name[<span class="number">0</span>] != <span class="string">'&lt;'</span> <span class="keyword">and</span> name[<span class="number">-1</span>] != <span class="string">'&gt;'</span>:</span><br><span class="line">        <span class="keyword">return</span> name</span><br></pre></td></tr></table></figure>
-<p>嗯，怎么得到真实文件名？靠猜啊，没有就拉倒。</p>
-<h2 id="后记">后记</h2>
-<p>呼，终于整完了，v0.8.0 包含一个大的重构，我这个累的啊。第一次写这种东西，感觉不是很满意，代码太多了自己的试验不太够，总的也就能理解 80% 左右吧。不管怎样，谢谢大家的阅读，欢迎交流。</p>
+<p><em>From <a href="http://www.richyli.com/tool/loremipsum/" target="_blank" rel="external">亂數假文產生器 - Chinese Lorem Ipsum</a></em></p>
 ]]></content>
     </entry>
     
     <entry>
-      <title><![CDATA[NexT 主题美化]]></title>
-      <url>http://frostming.win/2016/05/29/next-beautify/</url>
-      <content type="html"><![CDATA[<h2 id="自定义图标的设置">自定义图标的设置</h2>
-<p><a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="external">NexT</a> 主题自带<code>fontawesome</code>图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在<code>fontawesome</code>中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。</p>
-<h3 id="从-iconfont-下载图标">从 Iconfont 下载图标</h3>
-<p>通过搜索比较，最后发现阿里的 <a href="http://iconfont.cn/" target="_blank" rel="external">Iconfont</a> 能够满足我的要求，能够自选图标以后生成字体文件及 css 文件，使用起来也相当简单。</p>
-<a id="more"></a>
-<p><img src="http://o7u6qrlad.bkt.clouddn.com/f29192e4e5b493c00c35fb2dbeb58a02.png" alt=""><br>
-搜索需要的图标，点击一下，就会像加入购物车一下加到图标库，选完之后只需点一下下载就把包含 css 文件和所有格式的字体文件下载到本地啦。</p>
-<h3 id="集成到-next-主题中">集成到 NexT 主题中</h3>
-<p>简单地阅读了一下关于社交链接图标以后，得到了将 Iconfont 加入主题的步骤如下：</p>
-<ol>
-<li>将下载好的文件夹复制到主题文件夹下，我是放在了与<code>fontawesome</code>平行的<code>/source/vendors</code>下面。</li>
-<li>修改<code>/layout/_macro/sidebar.swig</code>的代码:</li>
-</ol>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"links-of-author motion-element"</span>&gt;</span></span><br><span class="line">  &#123;% if theme.social %&#125;</span><br><span class="line">    &#123;% for name, link in theme.social %&#125;</span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"links-of-author-item"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; link &#125;&#125;"</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">title</span>=<span class="string">"&#123;&#123; name &#125;&#125;"</span>&gt;</span></span><br><span class="line">          &#123;% if theme.social_icons.enable %&#125;</span><br><span class="line">            &#123;% set myicon = ["Zhihu", "Lofter"] %&#125;</span><br><span class="line">            &#123;% if myicon.toString().includes(name) %&#125;</span><br><span class="line">              <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"iconfont icon-&#123;&#123; theme.social_icons[name] | lower &#125;&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">            &#123;% else %&#125;</span><br><span class="line">              <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-fw fa-&#123;&#123; theme.social_icons[name] | default('globe') | lower &#125;&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">            &#123;% endif %&#125;</span><br><span class="line">          &#123;% endif %&#125;</span><br><span class="line">          &#123;&#123; name &#125;&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">  &#123;% endif %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>把加入的图标，加到<code>myicon</code>里面就可以啦。</p>
-<ol start="3">
-<li>修改主题的<code>layout/_partials/head.swig</code>文件，加入 iconfont 相关的 css 文件:</li>
-</ol>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;% set icon_font_uri = url_for(theme.vendors._internal + '/iconfont/iconfont.css') %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; icon_font_uri &#125;&#125;"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<ol start="4">
-<li>修改主题的<code>_config.yml</code>文件，在<code>social</code>和<code>social_icons</code>加入新的社交链接的图标，大功告成！</li>
-</ol>
-<h2 id="更换标题字体">更换标题字体</h2>
-<h3 id="更改-font-family">更改 font-family</h3>
-<p>NexT 中使用了 Google 的 Webfont 服务，只需要在<code>_config.yml</code>中指定对应的字体就可以了。然而，我是一个对排版有自己想法的人，希望标题的字体与正文字体区分开来，最好是一个用衬线体一个用非衬线体。而在配置文件中只是指定优先字体，并没有把整个<code>font-family</code> 替换掉。</p>
-<p>这个的解决方法就比较简单了，找到<code>/source/css/_variables/base.styl</code>这个文件，找到 font family 的设置，定义一个 serif 的字体族：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">$font-family-serif = Georgia, "Times New Roman", "Songti SC", "Songti TC", serif</span><br></pre></td></tr></table></figure>
-<p>然后再把<code>$font-family-headings</code>里面的<code>font-family-base</code>替换成<code>font-family-serif</code>就可以了。</p>
-<h3 id="webfont-解决方案">Webfont 解决方案</h3>
-<p>直接更改 font-family 有一点不足，它依赖于当前电脑上是否安装了这个字体，如果没有找到，就只好 fallback 了。而我希望我的博客在多数终端上有同样阅读体验，那么就可以使用 webfont，它的字体文件是存放在网络上的服务器里，前面提到的 Google Font 就是其中之一。<br>
-主要有以下 webfont 提供商：</p>
-<ul>
-<li><a href="https://typekit.com/foundries/adobe" target="_blank" rel="external">Adobe | Typekit</a></li>
-<li><a href="https://www.fonts.com/" target="_blank" rel="external">蒙纳字库 fonts.com</a></li>
-<li><a href="http://www.youziku.com/" target="_blank" rel="external">有字库</a></li>
-</ul>
-<p>到网站上注册一个账号再按说明一步一步操作就可以了，虽说很多字体都要付费，但对于个人博客来说免费服务就够用了。<br>
-除此之外，还可以自己外挂字体，通过压缩字体工具去掉不需要用到的字符来加快加载速度，推荐<a href="http://font-spider.org/" target="_blank" rel="external">字蛛</a></p>
-<h2 id="markdown-语法支持">Markdown 语法支持</h2>
-<p>hexo 自带的 markdown renderer 对于 markdown 的语法支持的并不是很够，推荐使用 <a href="https://github.com/celsomiranda/hexo-renderer-markdown-it" target="_blank" rel="external">markdown it</a> 引擎，它具有如下特性：</p>
+      <title><![CDATA[Tag Plugins]]></title>
+      <url>http://frostming.win/hexo-theme-landing-page/2013/12/25/tag-plugins/</url>
+      <content type="html"><![CDATA[<p>This post is used for testing tag plugins. See <a href="https://hexo.io/docs/tag-plugins.html" target="_blank" rel="external">docs</a> for more info.</p>
+<h2 id="block-quote">Block Quote</h2>
+<h3 id="normal-blockquote">Normal blockquote</h3>
 <blockquote>
-<ul>
-<li>Support for [Markdown], [GFM] and [CommonMark]</li>
-<li>Extensive configuration</li>
-<li>Faster than the default renderer | <code>hexo-renderer-marked</code></li>
-<li>Safe ID for headings</li>
-<li>Anchors for headings with ID</li>
-<li>Footnotes</li>
-<li><code>&lt;sub&gt;</code> H<sub>2</sub>O</li>
-<li><code>&lt;sup&gt;</code> x<sup>2</sup></li>
-<li><code>&lt;ins&gt;</code> <ins>Inserted</ins></li>
-</ul>
+<p>Praesent diam elit, interdum ut pulvinar placerat, imperdiet at magna.</p>
 </blockquote>
-<p>大功告成！重新生成你的页面用浏览器打开看看效果吧！</p>
-<p>我的博客托管在 github 上：<br>
-<a href="https://github.com/frostming/frostming.github.io" target="_blank" rel="external">https://github.com/frostming/frostming.github.io</a></p>
+<h3 id="quote-from-a-book">Quote from a book</h3>
+<blockquote><p>Do not just seek happiness for yourself. Seek happiness for all. Through kindness. Through mercy.</p>
+<footer><strong>David Levithan</strong><cite>Wide Awake</cite></footer></blockquote>
+<h3 id="quote-from-twitter">Quote from Twitter</h3>
+<blockquote><p>NEW: DevDocs now comes with syntax highlighting. <a href="http://devdocs.io" target="_blank" rel="external">http://devdocs.io</a></p>
+<footer><strong>@DevDocs</strong><cite><a href="https://twitter.com/devdocs/status/356095192085962752" target="_blank" rel="external">twitter.com/devdocs/status/356095192085962752</a></cite></footer></blockquote>
+<h3 id="quote-from-an-article-on-the-web">Quote from an article on the web</h3>
+<blockquote><p>Every interaction is both precious and an opportunity to delight.</p>
+<footer><strong>Seth Godin</strong><cite><a href="http://sethgodin.typepad.com/seths_blog/2009/07/welcome-to-island-marketing.html" target="_blank" rel="external">Welcome to Island Marketing</a></cite></footer></blockquote>
+<h2 id="code-block">Code Block</h2>
+<h3 id="normal-code-block">Normal code block</h3>
+<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">alert('Hello World!')<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<h3 id="with-caption">With caption</h3>
+<figure class="highlight cpp"><figcaption><span>Array.map</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">array</span>.<span class="built_in">map</span>(callback[, thisArg])</span><br></pre></td></tr></table></figure>
+<h3 id="with-caption-and-url">With caption and URL</h3>
+<figure class="highlight ruby"><figcaption><span>.compact</span><a href="http://underscorejs.org/#compact" target="_blank" rel="external">Underscore.js</a></figcaption><table><tr><td class="code"><pre><span class="line">.compact([<span class="number">0</span>, <span class="number">1</span>, <span class="literal">false</span>, <span class="number">2</span>, ‘’, <span class="number">3</span>]);</span><br><span class="line">=&gt; [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="gist">Gist</h3>
+<script src="//gist.github.com/2f66506c03d782837922cea61741f7be.js?file=TestCase.rb"></script>
+<h3 id="jsfiddle">jsFiddle</h3>
+<iframe scrolling="no" width="100%" height="300" src="http://jsfiddle.net/ccWP7/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
+<h2 id="pullquote">Pullquote</h2>
+<h3 id="left">Left</h3>
+<blockquote class="pullquote left"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+</blockquote>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tempus molestie arcu, et fringilla mauris placerat ac. Nullam luctus bibendum risus. Ut cursus sed ipsum feugiat egestas. Suspendisse elementum, velit eu consequat consequat, augue lorem dapibus libero, eget pulvinar dolor est sit amet nulla. Suspendisse a porta tortor, et posuere mi. Pellentesque ultricies, mi quis volutpat malesuada, erat felis vulputate nisl, ac congue ante tortor ut ante. Proin aliquam sem vel mauris tincidunt, eget scelerisque tortor euismod. Nulla tincidunt enim nec commodo dictum. Mauris id sapien et orci gravida luctus id ut dui. In vel vulputate odio. Duis vel turpis molestie, scelerisque enim eu, lobortis eros. Cras at ipsum gravida, sagittis ante vel, viverra tellus. Nunc mauris turpis, elementum ullamcorper nisl pretium, ultrices cursus justo. Mauris porttitor commodo eros, ac ornare orci interdum in. Cras fermentum cursus leo sed mattis. In dignissim lorem sem, sit amet elementum mauris venenatis ac.</p>
+<h3 id="right">Right</h3>
+<blockquote class="pullquote right"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+</blockquote>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ligula justo, lobortis sit amet semper vel, dignissim sit amet libero. Praesent ac tempus ligula. Maecenas at gravida odio. Etiam tristique volutpat lacus eu faucibus. Donec non tempus arcu. Phasellus adipiscing, mauris nec mollis egestas, ipsum nunc auctor velit, et rhoncus lorem ipsum at ante. Praesent et sem in velit volutpat auctor. Duis vel mauris nulla. Maecenas mattis interdum ante, quis sagittis nibh cursus et. Nulla facilisi. Morbi convallis gravida tortor, ut fermentum enim gravida et. Nunc vel dictum nisl, non ultrices libero. Proin vestibulum felis eget orci consectetur lobortis. Vestibulum augue nulla, iaculis vitae augue vehicula, dignissim ultrices libero. Sed imperdiet urna et quam ultrices tincidunt nec ac magna. Etiam vel pharetra elit.</p>
 ]]></content>
     </entry>
     
     <entry>
-      <title><![CDATA[在博客与笔记中使用Markdown]]></title>
-      <url>http://frostming.win/2016/05/25/markdown-in-blog/</url>
-      <content type="html"><![CDATA[<h2 id="博客的搭建">博客的搭建</h2>
+      <title><![CDATA[Videos]]></title>
+      <url>http://frostming.win/hexo-theme-landing-page/2013/12/25/videos/</url>
+      <content type="html"><![CDATA[<p>This is a video test post.</p>
+<p><strong>Youtube</strong></p>
+<div class="video-container"><iframe src="//www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe></div>
+<p><strong>Vimeo</strong></p>
+<div class="video-container"><iframe src="//player.vimeo.com/video/82090131" frameborder="0" allowfullscreen></iframe></div>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[日本語テスト]]></title>
+      <url>http://frostming.win/hexo-theme-landing-page/2013/12/24/%E6%97%A5%E6%9C%AC%E8%AA%9E%E6%B8%AC%E8%A9%A6/</url>
+      <content type="html"><![CDATA[<p>This is a Japanese test post.</p>
+<p>私は昨日ついにその助力家というのの上よりするたなけれ。</p>
+<p>最も今をお話団はちょうどこの前後なかろでくらいに困りがいるたをは帰着考えたなかって、そうにもするでうたらない。</p>
+<p>がたを知っないはずも同時に九月をいよいよたありた。</p>
+<p>もっと槙さんにぼんやり金少し説明にえた自分大した人私か影響にというお関係たうませないが、この次第も私か兄具合に使うて、槙さんののに当人のあなたにさぞご意味と行くて私個人が小尊敬を聴いように同時に同反抗に集っだうて、いよいよまず相当へあっうからいだ事をしでなけれ。</p>
 <blockquote>
-<p>前段时间在 StackOverflow 与 Quora 上我接触到了 Markdown 标记语言，瞬时就被这种易用、美观、高逼格的东西所俘获，顿时深感之前在 QQ 空间之类的平台上写博的体验之差，往往调格式就要耗费很多的时间。于是就有了迁移到另一个博客平台的想法，用过的产品有：</p>
+<p>それでそれでもご時日をしはずはたったいやと突き抜けるますて、その元がは行ったてという獄を尽すていけですた。</p>
 </blockquote>
-<a id="more"></a>
-<ul>
-<li><a href="http://www.jianshu.com" target="_blank" rel="external">简书</a>：包含社交功能的 Markdown 博客网站。</li>
-<li><a href="https://www.zybuluo.com/mdeditor" target="_blank" rel="external">CmdMarkdown</a>：简单纯粹，功能强大，丰富语法支持，但是自带样式我不是很喜欢。</li>
-<li>PyCharm 的 Markdown 插件：HTML样式简陋，高级功能需付费。</li>
-</ul>
-<p>这些我都不是特别满意，于是便萌生了干脆建一个个人博客的想法。通过多方考查，得到一个比较好的解决方案：Hexo + Github page。Github page 是基于静态页面的免费个人网站，而 Hexo 刚好就是基于 node.js 的静态博客，并且原生支持 Markdown 还有海量美观的模板。<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
-<h2 id="文章云存储">文章云存储</h2>
-<p>博客建好以后，那么问题来了：如何随时随地地把想法记录下来以待日后放进博客？这就需要一个云同步的平台，有以下几种选择：</p>
-<ul>
-<li>将 markdown 文件托管到 GitHub</li>
-<li>使用笔记应用存取 Markdown 文件</li>
-</ul>
-<p>目前很多 markdown 编辑器都支持保存到 github 或者笔记应用，最终我选择了后者。原因是我只在家用的笔记本上配置了博客的环境，所以只能在家里更新博客。而且我总归需要一个笔记应用来存放笔记。</p>
-<h2 id="笔记应用">笔记应用</h2>
-<p>考察了 Onenote，有道云，印象笔记之后我最终选择了印象笔记。首先是因为界面美观，其次是支持丰富的扩展，在 Chrome 上的 <a href="https://www.yinxiang.com/webclipper/" target="_blank" rel="external">印象剪藏</a>也是相当好用，而相比而言有道云虽然界面简洁大方，但 Chrome 的扩展就大为不及了。</p>
-<h2 id="markdown-编辑器">Markdown 编辑器</h2>
-<p>那么下一步就是选用合适的编辑器了，有以下几点要求：</p>
-<ul>
-<li>需要有网页端</li>
-<li>支持保存到 Evernote</li>
-<li>双栏预览功能</li>
-<li>语法支持不能太少</li>
-<li>界面不能太难看</li>
-</ul>
-<p>综合以上考虑，<a href="http://soft.xiaoshujiang.com/" target="_blank" rel="external">小书匠</a>无疑是一个很好的选择，全平台支持，并且有网页版，支持保存到 dropbox, github, evernote 等。还自带图床，简直不要更赞。<br>
-<img src="http://soft.xiaoshujiang.com/img/bind.png" alt=""></p>
-<p>好了，一切都搞定了，赶紧来试一下吧，把文章同步到印象笔记后，文章末尾会附上一个 md 源文件的链接，这样你在任何一台电脑上只要下载这个文件再导入小书匠就可以继续编辑了。</p>
-<hr class="footnotes-sep">
-<section class="footnotes">
-<ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p><a href="http://www.jianshu.com/p/465830080ea9" target="_blank" rel="external">HEXO+Github,搭建属于自己的博客 - 简书</a> <a href="#fnref1" class="footnote-backref">↩</a></p>
-</li>
-</ol>
-</section>
+<p>この中道具の日その学校はあなたごろがすまなりかとネルソンさんの考えるですん、辺の事実ないというご盲従ありたですと、爺さんのためが薬缶が結果までの箸の当時してならて、多少の十月にためからそういう上からとにかくしましないと触れべきものたで、ないうですと多少お人達したのでたた。</p>
+<p><em>From <a href="http://lipsum.sugutsukaeru.jp/index.cgi" target="_blank" rel="external">すぐ使えるダミーテキスト - 日本語 Lorem ipsum</a></em></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam justo turpis, tincidunt ac convallis id.]]></title>
+      <url>http://frostming.win/hexo-theme-landing-page/2013/12/24/long-title/</url>
+      <content type="html"><![CDATA[<p>This post has a long title. Make sure the title is displaying correctly.</p>
 ]]></content>
     </entry>
     
     <entry>
       <title><![CDATA[Hello World]]></title>
-      <url>http://frostming.win/2016/05/21/hello-world/</url>
+      <url>http://frostming.win/hexo-theme-landing-page/2013/12/24/hello-world/</url>
       <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<a id="more"></a>
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="create-a-new-post">Create a new post</h3>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
