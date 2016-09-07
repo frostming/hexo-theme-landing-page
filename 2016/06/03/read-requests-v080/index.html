@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="Frost, fming, frostming, Frost Ming, Frost 明, 明希, Ming Photos, Python, 摄影">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Requests源码阅读v0.8.0 - Frost的博客 | Frost&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://frostming.win/2016/06/03/read-requests-v080/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <link href='//fonts.goolgeapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.goolgeapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Frost&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://frostming.win/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('http://docs.python-requests.org/en/master/_static/requests-sidebar.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#python" title="python">python</a>
+                        
+                          <a class="tag" href="/tags/#源码阅读" title="源码阅读">源码阅读</a>
+                        
+                          <a class="tag" href="/tags/#requests" title="requests">requests</a>
+                        
+                    </div>
+                    <h1>Requests源码阅读v0.8.0</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Frost Ming on
+                        2016-06-03
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到<a href="https://github.com/wangshunping/read_requests" target="_blank" rel="external">@wangshunping</a>的<strong>read requests</strong>，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。<br>
+下面就开始吧！</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="目标">目标</h2>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.8.0 (2011-11-13)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Keep-alive support!</span><br><span class="line">* Complete removal of Urllib2</span><br><span class="line">* Complete removal of Poster</span><br><span class="line">* Complete removal of CookieJars</span><br><span class="line">* New ConnectionError raising</span><br><span class="line">* Safe_mode for error catching</span><br><span class="line">* prefetch parameter for request methods</span><br><span class="line">* OPTION method</span><br><span class="line">* Async pool size throttling</span><br><span class="line">* File uploads send real names</span><br></pre></td></tr></table></figure>
+<h2 id="源码阅读">源码阅读</h2>
+<h3 id="v0-7-1">v0.7.1</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.1 (2011-10-23)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Move away from urllib2 authentication handling.</span><br><span class="line">* Fully Remove AuthManager, AuthObject, &amp;c.</span><br><span class="line">* New tuple-based auth system with handler callbacks.</span><br></pre></td></tr></table></figure>
+<ul>
+<li>移除<code>urllib2</code>的authentication处理</li>
+<li>完全移除<code>AuthManager</code>, <code>AuthObject</code>和。。。&amp;c？</li>
+<li>新的元组形式的<code>auth</code>机制和处理器回调函数。</li>
+</ul>
+<h4 id="1-移除urllib2的authentication处理">1. 移除<code>urllib2</code>的authentication处理</h4>
+<p>添加一个<code>auth.py</code>文件，加入了自己实现的auth处理器，包含<code>http_basic</code>和<code>http_digest</code>，分别对应Headers中<code>Autohorization</code>以<code>Basic</code>和<code>Digest</code>开头的情形。</p>
+<h4 id="2-完全删除authmanager-authobject和-c？">2. 完全删除<code>AuthManager</code>, <code>AuthObject</code>和。。。&amp;c？</h4>
+<p>由于接口改用了session，于是就没有必要使用<code>AuthManager</code>储存认证信息。使用自己实现的处理器，完全删除<code>models.py</code>中相关的代码。</p>
+<h4 id="3-新的元组形式的auth机制和处理器回调函数">3. 新的元组形式的<code>auth</code>机制和处理器回调函数。</h4>
+<p>现在：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.auth = auth_dispatch(auth)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> self.auth:</span><br><span class="line">    auth_func, auth_args = self.auth</span><br><span class="line">    r = auth_func(self, *auth_args)</span><br><span class="line">    self.__dict__.update(r.__dict__)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dispatch</span><span class="params">(t)</span>:</span></span><br><span class="line">    <span class="string">"""Given an auth tuple, return an expanded version."""</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> t:</span><br><span class="line">        <span class="keyword">return</span> t</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        t = list(t)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Make sure they're passing in something.</span></span><br><span class="line">    <span class="keyword">assert</span> len(t) &gt;= <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># If only two items are passed in, assume HTTPBasic.</span></span><br><span class="line">    <span class="keyword">if</span> (len(t) == <span class="number">2</span>):</span><br><span class="line">        t.insert(<span class="number">0</span>, <span class="string">'basic'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Allow built-in string referenced auths.</span></span><br><span class="line">    <span class="keyword">if</span> isinstance(t[<span class="number">0</span>], basestring):</span><br><span class="line">        <span class="keyword">if</span> t[<span class="number">0</span>] <span class="keyword">in</span> (<span class="string">'basic'</span>, <span class="string">'forced_basic'</span>):</span><br><span class="line">            t[<span class="number">0</span>] = http_basic</span><br><span class="line">        <span class="keyword">elif</span> t[<span class="number">0</span>] <span class="keyword">in</span> (<span class="string">'digest'</span>,):</span><br><span class="line">            t[<span class="number">0</span>] = http_digest</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Return a custom callable.</span></span><br><span class="line">    <span class="keyword">return</span> (t[<span class="number">0</span>], tuple(t[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
+<p>通过<code>dispatch</code>函数，若传入二元元组，则默认前面加上<code>'basic'</code>，使用<code>http_basic</code>处理，否则需要指定处理类型。支持自定义处理器：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pizza_auth</span><span class="params">(r, username)</span>:</span></span><br><span class="line">    <span class="string">"""Attaches HTTP Pizza Authentication to the given Request object.</span><br><span class="line">    """</span></span><br><span class="line">    r.headers[<span class="string">'X-Pizza'</span>] = username</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> r</span><br><span class="line"></span><br><span class="line">Then, we can make a request using our Pizza Auth::</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>requests.get(<span class="string">'http://pizzabin.org/admin'</span>, auth=(pizza_auth, <span class="string">'kenneth'</span>))</span><br><span class="line">&lt;Response [<span class="number">200</span>]&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="v0-7-2">v0.7.2</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.2 (2011-10-23)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* PATCH Fix.</span><br></pre></td></tr></table></figure>
+<p>修正BUG（略）</p>
+<h3 id="v0-7-3">v0.7.3</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.3 (2011-10-23)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Digest Auth fix.</span><br></pre></td></tr></table></figure>
+<p>修正Digest Auth的BUG<br>
+主要是删除了一些debug的print语句，估计当时作者脑子也不清醒了，我还注意到他改了一个文件头的&quot;~&quot;的长度，是有够无聊的！0.7.1到0.7.3都在一个多小时内完成，小伙子动力很足啊！</p>
+<h3 id="v0-7-4">v0.7.4</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.4 (2011-10-26)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Sesion Hooks fix.</span><br></pre></td></tr></table></figure>
+<p>主要是一些代码的美化和小BUG，给<code>session</code>加了一个<code>keep_alive</code>参数，暂时还没用上，应该是为以后做准备。</p>
+<h3 id="v0-7-5">v0.7.5</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.5 (2001-11-04)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Response.content = None if there was an invalid repsonse.</span><br><span class="line">* Redirection auth handling.</span><br></pre></td></tr></table></figure>
+<p>咦？日期穿越了10年？哈哈，什么时候会改呢？</p>
+<ul>
+<li>如果是无效响应则<code>content = None</code></li>
+<li>重定向认证处理</li>
+</ul>
+<h4 id="1-无效响应content-none">1. 无效响应<code>content = None</code></h4>
+<p>加入一个Error Handling:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    self._content = self.raw.read()</span><br><span class="line"><span class="keyword">except</span> AttributeError:</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-重定向认证处理">2. 重定向认证处理</h4>
+<p>一个BUG，原来是用dispatch后的auth构造新的Request会导致错误，现在使用<code>self._auth</code>保存原始auth并传入新的Request对象。</p>
+<h3 id="v0-7-6">v0.7.6</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.7.6 (2011-11-07)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Digest authentication bugfix (attach query data to path)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Digest 认证的BUG 修复（在路径后附上query）</li>
+</ul>
+<p>原来：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">path = urlparse(r.request.url).path</span><br></pre></td></tr></table></figure>
+<p>现在：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p_parsed = urlparse(r.request.url)</span><br><span class="line">path = p_parsed.path + p_parsed.query</span><br></pre></td></tr></table></figure>
+<p>我注意到日期问题已经修复了：</p>
+<blockquote>
+<p>Updated your 2001, to 2011… unless you went back in time ;)</p>
+</blockquote>
+<p>这个幽默。</p>
+<h3 id="v0-8-0">v0.8.0</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0.8.0 (2011-11-13)</span><br><span class="line">++++++++++++++++++</span><br><span class="line"></span><br><span class="line">* Keep-alive support!</span><br><span class="line">* Complete removal of Urllib2</span><br><span class="line">* Complete removal of Poster</span><br><span class="line">* Complete removal of CookieJars</span><br><span class="line">* New ConnectionError raising</span><br><span class="line">* Safe_mode for error catching</span><br><span class="line">* prefetch parameter for request methods</span><br><span class="line">* OPTION method</span><br><span class="line">* Async pool size throttling</span><br><span class="line">* File uploads send real names</span><br></pre></td></tr></table></figure>
+<ul>
+<li>支持<code>keep_alive</code>参数（填坑来了）</li>
+<li>完全抛弃<code>urllib2</code></li>
+<li>完全抛弃<code>Poster</code></li>
+<li>完全抛弃<code>CookieJars</code></li>
+<li>新的<code>ConnectionError</code>抛出</li>
+<li>安全的处理异常机制。</li>
+<li>为请求方法加入<code>prefetch</code>参数</li>
+<li>新的<code>OPTION</code>方法</li>
+<li>节省Async池的大小</li>
+<li>上传文件发送真实文件名</li>
+</ul>
+<h4 id="1-支持keep-alive参数">1. 支持<code>keep_alive</code>参数</h4>
+<p>作者在v0.8.0全面转向<code>urllib3</code>，这是个第三方的轮子，它相对于<code>urllib2</code>最大的改进是可以重用 HTTP 连接，不用每个 request 都新建一个连接了。这样大大加快了大量 request 时的响应速度。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.poolmanager = PoolManager(</span><br><span class="line">    num_pools=self.config.get(<span class="string">'pool_connections'</span>),</span><br><span class="line">    maxsize=self.config.get(<span class="string">'pool_maxsize'</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">proxy = self.proxies.get(_p.scheme)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> proxy:</span><br><span class="line">    conn = poolmanager.proxy_from_url(url)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># Check to see if keep_alive is allowed.</span></span><br><span class="line">    <span class="keyword">if</span> self.config.get(<span class="string">'keep_alive'</span>):</span><br><span class="line">        conn = self._poolmanager.connection_from_url(url)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        conn = connectionpool.connection_from_url(url)</span><br></pre></td></tr></table></figure>
+<p><code>keep_alive</code>是默认打开的，在<code>urllib3</code>中维护了一个连接池，当对某个url进行请求时，会从连接池中取出该连接，然后发送请求时直接调用此连接的子方法。</p>
+<h4 id="2-完全抛弃urllib2">2. 完全抛弃<code>urllib2</code></h4>
+<p>删除了<code>models.py</code>中用来发送请求的<code>build_opener</code>函数，使用<code>urllib3</code>的<code>conn.urlopen</code>方法。</p>
+<h4 id="3-完全抛弃poster">3.完全抛弃<code>Poster</code></h4>
+<p>同上，用一个轮子换了另一个轮子。。</p>
+<h4 id="4-完全抛弃cookiejars">4. 完全抛弃<code>CookieJars</code></h4>
+<p>上测试</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_session_persistent_cookies</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">    s = requests.session()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Internally dispatched cookies are sent.</span></span><br><span class="line">    _c = &#123;<span class="string">'kenneth'</span>: <span class="string">'reitz'</span>, <span class="string">'bessie'</span>: <span class="string">'monke'</span>&#125;</span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>), cookies=_c)</span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Those cookies persist transparently.</span></span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Double check.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>), cookies=&#123;&#125;)</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Remove a cookie by setting it's value to None.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>), cookies=&#123;<span class="string">'bessie'</span>: <span class="keyword">None</span>&#125;)</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">del</span> _c[<span class="string">'bessie'</span>]</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Test session-level cookies.</span></span><br><span class="line">    s = requests.session(cookies=_c)</span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>))</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line">    <span class="keyword">assert</span> c == _c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Have the server set a cookie.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>, <span class="string">'set'</span>, <span class="string">'k'</span>, <span class="string">'v'</span>), allow_redirects=<span class="keyword">True</span>)</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> <span class="string">'k'</span> <span class="keyword">in</span> c</span><br><span class="line"></span><br><span class="line">    <span class="comment"># And server-set cookie persistience.</span></span><br><span class="line">    r = s.get(httpbin(<span class="string">'cookies'</span>))</span><br><span class="line">    c = json.loads(r.content).get(<span class="string">'cookies'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> <span class="string">'k'</span> <span class="keyword">in</span> c</span><br></pre></td></tr></table></figure>
+<p>处理响应的cookie:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">'set-cookie'</span> <span class="keyword">in</span> response.headers:</span><br><span class="line">    cookie_header = response.headers[<span class="string">'set-cookie'</span>]</span><br><span class="line"></span><br><span class="line">    c = SimpleCookie()</span><br><span class="line">    c.load(cookie_header)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> c.items():</span><br><span class="line">        cookies.update(&#123;k: v.value&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Save cookies in Response.</span></span><br><span class="line">response.cookies = cookies</span><br><span class="line">cookies = self.cookies</span><br><span class="line">self.cookies.update(r.cookies)</span><br></pre></td></tr></table></figure>
+<p>发送请求时：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> self.cookies:</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Skip if 'cookie' header is explicitly set.</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">'cookie'</span> <span class="keyword">not</span> <span class="keyword">in</span> self.headers:</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Simple cookie with our dict.</span></span><br><span class="line">        c = SimpleCookie()</span><br><span class="line">        <span class="keyword">for</span> (k, v) <span class="keyword">in</span> self.cookies.items():</span><br><span class="line">            c[k] = v</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Turn it into a header.</span></span><br><span class="line">        cookie_header = c.output(header=<span class="string">''</span>).strip()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Attach Cookie header to request.</span></span><br><span class="line">        self.headers[<span class="string">'Cookie'</span>] = cookie_header</span><br></pre></td></tr></table></figure>
+<p>使用了标准库里的<code>SimpleCookie</code>处理和生成cookie，而读取cookie全部都是字典类型。其实这些都是为了新的<code>urllib3</code>接口而服务的，从原来的各种Handler改成<code>conn.urlopen</code>以后原来的东西都相应的变化。</p>
+<h4 id="5-新的connectionerror">5. 新的<code>ConnectionError</code></h4>
+<h4 id="6-安全模式">6. 安全模式</h4>
+<p>直接看代码吧：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">except</span> MaxRetryError, e:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.config.get(<span class="string">'safe_mode'</span>, <span class="keyword">False</span>):</span><br><span class="line">        <span class="keyword">raise</span> ConnectionError(e)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        r = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> (_SSLError, _HTTPError), e:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> self.config.get(<span class="string">'safe_mode'</span>, <span class="keyword">False</span>):</span><br><span class="line">        <span class="keyword">raise</span> Timeout(<span class="string">'Request timed out.'</span>)</span><br></pre></td></tr></table></figure>
+<p>所谓安全模式就是不抛出异常。</p>
+<h4 id="7-新的prefetch参数">7. 新的<code>prefetch</code>参数</h4>
+<p>也是<code>urllib3</code>支持的参数，当为<code>True</code>时，在发送请求时就读取响应内容，否则跟原来一样调用<code>content</code>方法时读取。至于这个有什么用我还不是太懂，因为我发现当<code>prefetch=True</code>时读取<code>content</code>会出错并且无法获取响应内容，疑似BUG，先放在这里。</p>
+<h4 id="8-option请求方法">8. <code>OPTION</code>请求方法</h4>
+<p>Option 是一种 HTTP 的请求类型，返回当前 url 支持的全部方法。</p>
+<h4 id="9-节省-async-池的大小">9. 节省 async 池的大小</h4>
+<p>原来：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">jobs = [gevent.spawn(send, r) <span class="keyword">for</span> r <span class="keyword">in</span> requests]</span><br><span class="line">gevent.joinall(jobs)</span><br></pre></td></tr></table></figure>
+<p>现在：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> size:</span><br><span class="line">    pool = Pool(size)</span><br><span class="line">    pool.map(send, requests)</span><br><span class="line">    pool.join()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    jobs = [gevent.spawn(send, r) <span class="keyword">for</span> r <span class="keyword">in</span> requests]</span><br><span class="line">    gevent.joinall(jobs)</span><br></pre></td></tr></table></figure>
+<p>大概就是传入一个<code>size</code>参数，所有的异步请求都在这个有限大小的池里处理，嗯，又是池，真是一个好用的东西。</p>
+<h4 id="10-上传文件时包含真实文件名">10. 上传文件时包含真实文件名</h4>
+<p>看代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">guess_filename</span><span class="params">(obj)</span>:</span></span><br><span class="line">    <span class="string">"""Tries to guess the filename of the given object."""</span></span><br><span class="line">    name = getattr(obj, <span class="string">'name'</span>, <span class="keyword">None</span>)</span><br><span class="line">    <span class="keyword">if</span> name <span class="keyword">and</span> name[<span class="number">0</span>] != <span class="string">'&lt;'</span> <span class="keyword">and</span> name[<span class="number">-1</span>] != <span class="string">'&gt;'</span>:</span><br><span class="line">        <span class="keyword">return</span> name</span><br></pre></td></tr></table></figure>
+<p>嗯，怎么得到真实文件名？靠猜啊，没有就拉倒。</p>
+<h2 id="后记">后记</h2>
+<p>呼，终于整完了，v0.8.0 包含一个大的重构，我这个累的啊。第一次写这种东西，感觉不是很满意，代码太多了自己的试验不太够，总的也就能理解 80% 左右吧。不管怎样，谢谢大家的阅读，欢迎交流。</p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="2016/06/03/read-requests-v080/"
+                    data-title="Requests源码阅读v0.8.0"
+                    data-url="http://frostming.win/2016/06/03/read-requests-v080/"
+                    data-images="http://frostming.win/2016/06/03/read-requests-v080/http://docs.python-requests.org/en/master/_static/requests-sidebar.png"
+                    data-content="
+工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技... | Frost的博客 | Frost&#39;s Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/06/13/python-list/" data-toggle="tooltip" data-placement="top" title="Python 列表小技巧">
+                                &larr; Previous Post
+                                <br><span>Python 列表小技巧</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/05/29/next-beautify/" data-toggle="tooltip" data-placement="top" title="NexT 主题美化">
+                                Next Post &rarr;
+                                <br><span>NexT 主题美化</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="2016/06/03/read-requests-v080/"
+                        data-title="Requests源码阅读v0.8.0"
+                        data-url="http://frostming.win/2016/06/03/read-requests-v080/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#python" title="python">python</a>
+                        
+                          <a class="tag" href="/tags/#源码阅读" title="源码阅读">源码阅读</a>
+                        
+                          <a class="tag" href="/tags/#requests" title="requests">requests</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://frostming.lofter.com/" target="_blank">Frost&#39;s Lofter</a></li>
+                    
+                        <li><a href="https://tuchong.com/825884/" target="_blank">Frost&#39;s 图虫</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'frostming';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/ming-xi-47">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/frostanne">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/frostming">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/希-明-33452ba2">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Frost&#39;s Blog 2016
+                    <br>
+                    Powered by <a href="https://hexo.io/">Hexo</a> |
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://frostming.win/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '36728230b82aac414fe6220148b2369f';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://frostming.win/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

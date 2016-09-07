@@ -1,27 +1,42 @@
 <!DOCTYPE html>
-<html>
-    <head>
+<html lang="en">
 
+<!-- Head tag -->
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Frost Ming">
+    <meta name="keyword"  content="Frost, fming, frostming, Frost Ming, Frost 明, 明希, Ming Photos, Python, 摄影">
+    <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Frost's Blog</title>
+    <title>
+        
+          Frost的博客 | Frost&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://frostming.win/">
 
     <!-- Bootstrap Core CSS -->
-    <link href="/hexo-theme-landing-page/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link href="/hexo-theme-landing-page/css/landing-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
 
-    <!-- Code Highlight CSS -->
-    <link href="/hexo-theme-landing-page/css/highlight.css" rel="stylesheet">
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
 
     <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
     <link href="http://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+
+    <link href='//fonts.goolgeapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.goolgeapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -30,368 +45,673 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- ga & ba script hoook -->
+    <script></script>
 </head>
 
-    <body>
-        <!-- Navigation -->
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand page-scroll" href="/hexo-theme-landing-page/">Frost's Blog</a>
+            <a class="navbar-brand" href="/">Frost&#39;s Blog</a>
         </div>
+
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-                
-            	<li>
-                    <a class="page-scroll" href="/hexo-theme-landing-page/about">About</a>
-                </li>
-                
-            </ul>
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
         </div>
         <!-- /.navbar-collapse -->
     </div>
     <!-- /.container -->
 </nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
 
-        
-<section id="home">
-<!-- Header -->
-	<div class="intro-header">
-
-		<div class="container">
-
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="intro-message">
-						<h1>Frost's Blog</h1>
-						<h3>只要心还透明，就能折射希望</h3>
-						<hr class="intro-divider">
-						<ul class="list-inline intro-social-buttons">
-							
-							<li>
-								<a href="https://www.zhihu.com/people/ming-xi-47" class="btn btn-default btn-lg"><i class="fa fa-weibo fa-fw"></i> <span class="network-name">weibo</span></a>
-							</li>
-							
-							<li>
-								<a href="https://github.com/frostming/" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">github</span></a>
-							</li>
-							
-							<li>
-								<a href="https://www.linkedin.com/in/%E5%B8%8C-%E6%98%8E-33452ba2" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">linkedin</span></a>
-							</li>
-							
-						</ul>
-					</div>
-				</div>
-			</div>
-
-		</div>
-		<!-- /.container -->
-
-	</div>
-	<!-- /.intro-header -->
-</section>
-
-        
-<section id="services">
-<!-- Page Content -->
-
-
-	
-	
-    <div class="content-section-a">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-5 col-sm-6">
-					<hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <a href="2014/12/25/中文测试/"><h2 class="section-heading">中文测试</h2></a>
-					<p class="post-meta">Posted by Frost Ming on 2014-12-25</p>
-                    <div class="lead">
-					
-                        
-                        This is a Chinese test post.
-善我王上魚、產生資西員合兒臉趣論。畫衣生這著爸毛親可時，安程幾？合學作。觀經而作建。都非子作這！法如言子你關！手師也。
-以也座論頭室業放。要車時地變此親不老高小是統習直麼調未，行年香一？
-就竟在，是我童示讓利分和異種百路關母信過明驗有個歷洋中前合著區亮風值新底車有正結，進快保的行戰從：弟除文辦條國備當來際年每小腳識世可的的外的廣下歌洲保輪市
-                    ...
-                    
-					</div>
-					
-						<a class="read-more" href="2014/12/25/中文测试/">Read More</a>
-					
-                </div>
-                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-				
-                    <img class="img-responsive" src="http://blog.zhangruipeng.me/hexo-theme-hueman/gallery/music2.jpg" alt="">
-				
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
-    </div>
-    <!-- /.content-section-a -->
-	
-
-	
-	
-	<div class="content-section-b">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-					<hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <a href="2013/12/25/tag-plugins/"><h2 class="section-heading">Tag Plugins</h2></a>
-					<p class="post-meta">Posted by Frost Ming on 2013-12-25</p>
-                    <div class="lead">
-					
-                        
-                        This post is used for testing tag plugins. See docs for more info.
-Block Quote
-Normal blockquote
-
-Praesent diam elit, interdum ut pulvinar placerat, imperdiet at magna.
-
-Quote from a book
-Do not just 
-                    ...
-                    
-				</div>
-				
-					<a class="read-more" href="2013/12/25/tag-plugins/">Read More</a>
-				
-                </div>
-                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-				
-                    <img class="img-responsive" src="https://dn-hinpc.qbox.me/20160825-stock-photo-125631967.jpg" alt="">
-				
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-    </div>
-    <!-- /.content-section-b -->
-    
-
-	
-	
-    <div class="content-section-a">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-5 col-sm-6">
-					<hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <a href="2013/12/25/videos/"><h2 class="section-heading">Videos</h2></a>
-					<p class="post-meta">Posted by Frost Ming on 2013-12-25</p>
-                    <div class="lead">
-					
-                        
-                        This is a video test post.
-Youtube
-
-Vimeo
-
-
-                    
-                    
-					</div>
-					
-                </div>
-                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-				
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
-    </div>
-    <!-- /.content-section-a -->
-	
-
-	
-	
-	<div class="content-section-b">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-					<hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <a href="2013/12/24/日本語測試/"><h2 class="section-heading">日本語テスト</h2></a>
-					<p class="post-meta">Posted by Frost Ming on 2013-12-24</p>
-                    <div class="lead">
-					
-                        
-                        This is a Japanese test post.
-私は昨日ついにその助力家というのの上よりするたなけれ。
-最も今をお話団はちょうどこの前後なかろでくらいに困りがいるたをは帰着考えたなかって、そうにもするでうたらない。
-がたを知っないはずも同時に九月をいよいよたありた。
-もっと槙さんにぼんやり金少し説明にえた自分大した人私か影響にというお関係たうませないが、この次第も私か兄具合に使うて、槙
-                    ...
-                    
-				</div>
-				
-					<a class="read-more" href="2013/12/24/日本語測試/">Read More</a>
-				
-                </div>
-                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-				
-                    <img class="img-responsive" src="http://blog.zhangruipeng.me/hexo-theme-minos/gallery/shoes.jpg" alt="">
-				
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-    </div>
-    <!-- /.content-section-b -->
-    
-
-	
-	
-    <div class="content-section-a">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-5 col-sm-6">
-					<hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <a href="2013/12/24/long-title/"><h2 class="section-heading">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam justo turpis, tincidunt ac convallis id.</h2></a>
-					<p class="post-meta">Posted by Frost Ming on 2013-12-24</p>
-                    <div class="lead">
-					
-                        
-                        This post has a long title. Make sure the title is displaying correctly.
-
-                    
-                    
-					</div>
-					
-                </div>
-                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-				
-                    <img class="img-responsive" src="/hexo-theme-landing-page/img/home-bg-o.jpg" alt="">
-				
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
-    </div>
-    <!-- /.content-section-a -->
-	
-
-
-  <nav class="pagination">
-    
-    
-  </nav>
-
-
-</section>
-
-        <section id="contact">
-	<div class="banner">
-		<div class="container">
-
-			<div class="row">
-				<div class="col-lg-6">
-					<h2>Contact Me:</h2>
-				</div>
-				<div class="col-lg-6">
-					<ul class="list-inline banner-social-buttons">
-						
-						<li>
-							<a href="https://www.zhihu.com/people/ming-xi-47" class="btn btn-default btn-lg"><i class="fa fa-weibo fa-fw"></i> <span class="network-name">weibo</span></a>
-						</li>
-						
-						<li>
-							<a href="https://github.com/frostming/" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">github</span></a>
-						</li>
-						
-						<li>
-							<a href="https://www.linkedin.com/in/%E5%B8%8C-%E6%98%8E-33452ba2" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">linkedin</span></a>
-						</li>
-						
-					</ul>
-				</div>
-			</div>
-
-		</div>
-		<!-- /.container -->
-
-	</div>
-</section>
-<!-- /.banner -->
-
-        <!-- Footer -->
-<div id="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                
-                <p class="copyright text-muted small">Copyright &copy; 2016 Frost Ming.
-                    All Rights Reserved.</p>
-            </div>
-            <div class="col-md-4">
-                Powered by <a href="http://hexo.io">Hexo</a>, theme ported from open source Bootstrap
-                theme <a href="https://github.com/frostming/hexo-theme-landing-page/">Landing Page</a>
-                <iframe
-                    style="margin-left: 2px; margin-bottom:-5px;"
-                    frameborder="0" scrolling="0" width="91px" height="20px"
-                    src="https://ghbtns.com/github-btn.html?user=frostming&repo=hexo-theme-landing-page&type=star&count=true" >
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-        <!-- jQuery Version 1.11.0 -->
-<script src="/hexo-theme-landing-page/js/jquery-1.11.0.js"></script>
-
-<!-- Plugin JavaScript -->
-    <script src="/hexo-theme-landing-page/js/jquery.easing.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="/hexo-theme-landing-page/js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="/hexo-theme-landing-page/js/landing-page.js"></script>
-
-        
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"frostming"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0]
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
 </script>
 
 
-    </body>
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/lens-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Frost&#39;s Blog</h1>
+                    <hr class="small">
+                    <span class="subheading">只要心还透明，就能折射希望</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2016/08/23/python-2-to-3/">
+        <h2 class="post-title">
+            如何编写向前兼容的 Python 代码
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+本文翻译自 Armin Ronacher 的文章 Writing Forwards Compatible Python Code
+
+对于网络应用来说，目前最安全的做法是仍然坚持使用 Python 2.x，即使是新的项目。一个简单的原因是现在 Python 3 还不支持足够多的库，而将已有的库移植到 Python 3 上是一个巨大的工作。当所有人都在抱怨升级到 Python 3 是如此艰难和......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-08-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/07/ordered-dict/">
+        <h2 class="post-title">
+            Python 有序字典的实现
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            最近在看 requests 源码的时候看到作者使用了 urllib3 中自己实现的OrderedDict类，收获颇多。自己实现一个数据结构往往是最需要算法和优化的地方，各种语法糖黑科技，相当的 Pythonic，看这种代码实在是一种享受。如果要我自己实现的话，自己会想到用一个有序存储的对象（如列表）去 hack 内部的实现，但这样有几个缺点：
+
+列表的插入、删除操作性能不如字典，复杂度是 O......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-07-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/06/15/beginning-of-summer/">
+        <h2 class="post-title">
+            六月夏至
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            七岁的那一年，抓住那只蝉，以为能抓住夏天
+阿信如烟
+对于六月的好感，从小时候起，就根植在我的记忆里。
+暑假就要来了，虽然已经告别学生时代多年，这个时节依然令我躁动。就像一周之中，最喜欢周五的晚上，它不同于周六的尽情狂欢，那是一种对于周末的未知与兴奋。六月，端午节可以放半天假到外婆家吃几枚粽子，中考可以放四天假，高考完可以去网吧包夜，期末考试完可以享受整整两个月的暑假。空气中弥漫的是西瓜的香，......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-06-15
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/06/13/python-list/">
+        <h2 class="post-title">
+            Python 列表小技巧
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+Python中的列表和字典一样，都是可变数据类型，与字符串和整型相比，它具有一些独特的特性。在平常使用中， 也会经常遇到一些坑，本文试着举一些例子并说明。
+
+
+列表的拷贝
+直接赋值
+&gt;&gt;&gt; a = [1,2,3]&gt;&gt;&gt; b = a&gt;&gt;&gt; a is bTrue&gt;&gt;&gt; a[0]=5&gt;&gt;&gt; a[5, 2, ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-06-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/06/03/read-requests-v080/">
+        <h2 class="post-title">
+            Requests源码阅读v0.8.0
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到@wangshunping的read requests，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-06-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/05/29/next-beautify/">
+        <h2 class="post-title">
+            NexT 主题美化
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            自定义图标的设置
+NexT 主题自带fontawesome图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在fontawesome中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。
+从 Iconfont 下载图标
+通过搜索比较，最后发现阿里的 Iconfont 能够满足我的要求，能够自选图标以后生成字......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-05-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/05/25/markdown-in-blog/">
+        <h2 class="post-title">
+            在博客与笔记中使用Markdown
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            博客的搭建
+
+前段时间在 StackOverflow 与 Quora 上我接触到了 Markdown 标记语言，瞬时就被这种易用、美观、高逼格的东西所俘获，顿时深感之前在 QQ 空间之类的平台上写博的体验之差，往往调格式就要耗费很多的时间。于是就有了迁移到另一个博客平台的想法，用过的产品有：
+
+
+
+简书：包含社交功能的 Markdown 博客网站。
+CmdMarkdown：简单纯粹，功能强大......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-05-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/05/21/hello-world/">
+        <h2 class="post-title">
+            Hello World
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+
+Q......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Frost Ming on
+        2016-05-21
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#python" title="python" rel="4">python</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#源码阅读" title="源码阅读" rel="2">源码阅读</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#hexo" title="hexo" rel="2">hexo</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/dora.png" />
+                        
+
+                        
+                            <p>写写代码，拍拍照片，看看电影。闲云野鹤，风轻云淡，闲庭信步。</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://www.zhihu.com/people/ming-xi-47">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="http://weibo.com/frostanne">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/frostming">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://www.linkedin.com/in/希-明-33452ba2">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://frostming.lofter.com/" target="_blank">Frost&#39;s Lofter</a></li>
+                    
+                        <li><a href="https://tuchong.com/825884/" target="_blank">Frost&#39;s 图虫</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/ming-xi-47">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/frostanne">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/frostming">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/希-明-33452ba2">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Frost&#39;s Blog 2016
+                    <br>
+                    Powered by <a href="https://hexo.io/">Hexo</a> |
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://frostming.win/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '36728230b82aac414fe6220148b2369f';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://frostming.win/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
 </html>
