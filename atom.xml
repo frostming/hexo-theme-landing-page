@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frostming.win/"/>
-  <updated>2016-09-07T12:04:15.000Z</updated>
+  <updated>2016-09-07T12:29:14.000Z</updated>
   <id>http://frostming.win/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://frostming.win/2016/08/23/python-2-to-3/"/>
     <id>http://frostming.win/2016/08/23/python-2-to-3/</id>
     <published>2016-08-23T07:13:23.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;本文翻译自 &lt;a href=&quot;http://lucumr.pocoo.org/about/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Armin Ronacher&lt;/a&gt; 的文章 &lt;a href=&quot;http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Writing Forwards Compatible Python Code&lt;/a&gt;&lt;/p&gt;
@@ -146,7 +146,7 @@
     <link href="http://frostming.win/2016/07/07/ordered-dict/"/>
     <id>http://frostming.win/2016/07/07/ordered-dict/</id>
     <published>2016-07-07T12:16:20.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;p&gt;最近在看 requests 源码的时候看到作者使用了 urllib3 中自己实现的&lt;code&gt;OrderedDict&lt;/code&gt;类，收获颇多。自己实现一个数据结构往往是最需要算法和优化的地方，各种语法糖黑科技，相当的 Pythonic，看这种代码实在是一种享受。如果要我自己实现的话，自己会想到用一个有序存储的对象（如列表）去 hack 内部的实现，但这样有几个缺点：&lt;/p&gt;
 &lt;ol&gt;
@@ -206,7 +206,7 @@
     <link href="http://frostming.win/2016/06/15/beginning-of-summer/"/>
     <id>http://frostming.win/2016/06/15/beginning-of-summer/</id>
     <published>2016-06-15T13:22:23.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;&lt;p&gt;七岁的那一年，抓住那只蝉，以为能抓住夏天&lt;/p&gt;
 &lt;footer&gt;&lt;strong&gt;阿信&lt;/strong&gt;&lt;cite&gt;如烟&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
@@ -238,7 +238,7 @@
     <link href="http://frostming.win/2016/06/13/python-list/"/>
     <id>http://frostming.win/2016/06/13/python-list/</id>
     <published>2016-06-13T05:00:00.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;Python中的列表和字典一样，都是可变数据类型，与字符串和整型相比，它具有一些独特的特性。在平常使用中， 也会经常遇到一些坑，本文试着举一些例子并说明。&lt;/p&gt;
@@ -294,7 +294,7 @@
     <link href="http://frostming.win/2016/06/03/read-requests-v080/"/>
     <id>http://frostming.win/2016/06/03/read-requests-v080/</id>
     <published>2016-06-03T10:00:00.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;blockquote&gt;
 &lt;p&gt;工作两年了，一直用python写一些API之类的东西，自动化框架也有涉及，却一直感觉对个人技能提升缓慢。决定开这个坑，是之前看到&lt;a href=&quot;https://github.com/wangshunping/read_requests&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;@wangshunping&lt;/a&gt;的&lt;strong&gt;read requests&lt;/strong&gt;，生动有趣，可惜0.8.0之后没有更新了。待我稍稍有了一点看源码的动力，就想接着下去写。真是漫漫长路啊，4409个commit，1000多个PR，更何况还有珠玉在前，实在没有把握能把这块硬骨头给啃下来，写一点是一点吧。作为python的小学生，一些错误在所难免，希望大家指出，互相讨论。&lt;br&gt;
@@ -434,7 +434,7 @@
     <link href="http://frostming.win/2016/05/29/next-beautify/"/>
     <id>http://frostming.win/2016/05/29/next-beautify/</id>
     <published>2016-05-29T02:36:39.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;自定义图标的设置&quot;&gt;自定义图标的设置&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/iissnan/hexo-theme-next&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; 主题自带&lt;code&gt;fontawesome&lt;/code&gt;图标字体，包含丰富的图标，但是，我想在博客介绍栏中加入个人的知乎、Lofter 链接，而这些图标没有包含在&lt;code&gt;fontawesome&lt;/code&gt;中。作为追求完美的人，怎么能容忍一个默认的地球图标出现呢？二话不说开始 Google。&lt;/p&gt;
@@ -517,7 +517,7 @@
     <link href="http://frostming.win/2016/05/25/markdown-in-blog/"/>
     <id>http://frostming.win/2016/05/25/markdown-in-blog/</id>
     <published>2016-05-25T11:00:00.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;h2 id=&quot;博客的搭建&quot;&gt;博客的搭建&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -585,7 +585,7 @@
     <link href="http://frostming.win/2016/05/21/hello-world/"/>
     <id>http://frostming.win/2016/05/21/hello-world/</id>
     <published>2016-05-21T10:00:00.000Z</published>
-    <updated>2016-09-07T12:04:15.000Z</updated>
+    <updated>2016-09-07T12:29:14.000Z</updated>
     
     <content type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
