@@ -1,6 +1,13 @@
 # -----------------------------------------------------
 # Langing Page Theme Configurations
-intro_image: /img/intro-bg.jpg
+cover_images:
+  - /img/intro-bg.jpg
+  - /img/about.jpg
+  - /img/cat-bg.jpg
+  - /img/contact-bg.jpg
+  - /img/home-bg.jpg
+  - /img/home-bg-o.jpg
+
 banner_image: /img/banner-bg.jpg
 
 # Navigation items
@@ -8,12 +15,14 @@ navigation:
     about: /about
 
 social:
-  - title: weibo
-    url: https://www.zhihu.com/people/ming-xi-47
+  - title:  zhihu
+    url: https://www.zhihu.com/people/frostming
   - title: github
     url: https://github.com/frostming/
   - title: linkedin
     url: https://www.linkedin.com/in/%E5%B8%8C-%E6%98%8E-33452ba2
+  - title: weibo
+    url: http://weibo.com/frostanne
 
 # Duoshuo comments & share
 duoshuo_shortname: frostming

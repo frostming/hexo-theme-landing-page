@@ -4,24 +4,52 @@
 <section id="home">
 <!-- Header -->
 	<div class="intro-header">
-
+    <div class="intro-message">
 		<div class="container">
 
 			<div class="row">
-				<div class="col-lg-12">
-					<div class="intro-message">
+
+          <div class="col-lg-2">
+            <a class="prev-img"><i class="fa fa-chevron-left fa-fw"></i></a>
+          </div>
+				  <div class="col-lg-8">
 						<h1>{{ config.title }}</h1>
 						<h3>{{ config.subtitle }}</h3>
 						<hr class="intro-divider">
 						<ul class="list-inline intro-social-buttons">
-							{% for social in theme.social %}
 							<li>
-								<a href="{{ social.url }}" class="btn btn-default btn-lg"><i class="fa fa-{{ social.title }} fa-fw"></i> <span class="network-name">{{ social.title }}</span></a>
+								<a href="#services" class="page-scroll btn btn-default btn-lg">
+                  <i class="fa fa-book fa-fw"></i> <span class="network-name">Posts</span>
+                </a>
 							</li>
-							{% endfor %}
+              <li>
+								<a href="{{ url_for('/about') }}" class="page-scroll btn btn-default btn-lg">
+                  <i class="fa fa-fw fa-question-circle"></i> <span class="network-name">About</span>
+                </a>
+							</li>
+              <li>
+								<a href="#contact" class="page-scroll btn btn-default btn-lg">
+                  <i class="fa fa-fw fa-comments"></i> <span class="network-name">Contact</span>
+                </a>
+							</li>
+              <li>
+                {% if theme.rss_feed %}
+  								<a href="{{ url_for('/atom.xml') }}" class="page-scroll btn btn-default btn-lg">
+                    <i class="fa fa-fw fa-rss-square"></i> <span class="network-name">RSS</span>
+                  </a>
+                {% endif %}
+							</li>
 						</ul>
+            <!-- <ul class="list-inline image-index">
+              {% for i in theme.cover_images %}
+                <li><i class="fa fa-fw fa-circle"></i></li>
+              {% endfor %}
+            </ul -->
 					</div>
-				</div>
+          <div class="col-lg-2">
+            <a class="next-img"><i class="fa fa-chevron-right fa-fw"></i></a>
+          </div>
+        </div>
 			</div>
 
 		</div>

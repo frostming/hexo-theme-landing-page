@@ -9,9 +9,19 @@
 				<div class="col-lg-6">
 					<ul class="list-inline banner-social-buttons">
 						{% for social in theme.social %}
-						<li>
-							<a href="{{ social.url }}" class="btn btn-default btn-lg"><i class="fa fa-{{ social.title }} fa-fw"></i> <span class="network-name">{{ social.title }}</span></a>
-						</li>
+            {% if social.title === 'zhihu' %}
+              <li>
+                <a href="{{ social.url }}" class="btn btn-default btn-lg">
+                  <span style="font-size:18px;font-weight:700;">知</span>
+                </a>
+              </li>
+            {% else %}
+  						<li>
+  							<a href="{{ social.url }}" class="btn btn-default btn-lg">
+                  <i class="fa fa-{{ social.title }} fa-fw"></i>
+                </a>
+  						</li>
+            {% endif %}
 						{% endfor %}
 					</ul>
 				</div>

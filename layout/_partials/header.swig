@@ -16,7 +16,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% for name, path in theme.navigation %}
             	<li>
-                    <a class="page-scroll" href="{{ url_for(path) }}">{{ name|capitalize }}</a>
+                    <a class="page-scroll" href="{{ url_for(path) }}">{{ name|title }}</a>
                 </li>
                 {% endfor %}
             </ul>

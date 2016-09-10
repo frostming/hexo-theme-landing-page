@@ -4,6 +4,8 @@ $(document).ready(function() {
     $("table").addClass("table");
 });
 
+// var imageList = hexo.theme.cover_images;
+// var currentIndex = 0;
 // jQuery for page scrolling feature - requires jQuery Easing plugin
 $(function() {
     $('a.page-scroll').bind('click', function(event) {
@@ -13,6 +15,18 @@ $(function() {
         }, 1500, 'easeInOutExpo');
         event.preventDefault();
     });
+
+    var header_height = $('.intro-header').height();
+
+    $(window).on('scroll', function() {
+      $('nav').toggleClass('navbar-toggle', window.pageYOffset < header_height);
+    });
+    //
+    // $('.next-img').on('click', function() {
+    //   currentIndex = (currentIndex + 1) % imageList.length;
+    //   $('.intro-header').css('background-image', 'url("..'+imageList[currentIndex]+'")');
+    // });
+
 });
 
 // Highlight the top nav as scrolling occurs
